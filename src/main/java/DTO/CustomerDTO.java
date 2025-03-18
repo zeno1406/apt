@@ -8,7 +8,7 @@ public class CustomerDTO extends PersonDTO {
     private String phone;
     private String address;
 
-    public CustomerDTO(int id, String firstName, String lastName, String phone, String address, String imageUrl, Date dateOfBirth, int status) {
+    public CustomerDTO(int id, String firstName, String lastName, String phone, String address, String imageUrl, Date dateOfBirth, boolean status) {
         super(id, imageUrl, dateOfBirth, status);
         this.firstName = firstName;
         this.lastName = lastName;

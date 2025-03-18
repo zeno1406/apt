@@ -1,14 +1,14 @@
 package DTO;
 
-public class Permission {
+public class PermissionDTO {
     private int id;
     private String name;
     private int module_id;
 
-    public Permission() {
+    public PermissionDTO() {
     }
 
-    public Permission(int id, String name, int module_id) {
+    public PermissionDTO(int id, String name, int module_id) {
         this.id = id;
         this.name = name;
         this.module_id = module_id;

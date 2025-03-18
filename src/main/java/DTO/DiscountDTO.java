@@ -1,19 +1,19 @@
 package DTO;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public class DiscountDTO {
     private String code;
     private String name;
     private int type;
-    private Date startDate;
-    private Date endDate;
+    private LocalDateTime startDate;
+    private LocalDateTime  endDate;
 
     // Constructors
     public DiscountDTO() {
     }
 
-    public DiscountDTO(String code, String name, int type, Date startDate, Date endDate) {
+    public DiscountDTO(String code, String name, int type, LocalDateTime  startDate, LocalDateTime  endDate) {
         this.code = code;
         this.name = name;
         this.type = type;
@@ -46,19 +46,19 @@ public class DiscountDTO {
         this.type = type;
     }
 
-    public Date getStartDate() {
+    public LocalDateTime  getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(Date startDate) {
+    public void setStartDate(LocalDateTime  startDate) {
         this.startDate = startDate;
     }
 
-    public Date getEndDate() {
+    public LocalDateTime  getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(Date endDate) {
+    public void setEndDate(LocalDateTime  endDate) {
         this.endDate = endDate;
     }
 }

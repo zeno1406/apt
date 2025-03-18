@@ -9,7 +9,7 @@ public abstract class PersonDTO extends BaseDTO {
     public PersonDTO() {
     }
 
-    public PersonDTO(int id, String imageUrl, Date dateOfBirth, int status) {
+    public PersonDTO(int id, String imageUrl, Date dateOfBirth, boolean status) {
         super(id, status);
         this.imageUrl = imageUrl;
         this.dateOfBirth = dateOfBirth;

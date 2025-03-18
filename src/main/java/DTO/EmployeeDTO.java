@@ -9,7 +9,7 @@ public class EmployeeDTO extends PersonDTO {
     private BigDecimal salary;
     private int roleId;
 
-    public EmployeeDTO(int id, String firstName, String lastName, BigDecimal salary, String imageUrl, Date dateOfBirth, int roleId, int status) {
+    public EmployeeDTO(int id, String firstName, String lastName, BigDecimal salary, String imageUrl, Date dateOfBirth, int roleId, boolean status) {
         super(id, imageUrl, dateOfBirth, status);
         this.firstName = firstName;
         this.lastName = lastName;

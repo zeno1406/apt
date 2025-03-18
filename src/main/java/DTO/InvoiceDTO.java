@@ -1,11 +1,12 @@
 package DTO;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDateTime;
+
 
 public class InvoiceDTO {
     private int id;
-    private Date createDate;
+    private LocalDateTime createDate;
     private int employeeId;
     private int customerId;
     private String discountCode;
@@ -14,7 +15,7 @@ public class InvoiceDTO {
     public InvoiceDTO() {
     }
 
-    public InvoiceDTO(int id, Date createDate, int employeeId, int customerId, String discountCode, BigDecimal totalPrice) {
+    public InvoiceDTO(int id, LocalDateTime  createDate, int employeeId, int customerId, String discountCode, BigDecimal totalPrice) {
         this.id = id;
         this.createDate = createDate;
         this.employeeId = employeeId;
@@ -31,11 +32,11 @@ public class InvoiceDTO {
         this.id = id;
     }
 
-    public Date getCreateDate() {
+    public LocalDateTime  getCreateDate() {
         return createDate;
     }
 
-    public void setCreateDate(Date createDate) {
+    public void setCreateDate(LocalDateTime  createDate) {
         this.createDate = createDate;
     }
 

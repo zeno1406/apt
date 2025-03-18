@@ -8,7 +8,7 @@ public class SupplierDTO extends BaseDTO {
     public SupplierDTO() {
     }
 
-    public SupplierDTO(int id, String name, String phone, String address, int status) {
+    public SupplierDTO(int id, String name, String phone, String address, boolean status) {
         super(id, status);
         this.name = name;
         this.phone = phone;

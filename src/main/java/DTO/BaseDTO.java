@@ -2,12 +2,12 @@ package DTO;
 
 public abstract class BaseDTO {
     protected int id;
-    protected int status;
+    protected boolean status;
 
     public BaseDTO() {
     }
 
-    public BaseDTO(int id, int status) {
+    public BaseDTO(int id, boolean status) {
         this.id = id;
         this.status = status;
     }
@@ -20,11 +20,11 @@ public abstract class BaseDTO {
         this.id = id;
     }
 
-    public int getStatus() {
+    public boolean isStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(boolean status) {
         this.status = status;
     }
 }
