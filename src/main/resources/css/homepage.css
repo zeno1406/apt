@@ -1,0 +1,26 @@
+.root {
+    -fx-background-color: black;
+    -fx-pref-width: 980px;
+    -fx-pref-height: 800px;
+}
+
+.mainMenu {
+    -fx-background-color: lightcyan;
+    -fx-pref-width: 160px;
+    -fx-pref-height:700px;
+}
+
+.topMainMenu {
+    -fx-background-color: lightcyan;
+    -fx-pref-width: 980px;
+    -fx-max-height: 100px;
+}
+
+.topMainMenu .text-field {
+    -fx-background-color: white;
+    -fx-alignment: center;
+    -fx-pref-width: 400px;
+    -fx-pref-height: 30px;
+    -fx-border-radius: 4px;
+    -fx-border-color: black;
+}

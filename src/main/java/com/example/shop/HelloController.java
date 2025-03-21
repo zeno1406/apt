@@ -1,4 +1,4 @@
-package com.example.apt;
+package com.example.shop;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -8,7 +8,7 @@ public class HelloController {
     private Label welcomeText;
 
     @FXML
-    protected void onHelloButtonClick(){
-        welcomeText.setText( "Welcome to JavaFX Application!" );
+    protected void onHelloButtonClick() {
+        welcomeText.setText("Welcome to JavaFX Application!");
     }
 }
