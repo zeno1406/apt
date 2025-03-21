@@ -8,5 +8,6 @@ public interface IBUS <T, K> {
     boolean insert(T obj);
     boolean update(T obj);
     boolean delete(K id);
+    void loadLocal();
 
 }

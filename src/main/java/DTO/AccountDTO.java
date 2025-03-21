@@ -15,6 +15,14 @@ public class AccountDTO {
         this.password = password;
     }
 
+    public AccountDTO(AccountDTO other) {
+        if (other != null) {
+            this.employeeId = other.employeeId;
+            this.username = other.username;
+            this.password = other.password;
+        }
+    }
+
     // Getters and Setters
     public int getEmployeeId() {
         return employeeId;

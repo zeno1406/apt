@@ -12,6 +12,13 @@ public abstract class BaseDTO {
         this.status = status;
     }
 
+    public BaseDTO(BaseDTO other) {
+        if (other != null) {
+            this.id = other.id;
+            this.status = other.status;
+        }
+    }
+
     public int getId() {
         return id;
     }

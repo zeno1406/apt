@@ -16,6 +16,14 @@ public class CustomerDTO extends PersonDTO {
         this.address = address;
     }
 
+    public CustomerDTO(CustomerDTO other) {
+        super(other); // Gọi constructor clone của PersonDTO nếu có
+        this.firstName = other.firstName;
+        this.lastName = other.lastName;
+        this.phone = other.phone;
+        this.address = other.address;
+    }
+
     public String getFirstName() { return firstName; }
     public void setFirstName(String firstName) { this.firstName = firstName; }
 

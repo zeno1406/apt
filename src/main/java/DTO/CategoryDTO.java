@@ -1,5 +1,10 @@
 package DTO;
 
+import lombok.Builder;
+import lombok.Data;
+
+@Data
+@Builder(toBuilder = true)
 public class CategoryDTO {
     private int id;
     private String name;

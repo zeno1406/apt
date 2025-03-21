@@ -9,12 +9,24 @@ public class EmployeeDTO extends PersonDTO {
     private BigDecimal salary;
     private int roleId;
 
+    public EmployeeDTO() {
+
+    }
+
     public EmployeeDTO(int id, String firstName, String lastName, BigDecimal salary, String imageUrl, Date dateOfBirth, int roleId, boolean status) {
         super(id, imageUrl, dateOfBirth, status);
         this.firstName = firstName;
         this.lastName = lastName;
         this.salary = salary;
         this.roleId = roleId;
+    }
+
+    public EmployeeDTO(EmployeeDTO other) {
+        super(other); // Gọi constructor clone của PersonDTO nếu có
+        this.firstName = other.firstName;
+        this.lastName = other.lastName;
+        this.salary = other.salary != null ? new BigDecimal(other.salary.toString()) : null;
+        this.roleId = other.roleId;
     }
 
     public String getFirstName() { return firstName; }

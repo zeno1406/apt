@@ -7,6 +7,8 @@ module com.example.shop {
     requires net.synedra.validatorfx;
     requires org.kordamp.bootstrapfx.core;
     requires java.sql;
+    requires lombok;
+    requires jbcrypt;
 
     opens com.example.shop to javafx.fxml;
     exports com.example.shop;

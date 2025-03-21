@@ -1,5 +1,8 @@
 package DTO;
 
+import lombok.ToString;
+
+@ToString
 public class RolePermissionDTO {
     private int roleId;
     private int permissionId;
@@ -9,6 +12,14 @@ public class RolePermissionDTO {
         this.roleId = roleId;
         this.permissionId = permissionId;
         this.status = status;
+    }
+
+    public RolePermissionDTO(RolePermissionDTO other) {
+        if (other != null) {
+            this.roleId = other.roleId;
+            this.permissionId = other.permissionId;
+            this.status = other.status;
+        }
     }
 
     public int getRoleId() {

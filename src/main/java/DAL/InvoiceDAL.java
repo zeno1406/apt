@@ -1,44 +1,17 @@
 package DAL;
 
 import DTO.InvoiceDTO;
-
 import java.sql.*;
 
 public class InvoiceDAL extends BaseDAL<InvoiceDTO, Integer> {
     public static final InvoiceDAL INSTANCE = new InvoiceDAL();
 
     private InvoiceDAL() {
-        super(ConnectAplication.getInstance().getConnectionFactory(), "invoice", "id");
+        super(ConnectApplication.getInstance().getConnectionFactory(), "invoice", "id");
     }
 
     public static InvoiceDAL getInstance() {
         return INSTANCE;
-    }
-
-    @Override
-    public boolean insert(InvoiceDTO obj) {
-        final String query = "INSERT INTO " + table +
-                " (create_date, employee_id, customer_id, discount_code, total_price) VALUES (?, ?, ?, ?, ?)";
-        try (Connection connection = connectionFactory.newConnection();
-             PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
-
-            setInsertParameters(statement, obj);
-            int affectedRows = statement.executeUpdate();
-
-            if (affectedRows == 0) {
-                return false;
-            }
-
-            try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
-                if (generatedKeys.next()) {
-                    obj.setId(generatedKeys.getInt(1));
-                }
-            }
-            return true;
-        } catch (SQLException e) {
-            System.err.println("Error inserting invoice: " + e.getMessage());
-            return false;
-        }
     }
 
     @Override
@@ -56,8 +29,18 @@ public class InvoiceDAL extends BaseDAL<InvoiceDTO, Integer> {
     }
 
     @Override
-    public boolean update(InvoiceDTO obj) {
-        throw new UnsupportedOperationException("Update operation not supported.");
+    protected boolean shouldUseGeneratedKeys() {
+        return true; // ID là AUTO_INCREMENT
+    }
+
+    @Override
+    protected void setGeneratedKey(InvoiceDTO obj, ResultSet generatedKeys) throws SQLException {
+        obj.setId(generatedKeys.getInt(1));
+    }
+
+    @Override
+    protected String getInsertQuery() {
+        return "(create_date, employee_id, customer_id, discount_code, total_price) VALUES (?, ?, ?, ?, ?)";
     }
 
     @Override
@@ -74,5 +57,15 @@ public class InvoiceDAL extends BaseDAL<InvoiceDTO, Integer> {
         }
 
         statement.setBigDecimal(5, obj.getTotalPrice());
+    }
+
+    @Override
+    protected String getUpdateQuery() {
+        throw new UnsupportedOperationException("Cannot update permission records.");
+    }
+
+    @Override
+    protected boolean hasSoftDelete() {
+        throw new UnsupportedOperationException("Cannot delete permission records.");
     }
 }

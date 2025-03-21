@@ -1,11 +1,12 @@
 package DAL;
+import BUS.RoleBUS;
+import BUS.RolePermissionBUS;
 import DTO.ModuleDTO;
-import DTO.PermissionDTO;
 import DTO.RoleDTO;
+import FACTORY.RoleBuilder;
+import SERVICE.RolePermissionService;
 
 import java.math.BigDecimal;
-import java.security.Permission;
-import java.util.ArrayList;
 
 
 public class TestDal {
@@ -43,5 +44,20 @@ public class TestDal {
         // Code kiểm tra delete
 //        boolean deleteResult = RoleDAL.getInstance().delete(role1.getId());
 //        System.out.println(deleteResult);
+
+
+        // Kiểm tra chức năng tạo Role mới
+        RoleBuilder builder = new RoleBuilder();
+        RoleDTO salerStaff = builder.name("Nhân viên quản lý kho 1").description("Nhân viên quản lý kho 1").salaryCoefficient(new BigDecimal(2.5)).build();
+        RolePermissionService.getInstance().createRoleWithPermissions(salerStaff);
+
+        // Xem các Role
+        RoleBUS.getInstance().getAll().forEach(System.out::println);
+
+        // Xem chi tiết phân quyền của Role by RoleId
+        System.out.println(RolePermissionBUS.getInstance().getById(1));
+
+        // Kiểm tra coi có quyền không
+//        System.out.println(RolePermissionBUS.getInstance().hasPermission(1, 1));
     }
 }

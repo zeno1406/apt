@@ -1,16 +1,17 @@
 package DAL;
 
+import FACTORY.ConnectionFactoryImpl;
 import INTERFACE.ConnectionFactory;
 
-public class ConnectAplication {
+public class ConnectApplication {
     private final ConnectionFactory connectionFactory;
-    private static final ConnectAplication INSTANCE = new ConnectAplication();
+    private static final ConnectApplication INSTANCE = new ConnectApplication();
 
-    private ConnectAplication() {
+    private ConnectApplication() {
         connectionFactory = new ConnectionFactoryImpl();
     }
 
-    public static ConnectAplication getInstance() {
+    public static ConnectApplication getInstance() {
         return INSTANCE;
     }
 

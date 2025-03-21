@@ -14,6 +14,14 @@ public class PermissionDTO {
         this.module_id = module_id;
     }
 
+    public PermissionDTO(PermissionDTO other) {
+        if (other != null) {
+            this.id = other.id;
+            this.name = other.name;
+            this.module_id = other.module_id;
+        }
+    }
+
     public int getId() {
         return id;
     }

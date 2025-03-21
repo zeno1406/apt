@@ -15,6 +15,14 @@ public abstract class PersonDTO extends BaseDTO {
         this.dateOfBirth = dateOfBirth;
     }
 
+    public PersonDTO(PersonDTO other) {
+        super(other); // Gọi constructor clone của BaseDTO
+        if (other != null) {
+            this.imageUrl = other.imageUrl;
+            this.dateOfBirth = other.dateOfBirth != null ? new Date(other.dateOfBirth.getTime()) : null;
+        }
+    }
+
     public String getImageUrl() {
         return imageUrl;
     }
