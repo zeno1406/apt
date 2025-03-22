@@ -22,7 +22,9 @@ public class EmployeeDAL extends BaseDAL<EmployeeDTO, Integer> {
                 resultSet.getString("last_name"),
                 resultSet.getBigDecimal("salary"),
                 resultSet.getString("image_url"),
-                resultSet.getDate("date_of_birth"),
+                resultSet.getTimestamp("date_of_birth") != null
+                        ? resultSet.getTimestamp("date_of_birth").toLocalDateTime()
+                        : null,
                 resultSet.getInt("role_id"),
                 resultSet.getBoolean("status")
         );
@@ -39,7 +41,7 @@ public class EmployeeDAL extends BaseDAL<EmployeeDTO, Integer> {
         statement.setString(2, obj.getLastName());
         statement.setBigDecimal(3, obj.getSalary());
         statement.setString(4, obj.getImageUrl());
-        statement.setDate(5, new java.sql.Date(obj.getDateOfBirth().getTime()));
+        statement.setTimestamp(5, Timestamp.valueOf(obj.getDateOfBirth()));
         statement.setInt(6, obj.getRoleId());
         statement.setBoolean(7, obj.isStatus());
     }
@@ -55,7 +57,7 @@ public class EmployeeDAL extends BaseDAL<EmployeeDTO, Integer> {
         statement.setString(2, obj.getLastName());
         statement.setBigDecimal(3, obj.getSalary());
         statement.setString(4, obj.getImageUrl());
-        statement.setDate(5, new java.sql.Date(obj.getDateOfBirth().getTime()));
+        statement.setTimestamp(5, Timestamp.valueOf(obj.getDateOfBirth()));
         statement.setInt(6, obj.getRoleId());
         statement.setBoolean(7, obj.isStatus());
         statement.setInt(8, obj.getId());

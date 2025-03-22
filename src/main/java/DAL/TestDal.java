@@ -55,7 +55,7 @@ public class TestDal {
         RoleBUS.getInstance().getAll().forEach(System.out::println);
 
         // Xem chi tiết phân quyền của Role by RoleId
-        System.out.println(RolePermissionBUS.getInstance().getById(1));
+        System.out.println(RolePermissionBUS.getInstance().getAllRolePermissionByRoleIdLocal(1));
 
         // Kiểm tra coi có quyền không
 //        System.out.println(RolePermissionBUS.getInstance().hasPermission(1, 1));

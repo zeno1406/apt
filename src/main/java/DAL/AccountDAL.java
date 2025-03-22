@@ -1,9 +1,7 @@
 package DAL;
 
 import DTO.AccountDTO;
-import SERVICE.PasswordUtils;
 
-import javax.xml.transform.Result;
 import java.sql.*;
 
 public class AccountDAL extends BaseDAL<AccountDTO, Integer> {

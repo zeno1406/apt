@@ -3,13 +3,13 @@ package FACTORY;
 import DTO.EmployeeDTO;
 import INTERFACE.Builder;
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public class EmployeeBuilder implements Builder<EmployeeDTO> {
     private int id;
     private boolean status;
     private String imageUrl;
-    private Date dateOfBirth;
+    private LocalDateTime dateOfBirth;
     private String firstName;
     private String lastName;
     private BigDecimal salary;
@@ -30,7 +30,7 @@ public class EmployeeBuilder implements Builder<EmployeeDTO> {
         return this;
     }
 
-    public EmployeeBuilder dateOfBirth(Date dateOfBirth) {
+    public EmployeeBuilder dateOfBirth(LocalDateTime dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
         return this;
     }

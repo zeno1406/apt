@@ -4,10 +4,8 @@ import java.util.ArrayList;
 
 public interface IBUS <T, K> {
     ArrayList<T> getAll();
-    T getById(K id);
-    boolean insert(T obj);
-    boolean update(T obj);
+    ArrayList<T> getAllLocal();
     boolean delete(K id);
     void loadLocal();
-
+    boolean isLocalEmpty();
 }

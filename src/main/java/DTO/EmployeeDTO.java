@@ -1,9 +1,9 @@
 package DTO;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDateTime;
 
-public class EmployeeDTO extends PersonDTO {
+public class EmployeeDTO extends BaseInformationDTO {
     private String firstName;
     private String lastName;
     private BigDecimal salary;
@@ -13,7 +13,7 @@ public class EmployeeDTO extends PersonDTO {
 
     }
 
-    public EmployeeDTO(int id, String firstName, String lastName, BigDecimal salary, String imageUrl, Date dateOfBirth, int roleId, boolean status) {
+    public EmployeeDTO(int id, String firstName, String lastName, BigDecimal salary, String imageUrl, LocalDateTime dateOfBirth, int roleId, boolean status) {
         super(id, imageUrl, dateOfBirth, status);
         this.firstName = firstName;
         this.lastName = lastName;

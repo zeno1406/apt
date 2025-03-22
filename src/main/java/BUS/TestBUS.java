@@ -2,12 +2,12 @@ package BUS;
 
 import DTO.*;
 import FACTORY.RoleBuilder;
-import SERVICE.LoginRegisterService;
-import SERVICE.PasswordUtils;
+import SERVICE.PrintService;
 import SERVICE.RolePermissionService;
-import org.mindrot.jbcrypt.BCrypt;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class TestBUS {
@@ -37,12 +37,29 @@ public class TestBUS {
 //        clone.setId(2);
 //        System.out.println(test);
 //        System.out.println(clone);
-        AccountBUS.getInstance().loadLocal();
-        AccountDTO account1 = new AccountDTO(0, "huyhoang119762", "huyhoang123");
-        AccountDTO account2= new AccountDTO(1, "huyhoang119763", "huyhoang123");
+//        AccountBUS.getInstance().loadLocal();
+//        AccountDTO account1 = new AccountDTO(0, "huyhoang119762", "huyhoang123");
+//        AccountDTO account2= new AccountDTO(1, "huyhoang119763", "huyhoang123");
+//
+//        System.out.println(LoginRegisterService.getInstance().checkLogin(account1));
+//        System.out.println(LoginRegisterService.getInstance().checkLogin(account2));
 
-        System.out.println(LoginRegisterService.getInstance().checkLogin(account1));
-        System.out.println(LoginRegisterService.getInstance().checkLogin(account2));
+//        RolePermissionService.getInstance().printPermissionsGroupedByModule();
+//
+//        String dateTimeString = "2025-03-17 14:00:00";
+//
+//        // Định dạng của chuỗi
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+//
+//        // Chuyển đổi từ chuỗi sang LocalDateTime
+//        LocalDateTime createDate = LocalDateTime.parse(dateTimeString, formatter);
+//
+//        // In ra kết quả
+//        System.out.println("LocalDateTime từ database: " + createDate);
+        PrintService.getInstance().printInvoiceForm(2);
+
+
+
     }
 
 }

@@ -22,6 +22,15 @@ public class DetailImportDTO {
         this.totalPrice = totalPrice;
     }
 
+    public DetailImportDTO(DetailImportDTO other) {
+        this.importId = other.importId;
+        this.productId = other.productId;
+        this.quantity = other.quantity;
+        this.price = other.price;
+        this.profitPercent = other.profitPercent;
+        this.totalPrice = other.totalPrice;
+    }
+
     public int getImportId() {
         return importId;
     }
