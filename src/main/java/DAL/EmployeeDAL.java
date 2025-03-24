@@ -22,8 +22,8 @@ public class EmployeeDAL extends BaseDAL<EmployeeDTO, Integer> {
                 resultSet.getString("last_name"),
                 resultSet.getBigDecimal("salary"),
                 resultSet.getString("image_url"),
-                resultSet.getTimestamp("date_of_birth") != null
-                        ? resultSet.getTimestamp("date_of_birth").toLocalDateTime()
+                resultSet.getDate("date_of_birth") != null
+                        ? resultSet.getDate("date_of_birth").toLocalDate().atStartOfDay()
                         : null,
                 resultSet.getInt("role_id"),
                 resultSet.getBoolean("status")
@@ -41,7 +41,7 @@ public class EmployeeDAL extends BaseDAL<EmployeeDTO, Integer> {
         statement.setString(2, obj.getLastName());
         statement.setBigDecimal(3, obj.getSalary());
         statement.setString(4, obj.getImageUrl());
-        statement.setTimestamp(5, Timestamp.valueOf(obj.getDateOfBirth()));
+        statement.setDate(5, obj.getDateOfBirth() != null ? java.sql.Date.valueOf(obj.getDateOfBirth().toLocalDate()) : null);
         statement.setInt(6, obj.getRoleId());
         statement.setBoolean(7, obj.isStatus());
     }
@@ -57,7 +57,7 @@ public class EmployeeDAL extends BaseDAL<EmployeeDTO, Integer> {
         statement.setString(2, obj.getLastName());
         statement.setBigDecimal(3, obj.getSalary());
         statement.setString(4, obj.getImageUrl());
-        statement.setTimestamp(5, Timestamp.valueOf(obj.getDateOfBirth()));
+        statement.setDate(5, obj.getDateOfBirth() != null ? java.sql.Date.valueOf(obj.getDateOfBirth().toLocalDate()) : null);
         statement.setInt(6, obj.getRoleId());
         statement.setBoolean(7, obj.isStatus());
         statement.setInt(8, obj.getId());

@@ -1,6 +1,5 @@
 package DAL;
 
-import DTO.DetailImportDTO;
 import DTO.DetailInvoiceDTO;
 import java.sql.*;
 import java.util.ArrayList;
@@ -55,19 +54,14 @@ public class DetailInvoiceDAL extends BaseDAL<DetailInvoiceDTO, Integer> {
         throw new UnsupportedOperationException("Cannot update permission records.");
     }
 
-    @Override
-    protected boolean hasSoftDelete() {
-        throw new UnsupportedOperationException("Cannot delete permission records.");
-    }
-
-    public boolean insertDetailInvoiceByInvoiceId(ArrayList<DetailInvoiceDTO> list) {
+    public boolean insertAllDetailInvoiceByInvoiceId(int invoiceId, ArrayList<DetailInvoiceDTO> list) {
         final String query = "INSERT INTO detail_invoice (invoice_id, product_id, quantity, price, total_price) VALUES (?, ?, ?, ?, ?)";
 
         try (Connection connection = connectionFactory.newConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
 
             for (DetailInvoiceDTO detail : list) {
-                statement.setInt(1, detail.getInvoiceId());
+                statement.setInt(1, invoiceId);
                 statement.setString(2, detail.getProductId());
                 statement.setInt(3, detail.getQuantity());
                 statement.setBigDecimal(4, detail.getPrice());
@@ -75,16 +69,15 @@ public class DetailInvoiceDAL extends BaseDAL<DetailInvoiceDTO, Integer> {
                 statement.addBatch();
             }
 
-            int[] results = statement.executeBatch(); // Thực thi batch
+            int[] results = statement.executeBatch();
 
-            // Kiểm tra tất cả kết quả, nếu có lỗi thì return false
             for (int result : results) {
                 if (result < 0) {
-                    return false; // Một câu lệnh INSERT bị lỗi
+                    return false;
                 }
             }
 
-            return true; // Nếu tất cả đều thành công
+            return true;
 
         } catch (SQLException e) {
             System.err.println("Error inserting detail invoice: " + e.getMessage());
@@ -92,7 +85,8 @@ public class DetailInvoiceDAL extends BaseDAL<DetailInvoiceDTO, Integer> {
         }
     }
 
-    public boolean deleteDetailInvoiceByInvoiceId(int invoiceId) {
+
+    public boolean deleteAllDetailInvoiceByInvoiceId(int invoiceId) {
         final String query = "DELETE FROM detail_invoice WHERE invoice_id = ?";
         try (Connection connection = connectionFactory.newConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
@@ -104,5 +98,26 @@ public class DetailInvoiceDAL extends BaseDAL<DetailInvoiceDTO, Integer> {
             return false;
         }
     }
+
+    public ArrayList<DetailInvoiceDTO> getAllDetailInvoiceByInvoiceId(int invoiceId) {
+        final String query = "SELECT * FROM detail_invoice WHERE invoice_id = ?";
+        ArrayList<DetailInvoiceDTO> list = new ArrayList<>();
+
+        try (Connection connection = connectionFactory.newConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setInt(1, invoiceId);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    list.add(mapResultSetToObject(resultSet));
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error retrieving " + table + ": " + e.getMessage());
+        }
+        return list;
+    }
+
+
 
 }

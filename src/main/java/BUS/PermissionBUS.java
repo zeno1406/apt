@@ -21,26 +21,17 @@ public class PermissionBUS extends BaseBUS <PermissionDTO, Integer> {
     }
 
     @Override
-    public boolean delete(Integer permissionId) {
+    public boolean delete(Integer permissionId, int employee_roleId) {
         throw new UnsupportedOperationException("Cannot delete permission records.");
     }
 
     public PermissionDTO getByIdLocal(int id) {
+        if (id <= 0) return null;
         for (PermissionDTO permission : arrLocal) {
             if (Objects.equals(permission.getId(), id)) {
                 return new PermissionDTO (permission);
             }
         }
         return null;
-    }
-
-    public boolean isDuplicatePermissionName(int id, String name) {
-        if (name == null) return false;
-        for (PermissionDTO permission : arrLocal) {
-            if (!Objects.equals(permission.getId(), id) && Objects.equals(permission.getName(), name)) {
-                return true;
-            }
-        }
-        return false;
     }
 }

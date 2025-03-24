@@ -1,8 +1,10 @@
 package DTO;
 
+import lombok.ToString;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-
+@ToString(callSuper = true)
 public class EmployeeDTO extends BaseInformationDTO {
     private String firstName;
     private String lastName;

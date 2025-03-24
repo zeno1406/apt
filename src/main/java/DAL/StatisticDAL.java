@@ -11,7 +11,7 @@ public class StatisticDAL extends BaseDAL<StatisticDTO, Integer> {
     private static final StatisticDAL INSTANCE = new StatisticDAL();
 
     private StatisticDAL() {
-        super(ConnectApplication.getInstance().getConnectionFactory(), "statistic", "invoice_id");
+        super(ConnectApplication.getInstance().getConnectionFactory(), "statistic", "save_date");
     }
 
     public static StatisticDAL getInstance() {

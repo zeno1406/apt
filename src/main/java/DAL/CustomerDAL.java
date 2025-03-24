@@ -23,8 +23,8 @@ public class CustomerDAL extends BaseDAL<CustomerDTO, Integer> {
                 resultSet.getString("phone"),
                 resultSet.getString("address"),
                 resultSet.getString("image_url"),
-                resultSet.getTimestamp("date_of_birth") != null
-                        ? resultSet.getTimestamp("date_of_birth").toLocalDateTime()
+                resultSet.getDate("date_of_birth") != null
+                        ? resultSet.getDate("date_of_birth").toLocalDate().atStartOfDay()
                         : null,
                 resultSet.getBoolean("status")
         );
@@ -54,7 +54,7 @@ public class CustomerDAL extends BaseDAL<CustomerDTO, Integer> {
         statement.setString(3, obj.getPhone());
         statement.setString(4, obj.getAddress());
         statement.setString(5, obj.getImageUrl());
-        statement.setTimestamp(6, Timestamp.valueOf(obj.getDateOfBirth()));
+        statement.setDate(6, obj.getDateOfBirth() != null ? java.sql.Date.valueOf(obj.getDateOfBirth().toLocalDate()) : null);
         statement.setBoolean(7, obj.isStatus());
     }
 
@@ -70,7 +70,7 @@ public class CustomerDAL extends BaseDAL<CustomerDTO, Integer> {
         statement.setString(3, obj.getPhone());
         statement.setString(4, obj.getAddress());
         statement.setString(5, obj.getImageUrl());
-        statement.setTimestamp(6, Timestamp.valueOf(obj.getDateOfBirth()));
+        statement.setDate(6, obj.getDateOfBirth() != null ? java.sql.Date.valueOf(obj.getDateOfBirth().toLocalDate()) : null);
         statement.setBoolean(7, obj.isStatus());
         statement.setInt(8, obj.getId());
     }

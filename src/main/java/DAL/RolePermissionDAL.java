@@ -51,11 +51,6 @@ public class RolePermissionDAL extends BaseDAL<RolePermissionDTO, Integer> {
         statement.setInt(3, obj.getPermissionId());
     }
 
-    @Override
-    protected boolean hasSoftDelete() {
-        throw new UnsupportedOperationException("Cannot delete role permission records.");
-    }
-
     public boolean insertDefaultRolePermissionByRoleId(int roleId) {
         final String query = "INSERT INTO role_permission (role_id, permission_id, status) SELECT ?, id, 0 FROM permission";
         try (Connection connection = connectionFactory.newConnection();
@@ -69,37 +64,31 @@ public class RolePermissionDAL extends BaseDAL<RolePermissionDTO, Integer> {
         }
     }
 
-    public boolean insertRollbackPermission(ArrayList<RolePermissionDTO> rolePermission) {
+    public boolean insertListRolePermission(int roleId, ArrayList<RolePermissionDTO> rolePermission) {
         final String query = "INSERT INTO role_permission (role_id, permission_id, status) VALUES (?, ?, ?)";
         try (Connection connection = connectionFactory.newConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
 
-            boolean success = true;
             for (RolePermissionDTO permission : rolePermission) {
-                statement.setInt(1, permission.getRoleId());
+                statement.setInt(1, roleId);
                 statement.setInt(2, permission.getPermissionId());
                 statement.setBoolean(3, permission.isStatus());
 
-                if (statement.executeUpdate() <= 0) {
-                    success = false; // Nếu có bản ghi nào không chèn được thì đánh dấu thất bại
+                statement.addBatch();
+            }
+
+            int[] results = statement.executeBatch();
+
+            for (int result : results) {
+                if (result <= 0) {
+                    connection.rollback();
+                    return false;
                 }
             }
-            return success;
-        } catch (SQLException e) {
-            System.err.println("Error roll back role permissions: " + e.getMessage());
-            return false;
-        }
-    }
 
-    public boolean deleteRolePermissionByRoleId(int roleId) {
-        final String query = "DELETE FROM role_permission WHERE role_id = ?";
-        try (Connection connection = connectionFactory.newConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
-
-            statement.setInt(1, roleId);
-            return statement.executeUpdate() > 0;
+            return true;
         } catch (SQLException e) {
-            System.err.println("Error deleting from " + table + ": " + e.getMessage());
+            System.err.println("Error insert list role permission: " + e.getMessage());
             return false;
         }
     }
@@ -123,17 +112,23 @@ public class RolePermissionDAL extends BaseDAL<RolePermissionDTO, Integer> {
         return list;
     }
 
-    public boolean updateRolePermission(RolePermissionDTO rolePermission) {
-        final String query = "UPDATE role_permission SET status = ? WHERE role_id = ? AND permission_id = ?";
-        try (Connection connection = connectionFactory.newConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setBoolean(1, rolePermission.isStatus());
-            statement.setInt(2, rolePermission.getRoleId());
-            statement.setInt(3, rolePermission.getPermissionId());
-            return statement.executeUpdate() > 0;
-        } catch (SQLException e) {
-            System.err.println("Error updating role_permission: " + e.getMessage());
-            return false;
-        }
-    }
+//    public boolean hasPermission(int roleId, int permissionId) {
+//        final String query = "SELECT COUNT(*) FROM role_permission WHERE role_id = ? AND permission_id = ? AND status = 1";
+//
+//        try (Connection connection = connectionFactory.newConnection();
+//             PreparedStatement statement = connection.prepareStatement(query)) {
+//
+//            statement.setInt(1, roleId);
+//            statement.setInt(2, permissionId);
+//
+//            try (ResultSet resultSet = statement.executeQuery()) {
+//                if (resultSet.next()) {
+//                    return resultSet.getInt(1) > 0; // Nếu COUNT(*) > 0 nghĩa là có quyền
+//                }
+//            }
+//        } catch (SQLException e) {
+//            System.err.println("Error checking permission in role_permission: " + e.getMessage());
+//        }
+//        return false;
+//    }
 }

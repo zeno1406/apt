@@ -1,9 +1,13 @@
 package BUS;
 
+import DAL.EmployeeDAL;
+import DAL.RoleDAL;
+import DAL.RolePermissionDAL;
 import DTO.*;
 import FACTORY.RoleBuilder;
 import SERVICE.PrintService;
 import SERVICE.RolePermissionService;
+
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -13,7 +17,7 @@ import java.util.ArrayList;
 public class TestBUS {
     public static void main(String[] args) {
         RoleBuilder builder = new RoleBuilder();
-        RoleDTO salerStaff = builder.name("Nhân viên quản lý kho").description("Nhân viên quản lý kho").salaryCoefficient(new BigDecimal(2.5)).build();
+        RoleDTO salerStaff = builder.name("Nhân viên quản lý khoaaab").description("Nhân viên quản lý kho").salaryCoefficient(new BigDecimal(2.5)).build();
 
         // Cập nhật dữ liệu vào local
 //        RoleBUS.getInstance().loadLocal();
@@ -24,7 +28,7 @@ public class TestBUS {
 //        a.add(salerStaff);
 //        RoleBUS.getInstance().getAllRoleLocal().forEach(System.out::println);
         // Tạo role mới
-//        RoleService.getInstance().createRoleWithPermissions(salerStaff);
+//        RolePermissionService.getInstance().createRoleWithPermissions(salerStaff, 1);
         // Xóa role id
 //        RoleService.getInstance().deleteRoleWithPermissions(2);
         // Xem chi tiết phân quyền của role id
@@ -56,10 +60,29 @@ public class TestBUS {
 //
 //        // In ra kết quả
 //        System.out.println("LocalDateTime từ database: " + createDate);
-        PrintService.getInstance().printInvoiceForm(2);
+//        PrintService.getInstance().printInvoiceForm(2);
+//        RoleBUS.getInstance().loadLocal();
+//        RoleBUS.getInstance().getAllLocal().forEach(System.out::println);
+//        RoleDTO salerStaffErr = new RoleDTO(1, "Nhân viê ý kho\"Nhân viê ý kho\"Nhân viê ý kho\"Nhân viê ý kho\"", "asdasd", new BigDecimal(2.5));
+
+//        RoleBUS.getInstance().loadLocal();
+//        RolePermissionBUS.getInstance().loadLocal();
+//        RoleBUS.getInstance().getAllLocal().forEach(System.out::println);
+//        RolePermissionBUS.getInstance().getAllLocal().forEach(System.out::println);
+//        System.out.println(RolePermissionService.getInstance().deleteRoleWithPermissions(1, 1));
+//
+//        RoleBUS.getInstance().getAllLocal().forEach(System.out::println);
+//        RolePermissionBUS.getInstance().getAllLocal().forEach(System.out::println);
+
+//        System.out.printf(RoleBUS.getInstance().getByIdLocal(8).toString());
+//
+//        RolePermissionBUS.getInstance().getAllRolePermissionByRoleIdLocal(8).forEach(System.out::println);
 
 
+        EmployeeBUS.getInstance().loadLocal();
+        EmployeeBUS.getInstance().getAllLocal().forEach(System.out::println);
 
     }
+
 
 }

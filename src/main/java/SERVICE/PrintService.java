@@ -6,16 +6,12 @@ import UTILS.ValidationUtils;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.*;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.awt.Desktop;
 import java.math.BigDecimal;
-import java.text.NumberFormat;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Locale;
 
 public class PrintService {
     private static final PrintService INSTANCE = new PrintService();
@@ -53,7 +49,7 @@ public class PrintService {
         String fontPath = "src/main/resources/fonts/arial-unicode-ms.ttf"; // Đường dẫn tương đối
         try {
             Document document = new Document();
-            PdfWriter.getInstance(document, new FileOutputStream(new File(dest)));
+            PdfWriter.getInstance(document, new FileOutputStream(dest));
             document.open();
 
             // Nhúng font Arial Unicode MS để hỗ trợ tiếng Việt
@@ -89,7 +85,7 @@ public class PrintService {
                     {"Ngày tạo:", invoiceDate, "Tên khách hàng:", customerName},
             };
 
-// Thêm dữ liệu bình thường
+            // Thêm dữ liệu bình thường
             for (String[] row : invoiceInfo) {
                 for (String cell : row) {
                     PdfPCell pdfCell = new PdfPCell(new Phrase(cell, cell.endsWith(":") ? boldFont : normalFont));
@@ -99,7 +95,7 @@ public class PrintService {
                 }
             }
 
-// Hàng "Khuyến mãi" (Merge 2 cột phải)
+            // Hàng "Khuyến mãi" (Merge 2 cột phải)
             PdfPCell promoLabelCell = new PdfPCell(new Phrase("Khuyến mãi:", boldFont));
             promoLabelCell.setBorder(Rectangle.NO_BORDER);
             promoLabelCell.setPadding(5);
@@ -212,6 +208,4 @@ public class PrintService {
             e.printStackTrace();
         }
     }
-
-
 }

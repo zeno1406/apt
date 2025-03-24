@@ -1,13 +1,7 @@
 package BUS;
 
 import DAL.DetailInvoiceDAL;
-import DAL.InvoiceDAL;
-import DAL.RolePermissionDAL;
-import DTO.DetailImportDTO;
 import DTO.DetailInvoiceDTO;
-import DTO.InvoiceDTO;
-import DTO.RolePermissionDTO;
-import UTILS.PasswordUtils;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -24,15 +18,20 @@ public class DetailInvoiceBUS extends BaseBUS<DetailInvoiceDTO, Integer>{
     }
 
     @Override
-    public boolean delete(Integer id) {
-        if (InvoiceDAL.getInstance().delete(id)) {
-            arrLocal.removeIf(role -> Objects.equals(role.getInvoiceId(), id));
-            return true;
+    public boolean delete(Integer id, int employee_roleId) {
+        if (id == null || id <= 0 || employee_roleId <= 0 || !hasPermission(employee_roleId, 14)) {
+            return false;
         }
-        return false;
+
+        if (!DetailInvoiceDAL.getInstance().deleteAllDetailInvoiceByInvoiceId(id)) {
+            return false;
+        }
+        arrLocal.removeIf(role -> Objects.equals(role.getInvoiceId(), id));
+        return true;
     }
 
     public ArrayList<DetailInvoiceDTO> getAllDetailInvoiceByInvoiceIdLocal(int invoiceId) {
+        if (invoiceId <= 0) return null;
         ArrayList<DetailInvoiceDTO> result = new ArrayList<>();
         for (DetailInvoiceDTO iv : arrLocal) {
             if (Objects.equals(iv.getInvoiceId(), invoiceId)) {
@@ -42,27 +41,27 @@ public class DetailInvoiceBUS extends BaseBUS<DetailInvoiceDTO, Integer>{
         return result;
     }
 
-    public boolean createDetailInvoiceByInvoiceId(int invoiceId, ArrayList<DetailInvoiceDTO> list) {
-        if (DetailInvoiceDAL.getInstance().insertDetailInvoiceByInvoiceId(list)) {
-            // Nếu null tức là có thêm mới thành công nhưng local chưa có => chỉ cần bổ sung thêm không cần tải lại
-            arrLocal.addAll(new ArrayList<>(list));
-            return true;
+    public boolean createDetailInvoiceByInvoiceId(int invoiceId, int employee_roleId, ArrayList<DetailInvoiceDTO> list) {
+        if (employee_roleId <= 0 || !hasPermission(employee_roleId, 13) || list == null || list.isEmpty() || invoiceId <= 0) {
+            return false;
         }
-        return false;
+        if (!DetailInvoiceDAL.getInstance().insertAllDetailInvoiceByInvoiceId(invoiceId, list)) {
+            return false;
+        }
+        ArrayList<DetailInvoiceDTO> newDetailInvoice = DetailInvoiceDAL.getInstance().getAllDetailInvoiceByInvoiceId(invoiceId);
+        arrLocal.addAll(new ArrayList<>(newDetailInvoice));
+        return true;
     }
 
-    public boolean insertDetailInvoiceByInvoiceId(ArrayList<DetailInvoiceDTO> list) {
-        if (list == null || list.isEmpty()) {
-            return false; // Không có gì để khôi phục
+    public boolean insertRollbackDetailInvoice(ArrayList<DetailInvoiceDTO> list, int employee_roleId) {
+        if (list == null || list.isEmpty() || employee_roleId <= 0 || !hasPermission(employee_roleId, 14)) {
+            return false;
         }
-
-        if (DetailInvoiceDAL.getInstance().insertDetailInvoiceByInvoiceId(list)) {
-            // Nếu null tức là có thêm mới thành công nhưng local chưa có => chỉ cần bổ sung thêm không cần tải lại
-            if (getAllDetailInvoiceByInvoiceIdLocal(list.get(0).getInvoiceId()).isEmpty()) {
-                arrLocal.addAll(new ArrayList<>(list));
-            }
-            return true;
+        if (!DetailInvoiceDAL.getInstance().insertAllDetailInvoiceByInvoiceId(list.get(0).getInvoiceId(), list)) {
+            return false;
         }
-        return false;
+        ArrayList<DetailInvoiceDTO> newDetailInvoice = DetailInvoiceDAL.getInstance().getAllDetailInvoiceByInvoiceId(list.get(0).getInvoiceId());
+        arrLocal.addAll(new ArrayList<>(newDetailInvoice));
+        return true;
     }
 }

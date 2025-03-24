@@ -21,26 +21,17 @@ public class ModuleBUS extends BaseBUS <ModuleDTO, Integer> {
     }
 
     @Override
-    public boolean delete(Integer id) {
+    public boolean delete(Integer id, int employee_roleId) {
         throw new UnsupportedOperationException("Cannot delete module records.");
     }
 
     public ModuleDTO getByIdLocal(int id) {
+        if (id <= 0) return null;
         for (ModuleDTO module : arrLocal) {
             if (Objects.equals(module.getId(), id)) {
                 return new ModuleDTO(module);
             }
         }
         return null;
-    }
-
-    public boolean isDuplicateModuleName(int id, String name) {
-        if (name == null) return false;
-        for (ModuleDTO module : arrLocal) {
-            if (!Objects.equals(module.getId(), id) && Objects.equals(module.getName(), name)) {
-                return true;
-            }
-        }
-        return false;
     }
 }

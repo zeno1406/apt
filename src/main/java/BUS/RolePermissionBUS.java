@@ -2,7 +2,6 @@ package BUS;
 
 import DAL.RolePermissionDAL;
 import DTO.RolePermissionDTO;
-
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -22,15 +21,19 @@ public class RolePermissionBUS extends BaseBUS <RolePermissionDTO, Integer> {
     }
 
     @Override
-    public boolean delete(Integer roleId) {
-        if (RolePermissionDAL.getInstance().deleteRolePermissionByRoleId(roleId)) {
-            arrLocal.removeIf(rp -> Objects.equals(rp.getRoleId(), roleId));
-            return true;
+    public boolean delete(Integer roleId, int employee_roleId) {
+        if (roleId == null || roleId <= 0 || employee_roleId <= 0 || !hasPermission(employee_roleId, 24)) {
+            return false;
         }
-        return false;
+        if (!RolePermissionDAL.getInstance().delete(roleId)) {
+            return false;
+        }
+        arrLocal.removeIf(rp -> rp.getRoleId() == roleId);
+        return true;
     }
 
     public ArrayList<RolePermissionDTO> getAllRolePermissionByRoleIdLocal(int roleId) {
+        if (roleId <= 0) return null;
         ArrayList<RolePermissionDTO> result = new ArrayList<>();
         for (RolePermissionDTO rp : arrLocal) {
             if (Objects.equals(rp.getRoleId(), roleId)) {
@@ -40,51 +43,49 @@ public class RolePermissionBUS extends BaseBUS <RolePermissionDTO, Integer> {
         return result;
     }
 
-    public boolean update(RolePermissionDTO obj) {
-        if (obj == null || obj.getRoleId() <= 0 || obj.getPermissionId() <= 0) return false;
-
+    public boolean update(RolePermissionDTO obj, int employee_roleId) {
+        if (obj == null || obj.getRoleId() <= 0 || obj.getRoleId() == 1  || obj.getPermissionId() <= 0 || employee_roleId <= 0 || !hasPermission(employee_roleId, 26)) {
+            return false;
+        }
+        if (!RolePermissionDAL.getInstance().update(obj)) {
+            return false;
+        }
         for (int i = 0; i < arrLocal.size(); i++) {
-            if (Objects.equals(arrLocal.get(i).getRoleId(), obj.getRoleId())
-                    && Objects.equals(arrLocal.get(i).getPermissionId(), obj.getPermissionId())) {
-                if (RolePermissionDAL.getInstance().update(obj)) {
-                    arrLocal.set(i, new RolePermissionDTO(obj));
-                    return true;
-                }
-                return false;
+            RolePermissionDTO current = arrLocal.get(i);
+            if (current.getRoleId() == obj.getRoleId() && current.getPermissionId() == obj.getPermissionId()) {
+                arrLocal.set(i, new RolePermissionDTO(obj));
+                return true;
             }
         }
         return false;
     }
 
-
-    public boolean createDefaultPermissionsForRole(int roleId) {
-        if (RolePermissionDAL.getInstance().insertDefaultRolePermissionByRoleId(roleId)) {
-            // Nếu null tức là có thêm mới thành công nhưng local chưa có => chỉ cần bổ sung thêm không cần tải lại
-            ArrayList<RolePermissionDTO> newPermissions = getAllRolePermissionByRoleIdLocal(roleId);
-            if (newPermissions.isEmpty()) {
-                arrLocal.addAll(new ArrayList<>(newPermissions));
-            }
-            return true;
+    public boolean createDefaultPermissionsForRole(int roleId, int employee_roleId) {
+        if (roleId <= 0 || employee_roleId <= 0 || !hasPermission(employee_roleId, 23)) {
+            return false;
         }
-        return false;
+        if (!RolePermissionDAL.getInstance().insertDefaultRolePermissionByRoleId(roleId)) {
+            return false;
+        }
+        ArrayList<RolePermissionDTO> newPermissions = RolePermissionDAL.getInstance().getAllRolePermissionByRoleId(roleId);
+        arrLocal.addAll(newPermissions);
+        return true;
     }
 
-    public boolean insertRollbackPermission(ArrayList<RolePermissionDTO> rolePermission) {
-        if (rolePermission == null || rolePermission.isEmpty()) {
-            return false; // Không có gì để khôi phục
+    public boolean insertRollbackPermission(ArrayList<RolePermissionDTO> rolePermission, int employee_roleId) {
+        if (rolePermission == null || rolePermission.isEmpty() || employee_roleId <= 0 || !hasPermission(employee_roleId, 24)) {
+            return false;
         }
-
-        if (RolePermissionDAL.getInstance().insertRollbackPermission(rolePermission)) {
-            // Nếu null tức là có thêm mới thành công nhưng local chưa có => chỉ cần bổ sung thêm không cần tải lại
-            if (getAllRolePermissionByRoleIdLocal(rolePermission.get(0).getRoleId()).isEmpty()) {
-                arrLocal.addAll(new ArrayList<>(rolePermission));
-            }
-            return true;
+        if (!RolePermissionDAL.getInstance().insertListRolePermission(rolePermission.get(0).getRoleId(), rolePermission)) {
+            return false;
         }
-        return false;
+        ArrayList<RolePermissionDTO> newPermissions = RolePermissionDAL.getInstance().getAllRolePermissionByRoleId(rolePermission.get(0).getRoleId());
+        arrLocal.addAll(newPermissions);
+        return true;
     }
 
     public boolean hasPermission(int roleId, int permissionId) {
+        if (roleId <= 0 || permissionId <= 0) return false;
         for (RolePermissionDTO rp : arrLocal) {
             if (Objects.equals(rp.getRoleId(), roleId) && Objects.equals(rp.getPermissionId(), permissionId) && rp.isStatus()) {
                 return true;

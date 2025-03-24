@@ -1,7 +1,10 @@
 package DTO;
 
+import lombok.ToString;
+
 import java.time.LocalDateTime;
 
+@ToString
 public abstract class BaseInformationDTO {
     protected int id;
     protected boolean status;

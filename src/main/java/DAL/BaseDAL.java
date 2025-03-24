@@ -3,6 +3,7 @@ package DAL;
 import INTERFACE.IDAL;
 import INTERFACE.ConnectionFactory;
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public abstract class BaseDAL<T, K> implements IDAL<T, K> {
@@ -18,7 +19,7 @@ public abstract class BaseDAL<T, K> implements IDAL<T, K> {
 
     @Override
     public ArrayList<T> getAll() {
-        final String query = "SELECT * FROM " + table;
+        final String query = "SELECT * FROM " + table + " ORDER BY " + idColumn;
         ArrayList<T> list = new ArrayList<>();
 
         try (Connection connection = connectionFactory.newConnection();
@@ -103,7 +104,7 @@ public abstract class BaseDAL<T, K> implements IDAL<T, K> {
 
     @Override
     public boolean update(T obj) {
-        final String query = getUpdateQuery();
+        final String query = "UPDATE " + table + " " + getUpdateQuery();
         if (query.isEmpty()) {
             throw new UnsupportedOperationException("Update operation not supported for " + table);
         }
@@ -159,6 +160,8 @@ public abstract class BaseDAL<T, K> implements IDAL<T, K> {
             statement.setInt(index, (Integer) id);
         } else if (id instanceof String) {
             statement.setString(index, (String) id);
+        } else if (id instanceof LocalDateTime) {
+            statement.setTimestamp(index, Timestamp.valueOf((LocalDateTime) id));
         } else {
             throw new IllegalArgumentException("Unsupported ID type: " + id.getClass().getSimpleName());
         }
