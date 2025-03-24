@@ -1,26 +1,65 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.String?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="root" prefHeight="931.0" prefWidth="856.0" styleClass="root" stylesheets="@../../../css/homepage.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane fx:id="root" prefHeight="816.0" prefWidth="977.0" styleClass="root" stylesheets="@../../../css/homepage.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <AnchorPane fx:id="topMainMenu" maxHeight="109.0" prefHeight="109.0" prefWidth="986.0" styleClass="topMainMenu" stylesheets="@../../../css/homepage.css">
+      <AnchorPane fx:id="AcTopMainMenu" maxHeight="105.0" prefHeight="91.0" prefWidth="1200.0" stylesheets="@../../../css/homepage.css">
          <children>
-            <AnchorPane fx:id="appLogo" layoutY="1.0" prefHeight="94.0" prefWidth="160.0" styleClass="appLogo" stylesheets="@../../../css/homepage.css">
+            <AnchorPane fx:id="acAppLogo" layoutY="1.0" prefHeight="108.0" prefWidth="160.0" styleClass="acAppLogo" stylesheets="@../../../css/homepage.css">
                <children>
-                  <ImageView fitHeight="100.0" fitWidth="180.0" layoutX="22.0" layoutY="3.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="ImgMainPage" fitHeight="111.0" fitWidth="93.0" layoutX="34.0" layoutY="2.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true" AnchorPane.topAnchor="0.0">
                      <image>
                         <Image url="@../../../images/logo/main-logo.jpg" />
                      </image>
                   </ImageView>
                </children>
             </AnchorPane>
-            <TextField layoutX="160.0" layoutY="38.0" />
-         </children></AnchorPane>
-      <VBox fx:id="mainMenu" layoutY="104.0" prefHeight="697.0" prefWidth="100.0" styleClass="mainMenu" stylesheets="@../../../css/homepage.css" />
+            <TextField fx:id="txtSearchProduct" alignment="TOP_LEFT" layoutX="400.0" layoutY="38.0" styleClass="txtSearchProduct" />
+            <HBox fx:id="hbListAccountFunc" alignment="CENTER" layoutX="945.0" layoutY="1.0" prefHeight="103.0" prefWidth="241.0" styleClass="hbListAccountFunc" stylesheets="@../../../css/homepage.css">
+               <children>
+                  <Button fx:id="btnNewsAlert" alignment="CENTER" mnemonicParsing="false" styleClass="btnNewsAlert" stylesheets="@../../../css/homepage.css" text="News" textFill="RED">
+                     <font>
+                        <Font name="System Bold" size="15.0" />
+                     </font>
+                  </Button>
+                  <Button fx:id="btnCart" alignment="CENTER" mnemonicParsing="false" styleClass="btnCart" stylesheets="@../../../css/homepage.css" text="Cart" textFill="RED">
+                     <font>
+                        <Font name="System Bold" size="15.0" />
+                     </font>
+                  </Button>
+                  <Button fx:id="btnAccount" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="100.0" prefWidth="89.0" styleClass="btnAccount" stylesheets="@../../../css/homepage.css" text="Account" textAlignment="CENTER" textFill="RED">
+                     <font>
+                        <Font name="System Bold" size="15.0" />
+                     </font>
+                  </Button>
+               </children>
+            </HBox>
+         </children>
+         <styleClass>
+            <String fx:value="topMainMenu" />
+            <String fx:value="acTopMainMenu" />
+         </styleClass>
+      </AnchorPane>
+      <VBox fx:id="vbMainMenu" layoutY="104.0" prefHeight="697.0" prefWidth="100.0" stylesheets="@../../../css/homepage.css">
+         <children>
+            <Button fx:id="btnProducts" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="116.0" prefWidth="167.0" styleClass="btnProducts" stylesheets="@../../../css/homepage.css" text="Products" textFill="RED">
+               <font>
+                  <Font name="System Bold" size="20.0" />
+               </font>
+            </Button>
+         </children>
+         <styleClass>
+            <String fx:value="mainMenu" />
+            <String fx:value="vbMainMenu" />
+         </styleClass></VBox>
    </children>
 </AnchorPane>
