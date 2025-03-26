@@ -1,7 +1,7 @@
 .root {
     -fx-background-color: white;
     -fx-pref-width: 1200px;
-    -fx-pref-height: 900px;
+    -fx-pref-height: 1000px;
     -fx-padding: 0;
     -fx-start-margin: 0;
     -fx-end-margin: 0;
@@ -16,7 +16,7 @@
 }
 
 .vbMainMenu .btnProducts {
-    -fx-background-color: black;
+    -fx-background-color: white;
     -fx-pref-height: 80px;
     -fx-pref-width: inherit;
 }
@@ -51,4 +51,56 @@
 
 .hbListAccountFunc .btnAccount {
     -fx-pref-width: 100px;
+}
+
+.root .pMainContentPane {
+    -fx-background-color: black;
+}
+
+/*Form account*/
+.pMainContentPane .pFormLoginRegis {
+    -fx-background-color: white;
+    visibility: hidden;
+}
+
+.pFormLoginRegisContent,
+pFormLoginRegisImage {
+    -fx-border-style: solid;
+}
+
+.pFormLoginRegisHeader .btnExitAccountForm {
+    -fx-background-color: red;
+    -fx-border-style: solid;
+    -fx-border-color: rosybrown;
+}
+
+.hbFormLoginRegisUserName,
+.hbFormLoginRegisPassword {
+    -fx-spacing: 40px;
+}
+
+.btnFormLogin,
+.btnFormSignUp {
+    -fx-background-color: lightcyan;
+    -fx-border-color: cyan;
+    -fx-border-radius: 5px;
+    -fx-cursor: hand;
+}
+
+.pswdFormLoginPassword,
+.txtFormLoginUserName {
+    -fx-background-color: lightcyan;
+}
+
+.pFormLoginRegisFooter .btnFormSignUp {
+    -fx-pref-width: 300px;
+}
+
+.hyperlink {
+    -fx-graphic: inherit;
+}
+
+.hlkNavToSignUpForm {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
 }
