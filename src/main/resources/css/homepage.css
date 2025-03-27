@@ -7,6 +7,10 @@
     -fx-end-margin: 0;
 }
 
+.root .imgMainPageLogo {
+    -fx-cursor: hand;
+}
+
 /*Left list functions*/
 .vbMainMenu {
     -fx-background-color: lightcyan;
@@ -15,41 +19,42 @@
     -fx-spacing: 10px;
 }
 
-.vbMainMenu .btnProducts {
+.vbMainMenu .pProductButtonContainer {
     -fx-background-color: white;
     -fx-pref-height: 80px;
     -fx-pref-width: inherit;
+    -fx-cursor: hand;
 }
 
 /*Top main menu*/
-.acTopMainMenu {
+.apTopMainMenu {
     -fx-background-color: lightcyan;
     -fx-pref-width: 1200px;
     -fx-max-height: 103px;
 }
 
-.acTopMainMenu .txtSearchProduct {
+.apTopMainMenu .txtSearchProduct {
     -fx-background-color: white;
-    -fx-alignment: center;
+    -fx-alignment: center-left;
     -fx-pref-width: 400px;
     -fx-pref-height: 30px;
     -fx-border-radius: 4px;
     -fx-border-color: black;
 }
 
-.acTopMainMenu .acAppLogo {
+.apTopMainMenu .acAppLogo {
     -fx-pref-height: 103px;
 }
 
-.hbListAccountFunc .btnAccount,
+.hbListAccountFunc .btnLogout,
 .hbListAccountFunc .btnCart,
 .hbListAccountFunc .btnNewsAlert {
     -fx-background-color: transparent;
     -fx-pref-width: 70px;
-    -fx-pref-height: inherit;
+    -fx-cursor: hand;
 }
 
-.hbListAccountFunc .btnAccount {
+.hbListAccountFunc .btnLogout {
     -fx-pref-width: 100px;
 }
 
@@ -57,50 +62,3 @@
     -fx-background-color: black;
 }
 
-/*Form account*/
-.pMainContentPane .pFormLoginRegis {
-    -fx-background-color: white;
-    visibility: hidden;
-}
-
-.pFormLoginRegisContent,
-pFormLoginRegisImage {
-    -fx-border-style: solid;
-}
-
-.pFormLoginRegisHeader .btnExitAccountForm {
-    -fx-background-color: red;
-    -fx-border-style: solid;
-    -fx-border-color: rosybrown;
-}
-
-.hbFormLoginRegisUserName,
-.hbFormLoginRegisPassword {
-    -fx-spacing: 40px;
-}
-
-.btnFormLogin,
-.btnFormSignUp {
-    -fx-background-color: lightcyan;
-    -fx-border-color: cyan;
-    -fx-border-radius: 5px;
-    -fx-cursor: hand;
-}
-
-.pswdFormLoginPassword,
-.txtFormLoginUserName {
-    -fx-background-color: lightcyan;
-}
-
-.pFormLoginRegisFooter .btnFormSignUp {
-    -fx-pref-width: 300px;
-}
-
-.hyperlink {
-    -fx-graphic: inherit;
-}
-
-.hlkNavToSignUpForm {
-    -fx-background-color: transparent;
-    -fx-border-color: transparent;
-}

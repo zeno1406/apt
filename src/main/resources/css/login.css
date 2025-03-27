@@ -1,0 +1,47 @@
+/*Form account*/
+.hbFormLoginRegisContainer {
+    -fx-background-color: black;
+}
+
+.pFormLoginRegisContent,
+pFormLoginRegisImage {
+    -fx-border-style: solid;
+    -fx-border-color: white;
+}
+
+.vbFormLoginRegisWrapper {
+    /*visibility: hidden;*/
+}
+
+
+.hbFormLoginRegisUserName,
+.hbFormLoginRegisPassword {
+    -fx-spacing: 40px;
+}
+
+.btnFormLogin,
+.btnFormSignUp {
+    -fx-background-color: lightcyan;
+    -fx-border-color: cyan;
+    -fx-border-radius: 5px;
+    -fx-cursor: hand;
+}
+
+.pswdFormLoginPassword,
+.txtFormLoginUserName {
+    -fx-background-color: white;
+    -fx-background-radius: 4px;
+}
+
+.pFormLoginRegisFooter .btnFormSignUp {
+    -fx-pref-width: 300px;
+}
+
+.hyperlink {
+    -fx-graphic: inherit;
+}
+
+.hlkNavToSignUpForm {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
