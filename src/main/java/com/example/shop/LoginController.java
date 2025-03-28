@@ -4,6 +4,7 @@ import BUS.AccountBUS;
 import javafx.event.EventTarget;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -13,6 +14,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 import javax.xml.stream.EventFilter;
@@ -65,7 +67,9 @@ public class LoginController {
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("hello-view.fxml"));
                 Parent root = fxmlLoader.load();
                 Stage stage = (Stage) (((Node) event.getSource()).getScene().getWindow());
-                stage.setScene(new Scene(root));
+                Scene scene = new Scene(root);
+                stage.setScene(scene);
+                (new ISetPositionScreen()).setPositionScreen(stage, scene);
                 stage.show();
             } catch (IOException e) {
                 throw new RuntimeException(e);

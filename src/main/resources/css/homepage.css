@@ -15,47 +15,52 @@
 .vbMainMenu {
     -fx-background-color: lightcyan;
     -fx-pref-width: 160px;
-    -fx-pref-height: 900px;
+    -fx-pref-height: 1000px;
     -fx-spacing: 10px;
 }
 
-.vbMainMenu .pProductButtonContainer {
+.vbMainMenu .lbAccountName {
+    /*visibility: hidden;*/
+    -fx-text-alignment: center;
+}
+
+.vbMainMenu .acAppLogo {
+    -fx-pref-height: 195px;
+}
+
+.vbMainMenu .pProductButtonContainer,
+.vbMainMenu .pCustomerButtonContainer,
+.vbMainMenu .pBillButtonContainer,
+.vbMainMenu . pRecipeButtonContainer {
     -fx-background-color: white;
     -fx-pref-height: 80px;
     -fx-pref-width: inherit;
     -fx-cursor: hand;
 }
 
-/*Top main menu*/
-.apTopMainMenu {
-    -fx-background-color: lightcyan;
-    -fx-pref-width: 1200px;
-    -fx-max-height: 103px;
-}
-
-.apTopMainMenu .txtSearchProduct {
-    -fx-background-color: white;
-    -fx-alignment: center-left;
-    -fx-pref-width: 400px;
-    -fx-pref-height: 30px;
-    -fx-border-radius: 4px;
-    -fx-border-color: black;
-}
-
-.apTopMainMenu .acAppLogo {
-    -fx-pref-height: 103px;
-}
-
-.hbListAccountFunc .btnLogout,
-.hbListAccountFunc .btnCart,
-.hbListAccountFunc .btnNewsAlert {
+.vbMainMenu .pLogoutButtonContainer {
     -fx-background-color: transparent;
-    -fx-pref-width: 70px;
+    -fx-pref-height: 80px;
     -fx-cursor: hand;
 }
 
-.hbListAccountFunc .btnLogout {
-    -fx-pref-width: 100px;
+.pProductButtonContainer .btnProducts,
+.pCustomerButtonContainer .btnCustomer,
+.pLogoutButtonContainer .btnLogout,
+.pBillButtonContainer .btnBill,
+.pRecipeButtonContainer .btnRecipe {
+    -fx-font-family: inherit;
+    -fx-font-size: 20;
+    -fx-font-weight: bold;
+    -fx-text-fill: red;
+    -fx-background-color: transparent;
+    -fx-pref-height: 80px;
+    -fx-pref-width: inherit;
+}
+
+.pLogoutButtonContainer .btnLogout {
+    -fx-border-color: transparent;
+    -fx-background-radius: 0;
 }
 
 .root .pMainContentPane {
