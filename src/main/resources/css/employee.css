@@ -60,7 +60,7 @@
 }
 
 .table-view .column-header {
-    -fx-background-color: #1F7D84;
+    -fx-background-color: linear-gradient(to bottom, #1F7D84, #3AE2F4);
     -fx-pref-height: 35px;
     -fx-border-color: #ffffff;
     -fx-border-width: 0 1px 2px 0;
@@ -74,25 +74,68 @@
 }
 
 .table-view .table-row-cell {
-    -fx-font-size: 13px;
+    -fx-font-size: 16px;
 }
 
 /* Khi một dòng được chọn */
 .table-view .table-row-cell:selected {
-    -fx-background-color: #25969E; /* Màu nền khi được chọn */
-    -fx-text-fill: white; /* Màu chữ */
+    -fx-background-color: #279FA5;
+    -fx-text-fill: white;
 
 }
 
 /* Khi hover vào một dòng */
 .table-view .table-row-cell:hover {
-    -fx-background-color: #34D0DB; /* Màu khi di chuột */
+    -fx-background-color: #3AE2F4; /* Màu khi di chuột */
+    -fx-text-fill: white; /* Màu chữ */
+    -fx-cursor: hand;
 }
 
 /* Khi dòng có focus (có thể chỉnh nếu cần) */
 .table-view .table-row-cell:focused {
-    -fx-background-color: #25969E;
+    -fx-background-color: #279FA5;
     -fx-text-fill: white;
 }
 
+.combo-box {
+    -fx-border-color: #58c9c9;
+    -fx-font-family: "Arial";
+    -fx-font-size:12px;
+    -fx-cursor: hand;
+}
+
+.combo-box .list-view {
+    -fx-background-color: white; /* Màu nền */
+    -fx-border-color: #58c9c9;  /* Viền */
+
+}
+
+.combo-box .list-cell:hover {
+    -fx-background-color: #58c9c9; /* Màu nền khi hover */
+    -fx-text-fill: white; /* Màu chữ khi hover */
+}
+
+.combo-box .arrow-button {
+    -fx-background-color: linear-gradient(to bottom, #1F7D84, #3AE2F4);
+}
+.combo-box .arrow-button:hover {
+    -fx-background-color: #3a9d9d;
+}
+
+.combo-box .arrow {
+    -fx-background-color: white;
+}
+
+.combo-box .combo-box-base {
+    -fx-background-color: white;
+    -fx-border-color: #58c9c9;
+    -fx-text-fill: black;
+}
+
+.check-box {
+    -fx-font-family: "Arial";
+    -fx-font-size:14px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+}
 

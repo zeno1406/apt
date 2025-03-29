@@ -58,7 +58,7 @@
                <children>
                   <AnchorPane prefHeight="554.4" prefWidth="220.0" styleClass="nav-form" stylesheets="@../css/main.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <children>
-                        <Label layoutX="68.0" layoutY="14.0" prefHeight="38.0" prefWidth="124.0" style="-fx-font-weight: 900;" text="Đặng Huy HoàngĐặng Huy HoàngĐặng Huy Hoàng" textOverrun="CENTER_ELLIPSIS" AnchorPane.rightAnchor="8.0">
+                        <Label fx:id="employeeLoginFullName" layoutX="68.0" layoutY="14.0" prefHeight="38.0" prefWidth="124.0" style="-fx-font-weight: 900;" text="Employee Login" textOverrun="CENTER_ELLIPSIS" AnchorPane.rightAnchor="8.0">
                            <font>
                               <Font name="Times New Roman Bold Italic" size="18.0" />
                            </font>
@@ -196,7 +196,7 @@
                               <Image url="@../images/icon/userlogo.png" />
                            </image>
                         </ImageView>
-                        <Label layoutX="68.0" layoutY="52.0" prefHeight="20.0" prefWidth="96.0" style="-fx-font-weight: 800;" text="Admin" textFill="#30bac4" textOverrun="CENTER_ELLIPSIS">
+                        <Label fx:id="employeeRoleName" layoutX="68.0" layoutY="52.0" prefHeight="20.0" prefWidth="96.0" style="-fx-font-weight: 800;" text="Role" textFill="#30bac4" textOverrun="CENTER_ELLIPSIS">
                            <font>
                               <Font name="Arial" size="18.0" />
                            </font>

@@ -1,13 +1,9 @@
 .left-form {
     -fx-background-color: linear-gradient(to bottom, #006A71, #48A6A7);
-    -fx-border-color: #000;
-    -fx-border-width: .4px 0px .4px .4px;
 }
 
 .right-form {
     -fx-background-color: #fff;
-    -fx-border-color: #000;
-    -fx-border-width: .1px .4px .4px 0px;
 }
 
 .close {
@@ -56,5 +52,5 @@
 
 .login-btn:hover {
     -fx-background-color: linear-gradient(to bottom, #1F7D84, #3AE2F4);
-        -fx-text-fill: #fff;
+    -fx-text-fill: #fff;
 }

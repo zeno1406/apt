@@ -1,5 +1,8 @@
 package GUI;
 
+import BUS.RoleBUS;
+import DTO.EmployeeDTO;
+import SERVICE.SessionManagerService;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -8,14 +11,13 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import lombok.extern.slf4j.Slf4j;
 
-import java.awt.*;
 import java.io.IOException;
 
 @Slf4j
@@ -35,10 +37,19 @@ public class MainController {
     private Pane mainContent;
 
     @FXML
-    public void initialize() {
+    private Label employeeLoginFullName;
 
+    @FXML
+    private Label employeeRoleName;
+
+    @FXML
+    public void initialize() {
+        if(RoleBUS.getInstance().isLocalEmpty()) RoleBUS.getInstance().loadLocal();
 
         loadFXML("/GUI/EmployeeUI.fxml");
+        EmployeeDTO currEmployee = SessionManagerService.getInstance().currEmployee();
+        employeeLoginFullName.setText(currEmployee.getFirstName() + " " + currEmployee.getLastName());
+        employeeRoleName.setText(RoleBUS.getInstance().getByIdLocal(currEmployee.getRoleId()).getName());
         logoutBtn.setOnMouseClicked(e -> logout());
         closeBtn.setOnMouseClicked(e -> close());
         minimizeBtn.setOnMouseClicked(e -> minimize(e));

@@ -6,45 +6,49 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="350.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.LoginController">
+
+<AnchorPane fx:id="main_form" prefHeight="350.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.LoginController">
    <children>
-      <AnchorPane fx:id="main_form" prefHeight="200.0" prefWidth="200.0">
+      <AnchorPane prefHeight="350.0" prefWidth="300.0" styleClass="left-form" stylesheets="@../css/login.css" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <AnchorPane layoutY="1.0" prefHeight="350.0" prefWidth="300.0" styleClass="left-form" stylesheets="@../css/login.css">
-               <children>
-                  <FontAwesomeIcon fill="WHITE" glyphName="USERS" layoutX="87.0" layoutY="195.0" size="11em" AnchorPane.leftAnchor="87.0" AnchorPane.rightAnchor="86.77142639160155" AnchorPane.topAnchor="81.85713958740234" />
-                  <Label layoutX="42.0" layoutY="216.0" prefHeight="53.0" prefWidth="220.0" text="Lego Store Application" textFill="WHITE" AnchorPane.bottomAnchor="80.79999999999995" AnchorPane.leftAnchor="42.0" AnchorPane.rightAnchor="42.00000000000006">
-                     <font>
-                        <Font name="System Bold Italic" size="20.0" />
-                     </font>
-                  </Label>
-               </children></AnchorPane>
-            <AnchorPane layoutX="301.0" layoutY="1.0" prefHeight="350.0" prefWidth="300.0" styleClass="right-form" stylesheets="@../css/login.css">
-               <children>
-                  <Label alignment="CENTER" layoutX="107.0" layoutY="50.0" prefHeight="54.0" prefWidth="85.0" text="LOGIN">
-                     <font>
-                        <Font name="System Bold" size="20.0" />
-                     </font>
-                  </Label>
-                  <TextField fx:id="txtUsername" layoutX="47.0" layoutY="105.0" prefHeight="30.0" prefWidth="220.0" promptText="Username" styleClass="textfield" stylesheets="@../css/login.css" />
-                  <PasswordField fx:id="txtPassword" layoutX="47.0" layoutY="155.0" prefHeight="30.0" prefWidth="220.0" promptText="Password" styleClass="textfield" stylesheets="@../css/login.css" />
-                  <Button fx:id="loginBtn" layoutX="47.0" layoutY="206.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="220.0" styleClass="login-btn" stylesheets="@../css/login.css" text="LOGIN" />
-                  <Button fx:id="closeBtn" layoutX="248.0" layoutY="4.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="40.0" styleClass="close" stylesheets="@../css/login.css" AnchorPane.rightAnchor="2.0">
-                     <graphic>
-                        <FontAwesomeIcon glyphName="CLOSE" size="1.4em" styleClass="close-icon" text="" />
-                     </graphic></Button>
-                  <FontAwesomeIcon glyphName="USER" layoutX="14.0" layoutY="129.0" size="2em" />
-                  <FontAwesomeIcon glyphName="LOCK" layoutX="15.0" layoutY="178.0" size="2em" />
-               </children>
-               <padding>
-                  <Insets top="10.0" />
-               </padding>
-            </AnchorPane>
+            <ImageView fitHeight="393.0" fitWidth="300.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../images/icon/stotelogo.png" />
+               </image>
+            </ImageView>
+            <Label layoutX="42.0" layoutY="186.0" prefHeight="53.0" prefWidth="220.0" text="Lego Store Application" textFill="WHITE" AnchorPane.bottomAnchor="110.4" AnchorPane.leftAnchor="42.0" AnchorPane.rightAnchor="42.799999999999955">
+               <font>
+                  <Font name="System Bold Italic" size="20.0" />
+               </font>
+            </Label>
          </children>
       </AnchorPane>
+      <AnchorPane layoutX="301.0" layoutY="1.0" prefHeight="350.0" prefWidth="300.0" styleClass="right-form" stylesheets="@../css/login.css" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <Label alignment="CENTER" layoutX="107.0" layoutY="50.0" prefHeight="54.0" prefWidth="85.0" text="LOGIN">
+               <font>
+                  <Font name="System Bold" size="20.0" />
+               </font>
+            </Label>
+            <TextField fx:id="txtUsername" layoutX="47.0" layoutY="105.0" prefHeight="30.0" prefWidth="220.0" promptText="Username" styleClass="textfield" stylesheets="@../css/login.css" />
+            <PasswordField fx:id="txtPassword" layoutX="47.0" layoutY="155.0" prefHeight="30.0" prefWidth="220.0" promptText="Password" styleClass="textfield" stylesheets="@../css/login.css" />
+            <Button fx:id="loginBtn" layoutX="47.0" layoutY="206.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="220.0" styleClass="login-btn" stylesheets="@../css/login.css" text="LOGIN" />
+            <Button fx:id="closeBtn" layoutX="248.0" layoutY="4.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="40.0" styleClass="close" stylesheets="@../css/login.css" AnchorPane.rightAnchor="2.0">
+               <graphic>
+                  <FontAwesomeIcon glyphName="CLOSE" size="1.4em" styleClass="close-icon" text="" />
+               </graphic>
+            </Button>
+            <FontAwesomeIcon glyphName="USER" layoutX="14.0" layoutY="129.0" size="2em" />
+            <FontAwesomeIcon glyphName="LOCK" layoutX="15.0" layoutY="178.0" size="2em" />
+         </children>
+         <padding>
+            <Insets top="10.0" />
+         </padding>
+      </AnchorPane>
    </children>
-</StackPane>
+</AnchorPane>

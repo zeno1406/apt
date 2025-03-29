@@ -169,4 +169,42 @@ public class EmployeeBUS extends BaseBUS <EmployeeDTO, Integer> {
                 !validator.validateVietnameseText100(obj.getLastName()) ||
                 (isAdvance && !validator.validateBigDecimal(obj.getSalary(), 10, 2, false));
     }
+
+    public ArrayList<EmployeeDTO> filterEmployees(String searchBy, String keyword, int roleIdFilter, int statusFilter) {
+        ArrayList<EmployeeDTO> filteredList = new ArrayList<>();
+
+        if (keyword == null) keyword = ""; // Tránh lỗi khi keyword bị null
+        if (searchBy == null) searchBy = ""; // Tránh lỗi khi searchBy bị null
+
+        keyword = keyword.trim().toLowerCase();
+
+        for (EmployeeDTO emp : getAllLocal()) {
+            boolean matchesSearch = true;
+            boolean matchesRole = (roleIdFilter == -1) || (emp.getRoleId() == roleIdFilter);
+            boolean matchesStatus = (statusFilter == -1) || (emp.isStatus() == (statusFilter == 1)); // Sửa lỗi ở đây
+
+            // Kiểm tra null tránh lỗi khi gọi .toLowerCase()
+            String firstName = emp.getFirstName() != null ? emp.getFirstName().toLowerCase() : "";
+            String lastName = emp.getLastName() != null ? emp.getLastName().toLowerCase() : "";
+            String employeeId = String.valueOf(emp.getId());
+
+            if (!keyword.isEmpty()) {
+                switch (searchBy) {
+                    case "Mã nhân viên" -> matchesSearch = employeeId.contains(keyword);
+                    case "Họ đệm" -> matchesSearch = firstName.contains(keyword);
+                    case "Tên" -> matchesSearch = lastName.contains(keyword);
+                }
+            }
+
+            // Chỉ thêm vào danh sách nếu thỏa tất cả điều kiện
+            if (matchesSearch && matchesRole && matchesStatus) {
+                filteredList.add(emp);
+            }
+        }
+
+        return filteredList;
+    }
+
+
+
 }

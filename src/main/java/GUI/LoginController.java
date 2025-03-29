@@ -1,7 +1,9 @@
 package GUI;
 
+import BUS.EmployeeBUS;
 import DTO.AccountDTO;
 import SERVICE.LoginService;
+import SERVICE.SessionManagerService;
 import UTILS.NotificationUtils;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import javafx.fxml.FXML;
@@ -59,10 +61,11 @@ public class LoginController {
             NotificationUtils.showErrorAlert("Vui lòng điền tài khoản và mật khẩu", "Thông báo");
         } else {
             AccountDTO account = new AccountDTO(0, txtUsername.getText(), txtPassword.getText());
-
-            if(LoginService.getInstance().checkLogin(account)) {
+            int employeeLoginId = LoginService.getInstance().checkLogin(account);
+            if(employeeLoginId != -1) {
                 NotificationUtils.showInfoAlert("Đăng nhập thành công!", "Thông báo");
-
+                if (EmployeeBUS.getInstance().isLocalEmpty()) EmployeeBUS.getInstance().loadLocal();
+                SessionManagerService.getInstance().setLoggedInEmployee(EmployeeBUS.getInstance().getByIdLocal(employeeLoginId));
                 // Tắt giao diện login
                 loginBtn.getScene().getWindow().hide();
                 openStage("/GUI/MainUI.fxml");

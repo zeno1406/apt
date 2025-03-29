@@ -26,27 +26,18 @@
                         <FontAwesomeIcon fill="#58c9c9" glyphName="SEARCH" layoutX="169.0" layoutY="32.0" size="1.8em" text="" />
                         <TextField layoutX="10.0" layoutY="10.0" prefHeight="26.0" prefWidth="158.0" promptText="Nhập để tìm kiếm" styleClass="textfield" stylesheets="@../css/employee.css" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0" />
                         <Line endX="79.0" endY="-3.814697265625E-6" layoutX="111.0" layoutY="38.0" startX="-100.0" stroke="#58c9c9" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="40.0" />
-                        <TextField layoutX="10.0" layoutY="10.0" prefHeight="26.0" prefWidth="155.0" promptText="Nhập để tìm kiếm" styleClass="textfield" stylesheets="@../css/employee.css" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="733.0" />
-                        <HBox alignment="CENTER" layoutX="200.0" layoutY="3.0" prefHeight="45.0" prefWidth="200.0" spacing="10.0">
+                        <TextField fx:id="txtSearch" layoutX="10.0" layoutY="10.0" prefHeight="26.0" prefWidth="155.0" promptText="Nhập để tìm kiếm" styleClass="textfield" stylesheets="@../css/employee.css" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="733.0" />
+                        <HBox alignment="CENTER" layoutX="200.0" layoutY="3.0" prefHeight="46.0" prefWidth="395.0" spacing="10.0">
                            <children>
-                              <ComboBox prefWidth="150.0" />
-                              <ComboBox prefWidth="150.0" />
-                           </children>
-                        </HBox>
-                        <HBox alignment="CENTER" layoutX="617.0" layoutY="2.0" prefHeight="46.0" prefWidth="384.0" spacing="10.0" AnchorPane.rightAnchor="7.0">
-                           <children>
-                              <CheckBox mnemonicParsing="false" styleClass="textfield" stylesheets="@../css/employee.css" text="Tất cả trạng thái" textFill="#1f7d84">
+                              <ComboBox fx:id="cbSearchBy" prefHeight="26.0" prefWidth="120.0" promptText="Tìm kiếm theo" styleClass="combo-box" stylesheets="@../css/employee.css" />
+                              <ComboBox fx:id="cbRoleFilter" prefHeight="26.0" prefWidth="120.0" promptText="Lọc theo thức vụ" style="-fx-max-width: 120px;" styleClass="combo-box" stylesheets="@../css/employee.css" />
+                              <CheckBox fx:id="cbStatusFilter" mnemonicParsing="false" prefHeight="19.0" prefWidth="141.0" stylesheets="@../css/employee.css" text="Tất cả trạng thái" textFill="#1f7d84">
                                  <font>
-                                    <Font name="Times New Roman" size="16.0" />
+                                    <Font name="Times New Roman Bold Italic" size="16.0" />
                                  </font>
                               </CheckBox>
-                              <FontAwesomeIcon fill="#58c9c9" glyphName="MONEY" size="2em" text="" />
-                              <TextField prefHeight="26.0" prefWidth="85.0" promptText="Lương từ" styleClass="textfield" stylesheets="@../css/employee.css" />
-                              <Line endX="-78.20001220703125" endY="-3.814697265625E-6" startX="-89.199951171875" startY="-3.814697265625E-6" stroke="#1f7d84" />
-                              <TextField prefHeight="26.0" prefWidth="85.0" promptText="Lương đến" styleClass="textfield" stylesheets="@../css/employee.css" />
                            </children>
                         </HBox>
-                        <Line endX="80.0" endY="-3.814697265625E-6" layoutX="756.0" layoutY="52.0" startX="-120.45559692382812" startY="2.300739197380608E-6" stroke="#58c9c9" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="42.0" />
                      </children>
                   </AnchorPane>
                </children>
@@ -88,7 +79,7 @@
                      <children>
                         <HBox alignment="CENTER" layoutX="680.0" layoutY="2.0" prefHeight="46.0" prefWidth="315.0" spacing="10.0" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
-                              <Button mnemonicParsing="false" prefHeight="34.0" prefWidth="92.0" styleClass="action-btn" stylesheets="@../css/employee.css" text="Thêm">
+                              <Button fx:id="addBtn" mnemonicParsing="false" prefHeight="34.0" prefWidth="92.0" styleClass="action-btn" stylesheets="@../css/employee.css" text="Thêm">
                                  <graphic>
                                     <FontAwesomeIcon glyphName="PLUS_SQUARE" size="1.2em" styleClass="action-icon" />
                                  </graphic>
@@ -96,7 +87,7 @@
                                     <Font size="14.0" />
                                  </font>
                               </Button>
-                              <Button mnemonicParsing="false" prefWidth="92.0" styleClass="action-btn" stylesheets="@../css/employee.css" text="Sửa">
+                              <Button fx:id="editBtn" mnemonicParsing="false" prefWidth="92.0" styleClass="action-btn" stylesheets="@../css/employee.css" text="Sửa">
                                  <graphic>
                                     <FontAwesomeIcon glyphName="PENCIL" size="1.2em" styleClass="action-icon" />
                                  </graphic>
@@ -104,7 +95,7 @@
                                     <Font size="14.0" />
                                  </font>
                               </Button>
-                              <Button mnemonicParsing="false" prefWidth="92.0" styleClass="action-btn" stylesheets="@../css/employee.css" text="Xóa">
+                              <Button fx:id="deleteBtn" mnemonicParsing="false" prefWidth="92.0" styleClass="action-btn" stylesheets="@../css/employee.css" text="Xóa">
                                  <graphic>
                                     <FontAwesomeIcon glyphName="TRASH" size="1.2em" styleClass="action-icon" />
                                  </graphic>
@@ -114,7 +105,7 @@
                               </Button>
                            </children>
                         </HBox>
-                        <Button layoutX="14.0" layoutY="5.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="108.0" styleClass="action-btn" stylesheets="@../css/employee.css" text="Làm mới" AnchorPane.bottomAnchor="11.000000000000007" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="758.8" AnchorPane.topAnchor="5.0">
+                        <Button fx:id="refreshBtn" layoutX="14.0" layoutY="5.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="108.0" styleClass="action-btn" stylesheets="@../css/employee.css" text="Làm mới" AnchorPane.bottomAnchor="11.000000000000007" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="758.8" AnchorPane.topAnchor="5.0">
                            <font>
                               <Font size="14.0" />
                            </font>
