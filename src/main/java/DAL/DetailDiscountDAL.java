@@ -1,7 +1,10 @@
 package DAL;
 
 import DTO.DetailDiscountDTO;
+import DTO.RolePermissionDTO;
+
 import java.sql.*;
+import java.util.ArrayList;
 
 /*
 + Remain getAll
@@ -55,4 +58,27 @@ public class DetailDiscountDAL extends BaseDAL<DetailDiscountDTO, String> {
         statement.setBigDecimal(2, obj.getDiscountAmount());
         statement.setString(3, obj.getDiscountCode());
     }
+
+    public boolean insertListRolePermission(ArrayList<RolePermissionDTO> rolePermission) {
+        final String query = "INSERT INTO role_permission (role_id, permission_id, status) VALUES (?, ?, ?)";
+        try (Connection connection = connectionFactory.newConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+
+            boolean success = true;
+            for (RolePermissionDTO permission : rolePermission) {
+                statement.setInt(1, permission.getRoleId());
+                statement.setInt(2, permission.getPermissionId());
+                statement.setBoolean(3, permission.isStatus());
+
+                if (statement.executeUpdate() <= 0) {
+                    success = false; // Nếu có bản ghi nào không chèn được thì đánh dấu thất bại
+                }
+            }
+            return success;
+        } catch (SQLException e) {
+            System.err.println("Error roll back role permissions: " + e.getMessage());
+            return false;
+        }
+    }
+
 }

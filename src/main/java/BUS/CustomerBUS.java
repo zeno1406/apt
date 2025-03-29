@@ -1,16 +1,14 @@
 package BUS;
 
 import DAL.CustomerDAL;
-import DAL.EmployeeDAL;
 import DTO.CustomerDTO;
-import DTO.EmployeeDTO;
-import INTERFACE.IBUS;
+import SERVICE.AuthorizationService;
+import UTILS.ValidationUtils;
 
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class CustomerBUS implements IBUS<CustomerDTO, Integer> {
-    private final ArrayList<CustomerDTO> arrCustomer = new ArrayList<>();
+public class CustomerBUS extends BaseBUS <CustomerDTO, Integer> {
     private static final CustomerBUS INSTANCE = new CustomerBUS();
 
     private CustomerBUS() {
@@ -25,65 +23,9 @@ public class CustomerBUS implements IBUS<CustomerDTO, Integer> {
         return CustomerDAL.getInstance().getAll();
     }
 
-    @Override
-    public CustomerDTO getById(Integer id) {
-        return CustomerDAL.getInstance().getById(id);
-    }
-
-    @Override
-    public boolean insert(CustomerDTO obj) {
-        if (obj == null) return false;
-        if (CustomerDAL.getInstance().insert(obj)) {
-            arrCustomer.add(new CustomerDTO(obj));
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    public boolean update(CustomerDTO obj) {
-        if (obj == null || obj.getId() <= 0) return false;
-
-        for (int i = 0; i < arrCustomer.size(); i++) {
-            if (Objects.equals(arrCustomer.get(i).getId(), obj.getId())) {
-                if (CustomerDAL.getInstance().update(obj)) {
-                    arrCustomer.set(i, new CustomerDTO(obj));
-                    return true;
-                }
-                return false;
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public boolean delete(Integer id) {
-        if (id == null || id <= 0) return false;
-        if (EmployeeDAL.getInstance().delete(id)) {
-            for (CustomerDTO customer : arrCustomer) {
-                if (Objects.equals(customer.getId(), id)) {
-                    customer.setStatus(false);
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    // ===================== CÁC HÀM CHỈ LÀM VIỆC VỚI LOCAL =====================
-
-    @Override
-    public void loadLocal() {
-        arrCustomer.clear();
-        arrCustomer.addAll(getAll());
-    }
-
-    public ArrayList<CustomerDTO> getAllCustomerLocal() {
-        return new ArrayList<>(arrCustomer);
-    }
-
-    public CustomerDTO getCustomerByIdLocal(int id) {
-        for (CustomerDTO customer : arrCustomer) {
+    public CustomerDTO getByIdLocal(int id) {
+        if (id <= 0) return null;
+        for (CustomerDTO customer : arrLocal) {
             if (Objects.equals(customer.getId(), id)) {
                 return new CustomerDTO(customer);
             }
@@ -91,13 +33,95 @@ public class CustomerBUS implements IBUS<CustomerDTO, Integer> {
         return null;
     }
 
-    public boolean isDuplicateCustomerName(int id, String first_name) {
-        if (first_name == null) return false;
-        for (CustomerDTO customer : arrCustomer) {
-            if (!Objects.equals(customer.getId(), id) && Objects.equals(customer.getFirstName(), first_name)) {
+    public boolean delete(Integer id, int employee_roleId, int employeeLoginId) {
+        if (id == null || id <= 0 ) return false;
+
+        if (employee_roleId <= 0 || !AuthorizationService.getInstance().hasPermission(employeeLoginId, employee_roleId, 5)) {
+            return false;
+        }
+        if (!CustomerDAL.getInstance().delete(id)) {
+            return false;
+        }
+        for (CustomerDTO customer : arrLocal) {
+            if (Objects.equals(customer.getId(), id)) {
+                customer.setStatus(false);
                 return true;
             }
         }
         return false;
     }
+
+    public boolean insert(CustomerDTO obj, int employee_roleId, int employeeLoginId) {
+        if (obj == null || employee_roleId <= 0 || !AuthorizationService.getInstance().hasPermission(employeeLoginId, employee_roleId, 4) || !isValidCustomerInput(obj)) {
+            return false;
+        }
+
+        // image_url và date_of_birth có thể null
+        obj.setStatus(true);
+
+        if (isDuplicateCustomer(-1, obj.getFirstName(), obj.getLastName(), obj.getPhone(), obj.getAddress()) ||
+                !CustomerDAL.getInstance().insert(obj)) {
+            return false;
+        }
+
+        arrLocal.add(new CustomerDTO(obj));
+        return true;
+    }
+
+
+    public boolean update(CustomerDTO obj, int employee_roleId, int employeeLoginId) {
+        if (obj == null || obj.getId() <= 0 || employee_roleId <= 0 ||
+                !AuthorizationService.getInstance().hasPermission(employeeLoginId, employee_roleId, 6) || !isValidCustomerInput(obj)) {
+            return false;
+        }
+
+        // Kiểm tra trùng lặp trước khi cập nhật
+        if (isDuplicateCustomer(obj.getId(), obj.getFirstName(), obj.getLastName(), obj.getPhone(), obj.getAddress())) {
+            return false;
+        }
+
+        // Thực hiện update trong database
+        if (!CustomerDAL.getInstance().update(obj)) {
+            return false;
+        }
+
+        // Cập nhật lại dữ liệu trong bộ nhớ cache `arrLocal`
+        for (int i = 0; i < arrLocal.size(); i++) {
+            if (Objects.equals(arrLocal.get(i).getId(), obj.getId())) {
+                arrLocal.set(i, new CustomerDTO(obj));
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public boolean isDuplicateCustomer(int id, String firstName, String lastName, String phone, String address) {
+        if (firstName == null || lastName == null || phone == null || address == null) return false;
+
+        for (CustomerDTO customer : arrLocal) {
+            if (customer.getId() != id &&
+                    customer.getFirstName().trim().equalsIgnoreCase(firstName.trim()) &&
+                    customer.getLastName().trim().equalsIgnoreCase(lastName.trim()) &&
+                    customer.getPhone().trim().equals(phone.trim()) &&
+                    customer.getAddress().trim().equalsIgnoreCase(address.trim())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isValidCustomerInput(CustomerDTO obj) {
+        if (obj.getFirstName() == null || obj.getLastName() == null || obj.getPhone() == null || obj.getAddress() == null) {
+            return false;
+        }
+
+        ValidationUtils validator = ValidationUtils.getInstance();
+
+        return validator.validateVietnameseText100(obj.getFirstName()) &&
+                validator.validateVietnameseText100(obj.getLastName()) &&
+                validator.validateVietnamesePhoneNumber(obj.getPhone()) &&
+                validator.validateVietnameseText255(obj.getAddress());
+    }
+
 }

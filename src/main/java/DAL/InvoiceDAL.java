@@ -1,6 +1,8 @@
 package DAL;
 
 import DTO.InvoiceDTO;
+
+import java.math.BigDecimal;
 import java.sql.*;
 
 public class InvoiceDAL extends BaseDAL<InvoiceDTO, Integer> {
@@ -24,6 +26,7 @@ public class InvoiceDAL extends BaseDAL<InvoiceDTO, Integer> {
                 resultSet.getInt("employee_id"),
                 resultSet.getInt("customer_id"),
                 resultSet.getString("discount_code"),
+                resultSet.getBigDecimal("discount_amount") != null ? resultSet.getBigDecimal("discount_amount") : BigDecimal.ZERO,
                 resultSet.getBigDecimal("total_price")
         );
     }
@@ -40,7 +43,7 @@ public class InvoiceDAL extends BaseDAL<InvoiceDTO, Integer> {
 
     @Override
     protected String getInsertQuery() {
-        return "(create_date, employee_id, customer_id, discount_code, total_price) VALUES (?, ?, ?, ?, ?)";
+        return "(create_date, employee_id, customer_id, discount_code, discount_amount, total_price) VALUES (?, ?, ?, ?, ?, ?)";
     }
 
     @Override
@@ -56,7 +59,10 @@ public class InvoiceDAL extends BaseDAL<InvoiceDTO, Integer> {
             statement.setNull(4, Types.VARCHAR);
         }
 
-        statement.setBigDecimal(5, obj.getTotalPrice());
+        // Luôn đặt giá trị cho discountAmount
+        statement.setBigDecimal(5, obj.getDiscountAmount() != null ? obj.getDiscountAmount() : BigDecimal.ZERO);
+
+        statement.setBigDecimal(6, obj.getTotalPrice());
     }
 
     @Override
@@ -64,8 +70,4 @@ public class InvoiceDAL extends BaseDAL<InvoiceDTO, Integer> {
         throw new UnsupportedOperationException("Cannot update permission records.");
     }
 
-    @Override
-    protected boolean hasSoftDelete() {
-        throw new UnsupportedOperationException("Cannot delete permission records.");
-    }
 }

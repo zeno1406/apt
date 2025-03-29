@@ -11,10 +11,17 @@
     -fx-cursor: hand;
 }
 
+/*Left list functions*/
 .pLogoutButtonContainer {
     -fx-pref-height: 50px;
     -fx-background-color: lightcyan;
     -fx-pref-width: 160px;
+    -fx-spacing: 10px;
+}
+
+.vbMainMenu .lbAccountName {
+    /*visibility: hidden;*/
+    -fx-text-alignment: center;
 }
 
 .btnLogout {
@@ -50,6 +57,9 @@
     -fx-alignment: center-left;
 }
 
+.vbMainMenu .acAppLogo {
+    -fx-pref-height: 195px;
+}
 .pLogoutButtonContainer {
     -fx-background-color: rgb(188, 229, 255);
     -fx-pref-height: 50px;
@@ -74,6 +84,12 @@
     -fx-background-color: lightcyan;
 }
 
-.root .pMainContentPane {
-    -fx-background-color: white;
-}
+
+    .pLogoutButtonContainer .btnLogout {
+        -fx-border-color: transparent;
+        -fx-background-radius: 0;
+    }
+
+    .root .pMainContentPane {
+        -fx-background-color: black;
+    }

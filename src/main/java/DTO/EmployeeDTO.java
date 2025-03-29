@@ -1,9 +1,11 @@
 package DTO;
 
-import java.math.BigDecimal;
-import java.util.Date;
+import lombok.ToString;
 
-public class EmployeeDTO extends PersonDTO {
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+@ToString(callSuper = true)
+public class EmployeeDTO extends BaseInformationDTO {
     private String firstName;
     private String lastName;
     private BigDecimal salary;
@@ -13,8 +15,8 @@ public class EmployeeDTO extends PersonDTO {
 
     }
 
-    public EmployeeDTO(int id, String firstName, String lastName, BigDecimal salary, String imageUrl, Date dateOfBirth, int roleId, boolean status) {
-        super(id, imageUrl, dateOfBirth, status);
+    public EmployeeDTO(int id, String firstName, String lastName, BigDecimal salary, LocalDateTime dateOfBirth, int roleId, boolean status) {
+        super(id, dateOfBirth, status);
         this.firstName = firstName;
         this.lastName = lastName;
         this.salary = salary;

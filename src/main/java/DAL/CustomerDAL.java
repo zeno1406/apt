@@ -22,8 +22,9 @@ public class CustomerDAL extends BaseDAL<CustomerDTO, Integer> {
                 resultSet.getString("last_name"),
                 resultSet.getString("phone"),
                 resultSet.getString("address"),
-                resultSet.getString("image_url"),
-                resultSet.getDate("date_of_birth"),
+                resultSet.getDate("date_of_birth") != null
+                        ? resultSet.getDate("date_of_birth").toLocalDate().atStartOfDay()
+                        : null,
                 resultSet.getBoolean("status")
         );
     }
@@ -42,7 +43,7 @@ public class CustomerDAL extends BaseDAL<CustomerDTO, Integer> {
 
     @Override
     protected String getInsertQuery() {
-        return "(first_name, last_name, phone, address, image_url, date_of_birth, status) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        return "(first_name, last_name, phone, address, date_of_birth, status) VALUES (?, ?, ?, ?, ?, ?)";
     }
 
     @Override
@@ -51,14 +52,13 @@ public class CustomerDAL extends BaseDAL<CustomerDTO, Integer> {
         statement.setString(2, obj.getLastName());
         statement.setString(3, obj.getPhone());
         statement.setString(4, obj.getAddress());
-        statement.setString(5, obj.getImageUrl());
-        statement.setDate(6, new java.sql.Date(obj.getDateOfBirth().getTime()));
-        statement.setBoolean(7, obj.isStatus());
+        statement.setDate(5, obj.getDateOfBirth() != null ? java.sql.Date.valueOf(obj.getDateOfBirth().toLocalDate()) : null);
+        statement.setBoolean(6, obj.isStatus());
     }
 
     @Override
     protected String getUpdateQuery() {
-        return "SET first_name = ?, last_name = ?, phone = ?, address = ?, image_url = ?, date_of_birth = ?, status = ? WHERE id = ?";
+        return "SET first_name = ?, last_name = ?, phone = ?, address = ?, date_of_birth = ?, status = ? WHERE id = ?";
     }
 
     @Override
@@ -67,10 +67,9 @@ public class CustomerDAL extends BaseDAL<CustomerDTO, Integer> {
         statement.setString(2, obj.getLastName());
         statement.setString(3, obj.getPhone());
         statement.setString(4, obj.getAddress());
-        statement.setString(5, obj.getImageUrl());
-        statement.setDate(6, new java.sql.Date(obj.getDateOfBirth().getTime()));
-        statement.setBoolean(7, obj.isStatus());
-        statement.setInt(8, obj.getId());
+        statement.setDate(5, obj.getDateOfBirth() != null ? java.sql.Date.valueOf(obj.getDateOfBirth().toLocalDate()) : null);
+        statement.setBoolean(6, obj.isStatus());
+        statement.setInt(7, obj.getId());
     }
 
     @Override

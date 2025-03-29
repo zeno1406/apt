@@ -21,8 +21,9 @@ public class EmployeeDAL extends BaseDAL<EmployeeDTO, Integer> {
                 resultSet.getString("first_name"),
                 resultSet.getString("last_name"),
                 resultSet.getBigDecimal("salary"),
-                resultSet.getString("image_url"),
-                resultSet.getDate("date_of_birth"),
+                resultSet.getDate("date_of_birth") != null
+                        ? resultSet.getDate("date_of_birth").toLocalDate().atStartOfDay()
+                        : null,
                 resultSet.getInt("role_id"),
                 resultSet.getBoolean("status")
         );
@@ -30,7 +31,7 @@ public class EmployeeDAL extends BaseDAL<EmployeeDTO, Integer> {
 
     @Override
     protected String getInsertQuery() {
-        return "(first_name, last_name, salary, image_url, date_of_birth, role_id, status) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        return "(first_name, last_name, salary, date_of_birth, role_id, status) VALUES (?, ?, ?, ?, ?, ?, ?)";
     }
 
     @Override
@@ -38,31 +39,77 @@ public class EmployeeDAL extends BaseDAL<EmployeeDTO, Integer> {
         statement.setString(1, obj.getFirstName());
         statement.setString(2, obj.getLastName());
         statement.setBigDecimal(3, obj.getSalary());
-        statement.setString(4, obj.getImageUrl());
-        statement.setDate(5, new java.sql.Date(obj.getDateOfBirth().getTime()));
-        statement.setInt(6, obj.getRoleId());
-        statement.setBoolean(7, obj.isStatus());
+        statement.setDate(4, obj.getDateOfBirth() != null ? java.sql.Date.valueOf(obj.getDateOfBirth().toLocalDate()) : null);
+        statement.setInt(5, obj.getRoleId());
+        statement.setBoolean(6, obj.isStatus());
     }
 
     @Override
     protected String getUpdateQuery() {
-        return "SET first_name = ?, last_name = ?, salary = ?, image_url = ?, date_of_birth = ?, role_id = ?, status = ? WHERE id = ?";
+        throw new UnsupportedOperationException("Cannot update Employee records.");
     }
 
-    @Override
-    protected void setUpdateParameters(PreparedStatement statement, EmployeeDTO obj) throws SQLException {
-        statement.setString(1, obj.getFirstName());
-        statement.setString(2, obj.getLastName());
-        statement.setBigDecimal(3, obj.getSalary());
-        statement.setString(4, obj.getImageUrl());
-        statement.setDate(5, new java.sql.Date(obj.getDateOfBirth().getTime()));
-        statement.setInt(6, obj.getRoleId());
-        statement.setBoolean(7, obj.isStatus());
-        statement.setInt(8, obj.getId());
-    }
 
     @Override
     protected boolean hasSoftDelete() {
         return true;
     }
+
+    public boolean updateAdvance(EmployeeDTO obj, boolean allowAdvanceChange) {
+        String query = allowAdvanceChange
+                ? "UPDATE employee SET first_name = ?, last_name = ?, salary = ?, date_of_birth = ?, role_id = ?, status = ? WHERE id = ?"
+                : "UPDATE employee SET first_name = ?, last_name = ?, salary = ?, date_of_birth = ? WHERE id = ?"; // ĐÃ SỬA!
+
+        try (Connection connection = connectionFactory.newConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setString(1, obj.getFirstName());
+            statement.setString(2, obj.getLastName());
+            statement.setBigDecimal(3, obj.getSalary());
+            statement.setDate(4, obj.getDateOfBirth() != null ? java.sql.Date.valueOf(obj.getDateOfBirth().toLocalDate()) : null);
+
+            if (allowAdvanceChange) {
+                statement.setInt(5, obj.getRoleId());
+                statement.setBoolean(6, obj.isStatus());
+                statement.setInt(7, obj.getId());
+            } else {
+                statement.setInt(5, obj.getId());
+            }
+
+            return statement.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.err.println("Error updating advance employee: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public boolean updateBasic(EmployeeDTO obj, boolean allowAdvanceChange) {
+        String query = allowAdvanceChange
+                ? "UPDATE employee SET first_name = ?, last_name = ?, date_of_birth = ?, role_id = ?, status = ? WHERE id = ?"
+                : "UPDATE employee SET first_name = ?, last_name = ?, date_of_birth = ? WHERE id = ?";
+
+        try (Connection connection = connectionFactory.newConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setString(1, obj.getFirstName());
+            statement.setString(2, obj.getLastName());
+            statement.setDate(3, obj.getDateOfBirth() != null ? java.sql.Date.valueOf(obj.getDateOfBirth().toLocalDate()) : null);
+
+            if (allowAdvanceChange) { // Chỉ cập nhật role_id và status nếu được phép
+                statement.setInt(4, obj.getRoleId());
+                statement.setBoolean(5, obj.isStatus());
+                statement.setInt(6, obj.getId());
+            } else {
+                statement.setInt(4, obj.getId());
+            }
+
+            return statement.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.err.println("Error updating basic employee: " + e.getMessage());
+            return false;
+        }
+    }
+
+
+
 }

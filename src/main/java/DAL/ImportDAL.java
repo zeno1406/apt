@@ -23,6 +23,7 @@ public class ImportDAL extends BaseDAL<ImportDTO, Integer> {
                         : null,
                 resultSet.getInt("employee_id"),
                 resultSet.getInt("supplier_id"),
+                resultSet.getBigDecimal("profit_percent"),
                 resultSet.getBigDecimal("total_price")
         );
     }
@@ -39,7 +40,7 @@ public class ImportDAL extends BaseDAL<ImportDTO, Integer> {
 
     @Override
     protected String getInsertQuery() {
-        return "(create_date, employee_id, supplier_id, total_price) VALUES (?, ?, ?, ?)";
+        return "(create_date, employee_id, supplier_id, profit_percent, total_price) VALUES (?, ?, ?, ?, ?)";
     }
 
     @Override
@@ -47,7 +48,8 @@ public class ImportDAL extends BaseDAL<ImportDTO, Integer> {
         statement.setTimestamp(1, Timestamp.valueOf(obj.getCreateDate()));
         statement.setInt(2, obj.getEmployeeId());
         statement.setInt(3, obj.getSupplierId());
-        statement.setBigDecimal(4, obj.getTotalPrice());
+        statement.setBigDecimal(4, obj.getProfitPercent());
+        statement.setBigDecimal(5, obj.getTotalPrice());
     }
 
     @Override
@@ -55,8 +57,4 @@ public class ImportDAL extends BaseDAL<ImportDTO, Integer> {
         throw new UnsupportedOperationException("Cannot update permission records.");
     }
 
-    @Override
-    protected boolean hasSoftDelete() {
-        throw new UnsupportedOperationException("Cannot delete permission records.");
-    }
 }

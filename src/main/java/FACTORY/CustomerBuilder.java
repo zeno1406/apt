@@ -2,13 +2,12 @@ package FACTORY;
 
 import DTO.CustomerDTO;
 import INTERFACE.Builder;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public class CustomerBuilder implements Builder<CustomerDTO> {
     private int id;
     private boolean status;
-    private String imageUrl;
-    private Date dateOfBirth;
+    private LocalDateTime dateOfBirth;
     private String firstName;
     private String lastName;
     private String phone;
@@ -24,12 +23,7 @@ public class CustomerBuilder implements Builder<CustomerDTO> {
         return this;
     }
 
-    public CustomerBuilder imageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-        return this;
-    }
-
-    public CustomerBuilder dateOfBirth(Date dateOfBirth) {
+    public CustomerBuilder dateOfBirth(LocalDateTime dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
         return this;
     }
@@ -56,6 +50,6 @@ public class CustomerBuilder implements Builder<CustomerDTO> {
 
     @Override
     public CustomerDTO build() {
-        return new CustomerDTO(id, firstName, lastName, phone, address, imageUrl, dateOfBirth, status);
+        return new CustomerDTO(id, firstName, lastName, phone, address, dateOfBirth, status);
     }
 }

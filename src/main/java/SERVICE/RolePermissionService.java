@@ -1,13 +1,14 @@
 package SERVICE;
 
-
 import BUS.ModuleBUS;
 import BUS.PermissionBUS;
 import BUS.RoleBUS;
 import BUS.RolePermissionBUS;
 import DTO.*;
+import INTERFACE.ServiceAccessCode;
 
 import java.util.ArrayList;
+
 
 public class RolePermissionService {
     private static final RolePermissionService INSTANCE = new RolePermissionService();
@@ -16,82 +17,68 @@ public class RolePermissionService {
         return INSTANCE;
     }
 
-    public boolean createRoleWithPermissions(RoleDTO role) {
-        // Để đảm báo nên load data local trước
-        if (RoleBUS.getInstance().getAllRoleLocal().isEmpty()) RoleBUS.getInstance().loadLocal();
-        if (!RoleBUS.getInstance().insert(role)) {
+    public boolean createRoleWithPermissions(RoleDTO role, int employee_roleId, int employeeLoginId) {
+
+        RoleBUS roleBus = RoleBUS.getInstance();
+        RolePermissionBUS rolePermissionBus = RolePermissionBUS.getInstance();
+
+        if (roleBus.isLocalEmpty()) roleBus.loadLocal();
+        if (!roleBus.insert(role, employee_roleId, ServiceAccessCode.ROLE_PERMISSION_SERVICE, employeeLoginId)) {
+            System.err.println("Tạo role thất bại");
             return false;
         }
 
-        // Nếu tạo thành công thì role local cũng đã được thêm theo
-        if (RolePermissionBUS.getInstance().getAllRolePermissionLocal().isEmpty()) RolePermissionBUS.getInstance().loadLocal();
-        if (!RolePermissionBUS.getInstance().createDefaultPermissionsForRole(role.getId())) {
+        if (rolePermissionBus.isLocalEmpty()) rolePermissionBus.loadLocal();
+        if (!rolePermissionBus.createDefaultPermissionsForRole(role.getId(), employee_roleId, ServiceAccessCode.ROLE_PERMISSION_SERVICE, employeeLoginId)) {
+
             // Rollback nếu lỗi
-            RoleBUS.getInstance().delete(role.getId());
+            roleBus.delete(role.getId(), employee_roleId, ServiceAccessCode.ROLE_PERMISSION_SERVICE, employeeLoginId);
             return false;
         }
-        // Nếu tạo thành công thì role permission local cũng đã được thêm theo
-
         return true;
     }
 
-    public boolean deleteRoleWithPermissions(int roleId) {
-        if (RolePermissionBUS.getInstance().getAllRolePermissionLocal().isEmpty()) RolePermissionBUS.getInstance().loadLocal();
-        ArrayList<RolePermissionDTO> temp = RolePermissionBUS.getInstance().getAllRolePermissionByRoleIdLocal(roleId);
-        if (!RolePermissionBUS.getInstance().deleteRolePermissionByRoleId(roleId)) {
-            return false;
-        }
-        // Nếu xóa thành công thì role permission local cũng đã tự xóa theo
+    public boolean deleteRoleWithPermissions(int roleId, int employee_roleId, int employeeLoginId) {
+        RoleBUS roleBus = RoleBUS.getInstance();
+        RolePermissionBUS rolePermissionBus = RolePermissionBUS.getInstance();
 
-        if (RoleBUS.getInstance().getAllRoleLocal().isEmpty()) RoleBUS.getInstance().loadLocal();
-        if (!RoleBUS.getInstance().delete(roleId)) {
-            // Nếu xóa Role thất bại, khôi phục lại RolePermission đã xóa trước đó
-            return RolePermissionBUS.getInstance().insertRollbackPermission(temp);
+        if (rolePermissionBus.isLocalEmpty()) rolePermissionBus.loadLocal();
+        ArrayList<RolePermissionDTO> tempList = rolePermissionBus.getAllRolePermissionByRoleIdLocal(roleId);
+
+        // Xóa role_permission trước
+        if (!rolePermissionBus.delete(roleId, employee_roleId, ServiceAccessCode.ROLE_PERMISSION_SERVICE, employeeLoginId)) return false;
+
+        if (roleBus.isLocalEmpty()) roleBus.loadLocal();
+        RoleDTO temp = roleBus.getByIdLocal(roleId);
+
+        // Xóa role sau
+        if (!roleBus.delete(roleId, employee_roleId, ServiceAccessCode.ROLE_PERMISSION_SERVICE, employeeLoginId)) {
+            System.err.println("Failed to delete role. Attempting to roll back role permissions.");
+
+            // Khôi phục role_permission nếu role không xóa được
+            return rolePermissionBus.insertRollbackPermission(tempList, 1, ServiceAccessCode.ROLE_PERMISSION_SERVICE, employeeLoginId);
         }
 
-        // Nếu xóa thành công thì role local cũng đã tự xóa theo
         return true;
-    }
-
-    public ArrayList<ModulePermissionDTO> getPermissionsGroupedByModule() {
-        if (ModuleBUS.getInstance().getAllModuleLocal().isEmpty()) {
-            ModuleBUS.getInstance().loadLocal();
-        }
-        if (PermissionBUS.getInstance().getAllPermissionLocal().isEmpty()) {
-            PermissionBUS.getInstance().loadLocal();
-        }
-
-        ArrayList<ModuleDTO> arrModule = ModuleBUS.getInstance().getAllModuleLocal();
-        ArrayList<PermissionDTO> arrPermission = PermissionBUS.getInstance().getAllPermissionLocal();
-        ArrayList<ModulePermissionDTO> modulePermissions = new ArrayList<>();
-
-        for (ModuleDTO module : arrModule) {
-            ArrayList<PermissionDTO> permissionsForModule = new ArrayList<>();
-
-            for (PermissionDTO permission : arrPermission) {
-                if (permission.getModule_id() == module.getId()) {
-                    permissionsForModule.add(permission);
-                }
-            }
-
-            if (!permissionsForModule.isEmpty()) {
-                modulePermissions.add(new ModulePermissionDTO(module, permissionsForModule));
-            }
-        }
-
-        return modulePermissions;
     }
 
     public void printPermissionsGroupedByModule() {
-        ArrayList<ModulePermissionDTO> modulePermissions = getPermissionsGroupedByModule();
+        ModuleBUS moduleBus = ModuleBUS.getInstance();
+        PermissionBUS permissionBus = PermissionBUS.getInstance();
 
-        for (ModulePermissionDTO mp : modulePermissions) {
-            System.out.println("Module: " + mp.getModule().getName());
-            for (PermissionDTO permission : mp.getPermissions()) {
-                System.out.println("    - " + permission.getName() + "|id: " + permission.getId());
+        if (moduleBus.getAllLocal().isEmpty()) moduleBus.loadLocal();
+        if (permissionBus.getAllLocal().isEmpty()) permissionBus.loadLocal();
+
+        ArrayList<ModuleDTO> arrModule = moduleBus.getAllLocal();
+        ArrayList<PermissionDTO> arrPermission = permissionBus.getAllLocal();
+
+        for (ModuleDTO module : arrModule) {
+            System.out.println("Module: " + module.getName());
+            for (PermissionDTO permission : arrPermission) {
+                if (permission.getModule_id() == module.getId()) {
+                    System.out.println("    - " + permission.getName() + " | id: " + permission.getId());
+                }
             }
         }
     }
-
-
 }

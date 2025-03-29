@@ -20,6 +20,15 @@ public class ProductDTO {
         this.status = status;
     }
 
+    public ProductDTO(ProductDTO product) {
+        this.id = product.id;
+        this.name = product.name;
+        this.stockQuantity = product.stockQuantity;
+        this.sellingPrice = product.sellingPrice;
+        this.status = product.status;
+    }
+
+
     public String getId() {
         return id;
     }

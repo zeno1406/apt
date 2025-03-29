@@ -3,13 +3,12 @@ package FACTORY;
 import DTO.EmployeeDTO;
 import INTERFACE.Builder;
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public class EmployeeBuilder implements Builder<EmployeeDTO> {
     private int id;
     private boolean status;
-    private String imageUrl;
-    private Date dateOfBirth;
+    private LocalDateTime dateOfBirth;
     private String firstName;
     private String lastName;
     private BigDecimal salary;
@@ -25,12 +24,7 @@ public class EmployeeBuilder implements Builder<EmployeeDTO> {
         return this;
     }
 
-    public EmployeeBuilder imageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-        return this;
-    }
-
-    public EmployeeBuilder dateOfBirth(Date dateOfBirth) {
+    public EmployeeBuilder dateOfBirth(LocalDateTime dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
         return this;
     }
@@ -57,6 +51,6 @@ public class EmployeeBuilder implements Builder<EmployeeDTO> {
 
     @Override
     public EmployeeDTO build() {
-        return new EmployeeDTO(id, firstName, lastName, salary, imageUrl, dateOfBirth, roleId, status);
+        return new EmployeeDTO(id, firstName, lastName, salary, dateOfBirth, roleId, status);
     }
 }

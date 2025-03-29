@@ -1,48 +1,65 @@
 package BUS;
 
+import DAL.EmployeeDAL;
+import DAL.RoleDAL;
+import DAL.RolePermissionDAL;
 import DTO.*;
 import FACTORY.RoleBuilder;
-import SERVICE.LoginRegisterService;
-import SERVICE.PasswordUtils;
+import SERVICE.LoginService;
+import SERVICE.PrintService;
 import SERVICE.RolePermissionService;
-import org.mindrot.jbcrypt.BCrypt;
+import UTILS.AvailableUtils;
+import UTILS.PasswordUtils;
 
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
+
+
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.function.BinaryOperator;
 
 public class TestBUS {
     public static void main(String[] args) {
-        RoleBuilder builder = new RoleBuilder();
-        RoleDTO salerStaff = builder.name("Nhân viên quản lý kho").description("Nhân viên quản lý kho").salaryCoefficient(new BigDecimal(2.5)).build();
-
-        // Cập nhật dữ liệu vào local
-//        RoleBUS.getInstance().loadLocal();
-//        RolePermissionBUS.getInstance().loadLocal();
-        // Xem các Role
-//        RoleBUS.getInstance().getAllRoleLocal().forEach(System.out::println);
-//        ArrayList<RoleDTO> a = RoleBUS.getInstance().getAllRoleLocal();
-//        a.add(salerStaff);
-//        RoleBUS.getInstance().getAllRoleLocal().forEach(System.out::println);
-        // Tạo role mới
-//        RoleService.getInstance().createRoleWithPermissions(salerStaff);
-        // Xóa role id
-//        RoleService.getInstance().deleteRoleWithPermissions(2);
-        // Xem chi tiết phân quyền của role id
-//        RolePermissionBUS.getInstance().getAllRolePermissionByRoleIdLocal(1).forEach(System.out::println);
-
-//        RolePermissionService.getInstance().printPermissionsGroupedByModule();
-//        CategoryDTO test = new CategoryDTO(1, "test", true);
-//        System.out.println(test);
-//        CategoryDTO clone = test.toBuilder().build();
-//        clone.setId(2);
-//        System.out.println(test);
-//        System.out.println(clone);
+        RolePermissionBUS.getInstance().loadLocal();
+        EmployeeBUS.getInstance().loadLocal();
         AccountBUS.getInstance().loadLocal();
-        AccountDTO account1 = new AccountDTO(0, "huyhoang119762", "huyhoang123");
-        AccountDTO account2= new AccountDTO(1, "huyhoang119763", "huyhoang123");
+        RoleBuilder builder = new RoleBuilder();
+        RoleDTO salerStaff = builder.name("Nhân viên quản lý kho a").description("Nhân viên quản lý kho").salaryCoefficient(new BigDecimal(2.5)).build();
 
-        System.out.println(LoginRegisterService.getInstance().checkLogin(account1));
-        System.out.println(LoginRegisterService.getInstance().checkLogin(account2));
+        // Test tạo role mới - test bằng quyền role 1
+//        Boolean result = RolePermissionService.getInstance().createRoleWithPermissions(salerStaff, 1);
+//        System.out.println(result);
+
+        // Test phân quyền bằng role không có quyền
+//        RolePermissionDTO rolePermission = new RolePermissionDTO(1, 1,  false);
+
+//        Boolean result1 = RolePermissionBUS.getInstance().update(rolePermission, 1);
+
+//        EmployeeDTO employee = new EmployeeDTO(2 , "Thanh", "Điền aaasdsd abasdaa", new BigDecimal(3), "", null, 4, false);
+//        //EmployeeBUS.getInstance().insert(employee, 1, 1);
+//
+//        boolean result1 = EmployeeBUS.getInstance().update(employee, 1, 1);
+//
+//        System.out.println(result1);
+
+
+//        RolePermissionService.getInstance().createRoleWithPermissions(salerStaff, 1, 1);
+                EmployeeDTO employee = new EmployeeDTO(2 , "Thanh", "Điền aaasdsd abasdaa", new BigDecimal(3), null, 2, false);
+
+        RolePermissionService.getInstance().deleteRoleWithPermissions(2, 1, 1);
+//        boolean result = EmployeeBUS.getInstance().delete(2, 1, 1);
+//        boolean result = EmployeeBUS.getInstance().insert(employee, 0, 2);
+//        System.out.println(result);
+
+        AccountDTO account2 = new AccountDTO(1, "thanhlong", "huyhoang123");
+//        System.out.println(AccountBUS.getInstance().update(account2, 1, 1));
+//        System.out.println(LoginService.getInstance().checkLogin(account2));
+//        System.out.println(EmployeeBUS.getInstance().getByIdLocal(2).isStatus());
+//        RolePermissionService.getInstance().printPermissionsGroupedByModule();
+
     }
 
 }

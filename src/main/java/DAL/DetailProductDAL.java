@@ -20,14 +20,13 @@ public class DetailProductDAL extends BaseDAL<DetailProductDTO, String> {
                 resultSet.getString("product_id"),
                 resultSet.getString("description"),
                 resultSet.getString("image_url"),
-                resultSet.getInt("category_id"),
-                resultSet.getInt("supplier_id")
+                resultSet.getInt("category_id")
         );
     }
 
     @Override
     protected String getInsertQuery() {
-        return "(product_id, description, image_url, category_id, supplier_id) VALUES (?, ?, ?, ?, ?)";
+        return "(product_id, description, image_url, category_id) VALUES (?, ?, ?, ?)";
     }
 
     @Override
@@ -36,12 +35,11 @@ public class DetailProductDAL extends BaseDAL<DetailProductDTO, String> {
         statement.setString(2, obj.getDescription());
         statement.setString(3, obj.getImageUrl());
         statement.setInt(4, obj.getCategoryId());
-        statement.setInt(5, obj.getSupplierId());
     }
 
     @Override
     protected String getUpdateQuery() {
-        return "SET description = ?, image_url = ?, category_id = ?, supplier_id = ? WHERE product_id = ?";
+        return "SET description = ?, image_url = ?, category_id = ? WHERE product_id = ?";
     }
 
     @Override
@@ -49,7 +47,6 @@ public class DetailProductDAL extends BaseDAL<DetailProductDTO, String> {
         statement.setString(1, obj.getDescription());
         statement.setString(2, obj.getImageUrl());
         statement.setInt(3, obj.getCategoryId());
-        statement.setInt(4, obj.getSupplierId());
-        statement.setString(5, obj.getProductId());
+        statement.setString(4, obj.getProductId());
     }
 }

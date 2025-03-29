@@ -1,21 +1,29 @@
 package DTO;
 
+import lombok.ToString;
+
+@ToString
 public class DetailProductDTO {
     private String productId;
     private String description;
     private String imageUrl;
     private int categoryId;
-    private int supplierId;
 
     public DetailProductDTO() {
     }
 
-    public DetailProductDTO(String productId, String description, String imageUrl, int categoryId, int supplierId) {
+    public DetailProductDTO(String productId, String description, String imageUrl, int categoryId) {
         this.productId = productId;
         this.description = description;
         this.imageUrl = imageUrl;
         this.categoryId = categoryId;
-        this.supplierId = supplierId;
+    }
+
+    public DetailProductDTO(DetailProductDTO other) {
+        this.productId = other.productId;
+        this.description = other.description;
+        this.imageUrl = other.imageUrl;
+        this.categoryId = other.categoryId;
     }
 
     public String getProductId() {
@@ -50,11 +58,4 @@ public class DetailProductDTO {
         this.categoryId = categoryId;
     }
 
-    public int getSupplierId() {
-        return supplierId;
-    }
-
-    public void setSupplierId(int supplierId) {
-        this.supplierId = supplierId;
-    }
 }
