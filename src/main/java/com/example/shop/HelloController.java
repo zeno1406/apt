@@ -20,6 +20,7 @@ import lombok.Getter;
 import java.io.IOException;
 
 public class HelloController {
+    @Getter
     @FXML
     private Pane pMainContentPane;
     @Getter
@@ -49,12 +50,8 @@ public class HelloController {
     }
 
     public void initialize() {
-        double parentWidth = ((AnchorPane) pMainContentPane.getParent()).getPrefWidth();
         double parentHeight = ((AnchorPane) pMainContentPane.getParent()).getPrefHeight();
-        double vBoxMainMenuWidth = vbMainMenu.getPrefWidth();
-        pMainContentPane.setLayoutY(0);
-        pMainContentPane.setPrefHeight(parentHeight);
-        pMainContentPane.setPrefWidth(parentWidth - vBoxMainMenuWidth);
+        (new MainPageContainers()).setMainContent(pMainContentPane, vbMainMenu);
         pLogoutButtonContainer.setLayoutY(parentHeight - 50);
         pLogoutButtonContainer.setLayoutX(0);
     }

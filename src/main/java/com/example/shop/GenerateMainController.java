@@ -26,7 +26,13 @@ public class GenerateMainController {
             stage.show();
             HelloController rootNodes =  fxmlLoader.getController();
             changeMainLabelContent(rootNodes.getLbAccountName(), accountName);
-            buildMainButtonStaff(rootNodes.getVbMainMenu());
+
+            if ((accountName).equalsIgnoreCase("STAFF"))
+                buildMainButtonStaff(rootNodes.getVbMainMenu());
+            else if ((accountName).equalsIgnoreCase(("ADMIN")))
+                buildMainButtonAdmin(rootNodes.getVbMainMenu());
+            else if ((accountName).equalsIgnoreCase("OWNER"))
+                buildMainButtonOwner(rootNodes.getVbMainMenu());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -48,12 +54,67 @@ public class GenerateMainController {
         Pane containerCustomer = mainPageContainers.generateCustomerButton();
         ArrayList<Pane> mainContainerButtons = new ArrayList<Pane>();
         mainContainerButtons.add(containerProduct);
+        mainContainerButtons.add(containerCustomer);
         mainContainerButtons.add(containerType);
         mainContainerButtons.add(containerBill);
-        mainContainerButtons.add(containerCustomer);
         mainContainerButtons.add(containerReceivedNote);
         mainContainerButtons.add(containerSaleEvent);
         for(Pane container : mainContainerButtons)
             mainMenu.getChildren().add(container);
     }
+
+    public void buildMainButtonAdmin(VBox mainMenu) {
+        MainPageContainers mainPageContainers = new MainPageContainers();
+
+        Pane containerProduct = mainPageContainers.generateProductButton();
+        Pane containerCustomer = mainPageContainers.generateCustomerButton();
+        Pane containerType = mainPageContainers.generateTypeButton();
+        Pane containerBill = mainPageContainers.generateBillButton();
+        Pane containerReceivedNote = mainPageContainers.generateGrnButton();
+        Pane containerSaleEvent = mainPageContainers.generateSaleEventButton();
+
+        // Thứ tự hiển thị: Sản phẩm -> Loại -> Khách hàng -> Hóa đơn -> Nhập hàng -> Khuyến mãi
+        mainMenu.getChildren().addAll(
+                containerProduct,
+                containerType,
+                containerCustomer,
+                containerBill,
+                containerReceivedNote,
+                containerSaleEvent
+        );
+    }
+
+    public void buildMainButtonOwner(VBox mainMenu) {
+        MainPageContainers mainPageContainers = new MainPageContainers();
+
+        Pane containerProduct = mainPageContainers.generateProductButton();
+        Pane containerCustomer = mainPageContainers.generateCustomerButton();
+        Pane containerType = mainPageContainers.generateTypeButton();
+        Pane containerBill = mainPageContainers.generateBillButton();
+        Pane containerReceivedNote = mainPageContainers.generateGrnButton();
+        Pane containerSaleEvent = mainPageContainers.generateSaleEventButton();
+
+        // Chức năng thêm cho Owner
+        Pane containerStaff = mainPageContainers.generateEmployeeButton();
+        Pane containerAccount = mainPageContainers.generateAccountButton();
+        Pane containerStatistics = mainPageContainers.generateStatisticsButton();
+
+        // Sắp xếp hợp lý:
+        // - Nhóm sản phẩm & khách hàng trước
+        // - Nhóm hóa đơn & nhập hàng ở giữa
+        // - Nhóm nhân sự & quản lý tài khoản sau
+        // - Cuối cùng là thống kê
+        mainMenu.getChildren().addAll(
+                containerProduct,
+                containerType,
+                containerCustomer,
+                containerBill,
+                containerReceivedNote,
+                containerSaleEvent,
+                containerStaff,
+                containerAccount,
+                containerStatistics
+        );
+    }
+
 }

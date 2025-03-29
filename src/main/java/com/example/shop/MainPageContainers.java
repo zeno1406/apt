@@ -3,7 +3,9 @@ package com.example.shop;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 
 import java.util.Objects;
 
@@ -148,7 +150,7 @@ public class MainPageContainers {
         return pEmployeeButtonContainer;
     }
 
-    public Pane generateStatisticButton() {
+    public Pane generateStatisticsButton() {
         Pane pStatisticButtonContainer = new Pane();
         Button btnStatistic = new Button();
         ImageView icon = new ImageView(Objects.requireNonNull(getClass().getResource("/images/icons/icons8-statistic-50.png")).toExternalForm());
@@ -162,4 +164,12 @@ public class MainPageContainers {
         return pStatisticButtonContainer;
     }
 
+    public void setMainContent(Pane pMainContentPane, VBox vbMainMenu) {
+        double parentWidth = ((AnchorPane) pMainContentPane.getParent()).getPrefWidth();
+        double parentHeight = ((AnchorPane) pMainContentPane.getParent()).getPrefHeight();
+        double vBoxMainMenuWidth = vbMainMenu.getPrefWidth();
+        pMainContentPane.setLayoutY(0);
+        pMainContentPane.setPrefHeight(parentHeight);
+        pMainContentPane.setPrefWidth(parentWidth - vBoxMainMenuWidth);
+    }
 }
