@@ -7,7 +7,6 @@ import java.time.LocalDateTime;
 public class CustomerBuilder implements Builder<CustomerDTO> {
     private int id;
     private boolean status;
-    private String imageUrl;
     private LocalDateTime dateOfBirth;
     private String firstName;
     private String lastName;
@@ -21,11 +20,6 @@ public class CustomerBuilder implements Builder<CustomerDTO> {
 
     public CustomerBuilder status(boolean status) {
         this.status = status;
-        return this;
-    }
-
-    public CustomerBuilder imageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
         return this;
     }
 
@@ -56,6 +50,6 @@ public class CustomerBuilder implements Builder<CustomerDTO> {
 
     @Override
     public CustomerDTO build() {
-        return new CustomerDTO(id, firstName, lastName, phone, address, imageUrl, dateOfBirth, status);
+        return new CustomerDTO(id, firstName, lastName, phone, address, dateOfBirth, status);
     }
 }

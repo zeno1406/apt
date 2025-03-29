@@ -20,11 +20,6 @@ public class PermissionBUS extends BaseBUS <PermissionDTO, Integer> {
         return PermissionDAL.getInstance().getAll();
     }
 
-    @Override
-    public boolean delete(Integer permissionId, int employee_roleId) {
-        throw new UnsupportedOperationException("Cannot delete permission records.");
-    }
-
     public PermissionDTO getByIdLocal(int id) {
         if (id <= 0) return null;
         for (PermissionDTO permission : arrLocal) {

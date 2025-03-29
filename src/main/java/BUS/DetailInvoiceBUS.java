@@ -2,6 +2,8 @@ package BUS;
 
 import DAL.DetailInvoiceDAL;
 import DTO.DetailInvoiceDTO;
+import INTERFACE.ServiceAccessCode;
+import SERVICE.AuthorizationService;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -17,11 +19,9 @@ public class DetailInvoiceBUS extends BaseBUS<DetailInvoiceDTO, Integer>{
         return DetailInvoiceDAL.getInstance().getAll();
     }
 
-    @Override
-    public boolean delete(Integer id, int employee_roleId) {
-        if (id == null || id <= 0 || employee_roleId <= 0 || !hasPermission(employee_roleId, 14)) {
-            return false;
-        }
+    public boolean delete(Integer id, int employee_roleId, int codeAccess, int employeeLoginId) {
+        if (codeAccess != ServiceAccessCode.INVOICE_DETAILINVOICE_SERVICE || id == null || id <= 0) return false;
+        if (!AuthorizationService.getInstance().hasPermission(employeeLoginId, employee_roleId, 14)) return false;
 
         if (!DetailInvoiceDAL.getInstance().deleteAllDetailInvoiceByInvoiceId(id)) {
             return false;
@@ -41,8 +41,9 @@ public class DetailInvoiceBUS extends BaseBUS<DetailInvoiceDTO, Integer>{
         return result;
     }
 
-    public boolean createDetailInvoiceByInvoiceId(int invoiceId, int employee_roleId, ArrayList<DetailInvoiceDTO> list) {
-        if (employee_roleId <= 0 || !hasPermission(employee_roleId, 13) || list == null || list.isEmpty() || invoiceId <= 0) {
+    public boolean createDetailInvoiceByInvoiceId(int invoiceId, int employee_roleId, ArrayList<DetailInvoiceDTO> list, int codeAccess, int employeeLoginId) {
+        if (codeAccess != ServiceAccessCode.INVOICE_DETAILINVOICE_SERVICE || list == null || list.isEmpty() || invoiceId <= 0) return false;
+        if (!AuthorizationService.getInstance().hasPermission(employeeLoginId, employee_roleId, 13) ) {
             return false;
         }
         if (!DetailInvoiceDAL.getInstance().insertAllDetailInvoiceByInvoiceId(invoiceId, list)) {
@@ -53,8 +54,9 @@ public class DetailInvoiceBUS extends BaseBUS<DetailInvoiceDTO, Integer>{
         return true;
     }
 
-    public boolean insertRollbackDetailInvoice(ArrayList<DetailInvoiceDTO> list, int employee_roleId) {
-        if (list == null || list.isEmpty() || employee_roleId <= 0 || !hasPermission(employee_roleId, 14)) {
+    public boolean insertRollbackDetailInvoice(ArrayList<DetailInvoiceDTO> list, int employee_roleId, int codeAccess, int employeeLoginId) {
+        if (codeAccess != ServiceAccessCode.INVOICE_DETAILINVOICE_SERVICE || list == null || list.isEmpty()) return false;
+        if (!AuthorizationService.getInstance().hasPermission(employeeLoginId, employee_roleId, 14)) {
             return false;
         }
         if (!DetailInvoiceDAL.getInstance().insertAllDetailInvoiceByInvoiceId(list.get(0).getInvoiceId(), list)) {

@@ -8,7 +8,6 @@ import java.time.LocalDateTime;
 public class EmployeeBuilder implements Builder<EmployeeDTO> {
     private int id;
     private boolean status;
-    private String imageUrl;
     private LocalDateTime dateOfBirth;
     private String firstName;
     private String lastName;
@@ -22,11 +21,6 @@ public class EmployeeBuilder implements Builder<EmployeeDTO> {
 
     public EmployeeBuilder status(boolean status) {
         this.status = status;
-        return this;
-    }
-
-    public EmployeeBuilder imageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
         return this;
     }
 
@@ -57,6 +51,6 @@ public class EmployeeBuilder implements Builder<EmployeeDTO> {
 
     @Override
     public EmployeeDTO build() {
-        return new EmployeeDTO(id, firstName, lastName, salary, imageUrl, dateOfBirth, roleId, status);
+        return new EmployeeDTO(id, firstName, lastName, salary, dateOfBirth, roleId, status);
     }
 }

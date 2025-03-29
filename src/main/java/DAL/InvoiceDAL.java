@@ -70,8 +70,4 @@ public class InvoiceDAL extends BaseDAL<InvoiceDTO, Integer> {
         throw new UnsupportedOperationException("Cannot update permission records.");
     }
 
-    @Override
-    protected boolean hasSoftDelete() {
-        throw new UnsupportedOperationException("Cannot delete permission records.");
-    }
 }

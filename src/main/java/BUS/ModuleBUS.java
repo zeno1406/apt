@@ -20,11 +20,6 @@ public class ModuleBUS extends BaseBUS <ModuleDTO, Integer> {
         return ModuleDAL.getInstance().getAll();
     }
 
-    @Override
-    public boolean delete(Integer id, int employee_roleId) {
-        throw new UnsupportedOperationException("Cannot delete module records.");
-    }
-
     public ModuleDTO getByIdLocal(int id) {
         if (id <= 0) return null;
         for (ModuleDTO module : arrLocal) {

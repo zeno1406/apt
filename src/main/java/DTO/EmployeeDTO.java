@@ -15,8 +15,8 @@ public class EmployeeDTO extends BaseInformationDTO {
 
     }
 
-    public EmployeeDTO(int id, String firstName, String lastName, BigDecimal salary, String imageUrl, LocalDateTime dateOfBirth, int roleId, boolean status) {
-        super(id, imageUrl, dateOfBirth, status);
+    public EmployeeDTO(int id, String firstName, String lastName, BigDecimal salary, LocalDateTime dateOfBirth, int roleId, boolean status) {
+        super(id, dateOfBirth, status);
         this.firstName = firstName;
         this.lastName = lastName;
         this.salary = salary;

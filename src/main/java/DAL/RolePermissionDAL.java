@@ -112,23 +112,4 @@ public class RolePermissionDAL extends BaseDAL<RolePermissionDTO, Integer> {
         return list;
     }
 
-//    public boolean hasPermission(int roleId, int permissionId) {
-//        final String query = "SELECT COUNT(*) FROM role_permission WHERE role_id = ? AND permission_id = ? AND status = 1";
-//
-//        try (Connection connection = connectionFactory.newConnection();
-//             PreparedStatement statement = connection.prepareStatement(query)) {
-//
-//            statement.setInt(1, roleId);
-//            statement.setInt(2, permissionId);
-//
-//            try (ResultSet resultSet = statement.executeQuery()) {
-//                if (resultSet.next()) {
-//                    return resultSet.getInt(1) > 0; // Nếu COUNT(*) > 0 nghĩa là có quyền
-//                }
-//            }
-//        } catch (SQLException e) {
-//            System.err.println("Error checking permission in role_permission: " + e.getMessage());
-//        }
-//        return false;
-//    }
 }

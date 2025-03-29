@@ -5,10 +5,11 @@ import java.text.NumberFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import java.util.regex.Pattern;
+import java.time.LocalDateTime;
 
 public class ValidationUtils {
     private static final ValidationUtils INSTANCE = new ValidationUtils();
-    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yyyy");
     private static final Pattern VIETNAMESE_TEXT_PATTERN = Pattern.compile("^[\\p{L}]+(\\s[\\p{L}]+)*$");
     private static final Pattern USERNAME_PATTERN = Pattern.compile("^[a-zA-Z0-9._-]+$");
     private static final Pattern VIETNAMESE_PHONE_PATTERN = Pattern.compile("^0\\d{9}$");
@@ -74,5 +75,8 @@ public class ValidationUtils {
         return currencyFormat.format(price);
     }
 
+    public String formatDateTime(LocalDateTime dateTime) {
+        return dateTime != null ? dateTime.format(DATE_TIME_FORMATTER) : "";
+    }
 
 }

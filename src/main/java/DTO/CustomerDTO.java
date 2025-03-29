@@ -8,8 +8,8 @@ public class CustomerDTO extends BaseInformationDTO {
     private String phone;
     private String address;
 
-    public CustomerDTO(int id, String firstName, String lastName, String phone, String address, String imageUrl, LocalDateTime dateOfBirth, boolean status) {
-        super(id, imageUrl, dateOfBirth, status);
+    public CustomerDTO(int id, String firstName, String lastName, String phone, String address, LocalDateTime dateOfBirth, boolean status) {
+        super(id, dateOfBirth, status);
         this.firstName = firstName;
         this.lastName = lastName;
         this.phone = phone;

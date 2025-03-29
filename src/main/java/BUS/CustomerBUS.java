@@ -2,6 +2,7 @@ package BUS;
 
 import DAL.CustomerDAL;
 import DTO.CustomerDTO;
+import SERVICE.AuthorizationService;
 import UTILS.ValidationUtils;
 
 import java.util.ArrayList;
@@ -32,9 +33,10 @@ public class CustomerBUS extends BaseBUS <CustomerDTO, Integer> {
         return null;
     }
 
-    @Override
-    public boolean delete(Integer id, int employee_roleId) {
-        if (id == null || id <= 0 || employee_roleId <= 0 || !hasPermission(employee_roleId, 5)) {
+    public boolean delete(Integer id, int employee_roleId, int employeeLoginId) {
+        if (id == null || id <= 0 ) return false;
+
+        if (employee_roleId <= 0 || !AuthorizationService.getInstance().hasPermission(employeeLoginId, employee_roleId, 5)) {
             return false;
         }
         if (!CustomerDAL.getInstance().delete(id)) {
@@ -49,8 +51,8 @@ public class CustomerBUS extends BaseBUS <CustomerDTO, Integer> {
         return false;
     }
 
-    public boolean insert(CustomerDTO obj, int employee_roleId) {
-        if (obj == null || employee_roleId <= 0 || !hasPermission(employee_roleId, 4) || !isValidCustomerInput(obj)) {
+    public boolean insert(CustomerDTO obj, int employee_roleId, int employeeLoginId) {
+        if (obj == null || employee_roleId <= 0 || !AuthorizationService.getInstance().hasPermission(employeeLoginId, employee_roleId, 4) || !isValidCustomerInput(obj)) {
             return false;
         }
 
@@ -67,9 +69,9 @@ public class CustomerBUS extends BaseBUS <CustomerDTO, Integer> {
     }
 
 
-    public boolean update(CustomerDTO obj, int employee_roleId) {
+    public boolean update(CustomerDTO obj, int employee_roleId, int employeeLoginId) {
         if (obj == null || obj.getId() <= 0 || employee_roleId <= 0 ||
-                !hasPermission(employee_roleId, 6) || !isValidCustomerInput(obj)) {
+                !AuthorizationService.getInstance().hasPermission(employeeLoginId, employee_roleId, 6) || !isValidCustomerInput(obj)) {
             return false;
         }
 

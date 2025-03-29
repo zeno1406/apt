@@ -1,10 +1,10 @@
 package BUS;
 
 import DAL.AccountDAL;
-import DAL.ProductDAL;
-import DAL.RoleDAL;
 import DTO.AccountDTO;
-import DTO.RoleDTO;
+import INTERFACE.ServiceAccessCode;
+import SERVICE.AuthorizationService;
+import UTILS.AvailableUtils;
 import UTILS.PasswordUtils;
 import UTILS.ValidationUtils;
 
@@ -26,11 +26,26 @@ public class AccountBUS extends BaseBUS <AccountDTO, Integer> {
         return AccountDAL.getInstance().getAll();
     }
 
-    @Override
-    public boolean delete(Integer id, int employee_roleId) {
-        if (id == null || id <= 0 || employee_roleId <= 0 || !hasPermission(employee_roleId, 28)) {
+    public boolean delete(Integer id, int employee_roleId, int employeeLoginId) {
+        if (id == null || id <= 0 ) return false;
+
+        // Ngăn chặn xóa tài khoản gốc (employeeId = 1) để bảo vệ hệ thống
+        if (id == 1) {
+            System.out.println("Không thể xóa tài khoản gốc (employeeId = 1)!");
             return false;
         }
+
+        // Ngăn chặn tự xóa tài khoản của chính mình
+        if (employeeLoginId == id) {
+            System.out.println("Không thể tự xóa tài khoản của chính mình!");
+            return false;
+        }
+
+        // Nếu người thực hiện không có quyền 28, từ chối
+        if (!AuthorizationService.getInstance().hasPermission(employeeLoginId, employee_roleId, 28)) return false;
+
+        // Nếu account đang bị xóa thuộc về employee có role có quyền 28, chỉ cho phép role 1 xóa nó
+        if (AuthorizationService.getInstance().canDeleteUpdateAccount(id, 28)  && employee_roleId != 1 ) return false;
 
         if (!AccountDAL.getInstance().delete(id)) {
             return false;
@@ -49,10 +64,12 @@ public class AccountBUS extends BaseBUS <AccountDTO, Integer> {
         return null;
     }
 
-    public boolean insert(AccountDTO obj, int employee_roleId) {
-        if (obj == null || obj.getEmployeeId() <= 0 || employee_roleId <= 0 || !hasPermission(employee_roleId, 27) || !validateAccountInput(obj)) {
+    public boolean insert(AccountDTO obj, int employee_roleId, int employeeLoginId) {
+        if (obj == null || obj.getEmployeeId() <= 0 || !AuthorizationService.getInstance().hasPermission(employeeLoginId, employee_roleId, 27) || isInvalidAccountInput(obj)) {
             return false;
         }
+
+        if (!AvailableUtils.getInstance().isValidForCreateAccount(obj.getEmployeeId())) return false;
 
         obj.setUsername(obj.getUsername().toLowerCase());
         obj.setPassword(PasswordUtils.getInstance().hashPassword(obj.getPassword()));
@@ -65,28 +82,54 @@ public class AccountBUS extends BaseBUS <AccountDTO, Integer> {
         return true;
     }
 
-    public boolean update(AccountDTO obj, int employee_roleId, String username) {
-        if (obj == null || obj.getEmployeeId() <= 0 || employee_roleId <= 0 || !hasPermission(employee_roleId, 29) || !validateAccountInput(obj) || obj.getUsername().equals(username)) {
+    public boolean update(AccountDTO obj, int employee_roleId, int employeeLoginId) {
+        // Kiểm tra tài khoản có tồn tại và thuộc về 1 employee hợp lệ + Kiểm tra dữ liệu hợp lệ
+        if (obj == null || obj.getEmployeeId() <= 0 || employee_roleId <= 0 || isInvalidAccountInput(obj)) return false;
+
+
+        // Không có quyền 29 thì không chỉnh chính mình hay người khác
+        if (!AuthorizationService.getInstance().hasPermission(employeeLoginId, employee_roleId, 29)) return false;
+
+        // Ngăn chặn cập nhật tài khoản gốc nếu không phải chính nó
+        if (obj.getEmployeeId() == 1 && employeeLoginId != 1) {
+            System.out.println("Không thể cập nhật tài khoản gốc (employeeId = 1)!");
             return false;
         }
 
-        obj.setPassword(PasswordUtils.getInstance().hashPassword(obj.getPassword()));
-
-        if (!AccountDAL.getInstance().update(obj)) {
+        // Nếu cập nhật người khác thì account đó phải thuộc về employee có role không có quyền 28
+        if (employeeLoginId != obj.getEmployeeId() &&
+                !AuthorizationService.getInstance().canDeleteUpdateAccount(obj.getEmployeeId(), 29)) {
+            System.err.println("1");
             return false;
         }
 
+        if (!AvailableUtils.getInstance().isExistAccount(obj.getEmployeeId())) {
+            System.err.println("1");
+            return false;
+        }
+
+        // Chỉ hash mật khẩu nếu mật khẩu mới khác mật khẩu cũ
+        String oldHashedPassword = getByIdLocal(obj.getEmployeeId()).getPassword();
+        if (!PasswordUtils.getInstance().verifyPassword(obj.getPassword(), oldHashedPassword)) {
+            obj.setPassword(PasswordUtils.getInstance().hashPassword(obj.getPassword()));
+        }
+
+        if (!AccountDAL.getInstance().update(obj)) return false;
+
+        updateLocalCache(obj);
+        return true;
+    }
+
+    private void updateLocalCache(AccountDTO obj) {
         for (int i = 0; i < arrLocal.size(); i++) {
             if (Objects.equals(arrLocal.get(i).getEmployeeId(), obj.getEmployeeId())) {
                 arrLocal.set(i, new AccountDTO(obj));
-                return true;
+                break;
             }
         }
-
-        return false;
     }
 
-    public boolean isDuplicateUsername(int id, String username) {
+    private boolean isDuplicateUsername(int id, String username) {
         if (username == null) return false;
         for (AccountDTO account : arrLocal) {
             if (!Objects.equals(account.getEmployeeId(), id) && Objects.equals(account.getUsername(), username)) {
@@ -96,21 +139,21 @@ public class AccountBUS extends BaseBUS <AccountDTO, Integer> {
         return false;
     }
 
-    public boolean checkLogin(String username, String password) {
-        if (username == null || password == null) return false;
+    public int checkLogin(String username, String password, int codeAccess) {
+        if (codeAccess != ServiceAccessCode.LOGIN_SERVICE || username == null || password == null) return -1;
         for (AccountDTO account : arrLocal) {
             if (account.getUsername().equals(username) && PasswordUtils.getInstance().verifyPassword(password, account.getPassword())) {
-                return true;
+                return account.getEmployeeId();
             }
         }
-        return false;
+        return -1;
     }
 
-    private boolean validateAccountInput(AccountDTO obj) {
-        if (obj.getUsername() == null || obj.getPassword() == null) return false;
+    private boolean isInvalidAccountInput(AccountDTO obj) {
+        if (obj.getUsername() == null || obj.getPassword() == null) return true;
 
         ValidationUtils validator = ValidationUtils.getInstance();
-        return validator.validateUsername(obj.getUsername(), 4, 255)
-                && validator.validatePassword(obj.getPassword(), 6, 255);
+        return !validator.validateUsername(obj.getUsername(), 4, 255) ||
+                !validator.validatePassword(obj.getPassword(), 6, 255);
     }
 }

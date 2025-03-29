@@ -7,18 +7,16 @@ public class DetailImportDTO {
     private String productId;
     private int quantity;
     private BigDecimal price;
-    private BigDecimal profitPercent;
     private BigDecimal totalPrice;
 
     public DetailImportDTO() {
     }
 
-    public DetailImportDTO(int importId, String productId, int quantity, BigDecimal price, BigDecimal profitPercent, BigDecimal totalPrice) {
+    public DetailImportDTO(int importId, String productId, int quantity, BigDecimal price, BigDecimal totalPrice) {
         this.importId = importId;
         this.productId = productId;
         this.quantity = quantity;
         this.price = price;
-        this.profitPercent = profitPercent;
         this.totalPrice = totalPrice;
     }
 
@@ -27,7 +25,6 @@ public class DetailImportDTO {
         this.productId = other.productId;
         this.quantity = other.quantity;
         this.price = other.price;
-        this.profitPercent = other.profitPercent;
         this.totalPrice = other.totalPrice;
     }
 
@@ -61,14 +58,6 @@ public class DetailImportDTO {
 
     public void setPrice(BigDecimal price) {
         this.price = price;
-    }
-
-    public BigDecimal getProfitPercent() {
-        return profitPercent;
-    }
-
-    public void setProfitPercent(BigDecimal profitPercent) {
-        this.profitPercent = profitPercent;
     }
 
     public BigDecimal getTotalPrice() {

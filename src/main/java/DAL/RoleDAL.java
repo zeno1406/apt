@@ -1,6 +1,7 @@
 package DAL;
 
 import DTO.CustomerDTO;
+import DTO.EmployeeDTO;
 import DTO.RoleDTO;
 import DTO.RolePermissionDTO;
 
@@ -63,5 +64,22 @@ public class RoleDAL extends BaseDAL<RoleDTO, Integer> {
         statement.setString(2, obj.getDescription());
         statement.setBigDecimal(3, obj.getSalaryCoefficient());
         statement.setInt(4, obj.getId());
+    }
+
+    public boolean updateBasic(RoleDTO obj) {
+        String query = "UPDATE role SET name = ?, description = ? WHERE id = ?";
+
+        try (Connection connection = connectionFactory.newConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setString(1, obj.getName());
+            statement.setString(2, obj.getDescription());
+            statement.setInt(3, obj.getId());
+
+            return statement.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.err.println("Error updating basic role: " + e.getMessage());
+            return false;
+        }
     }
 }

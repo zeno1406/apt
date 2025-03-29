@@ -2,6 +2,9 @@ package BUS;
 
 import DAL.InvoiceDAL;
 import DTO.InvoiceDTO;
+import INTERFACE.ServiceAccessCode;
+import INTERFACE.SystemConfig;
+import SERVICE.AuthorizationService;
 import UTILS.ValidationUtils;
 import java.math.BigDecimal;
 import java.time.Duration;
@@ -22,11 +25,9 @@ public class InvoiceBUS extends BaseBUS<InvoiceDTO, Integer>{
         return InvoiceDAL.getInstance().getAll();
     }
 
-    @Override
-    public boolean delete(Integer id, int employee_roleId) {
-        if (id == null || id <= 0 || employee_roleId <= 0 || !hasPermission(employee_roleId, 14)) {
-            return false;
-        }
+    public boolean delete(Integer id, int employee_roleId, int codeAccess, int employeeLoginId) {
+        if (codeAccess != ServiceAccessCode.INVOICE_DETAILINVOICE_SERVICE || id == null || id <= 0 || !isValidForDelete(id)) return false;
+        if (!AuthorizationService.getInstance().hasPermission(employeeLoginId, employee_roleId, 14)) return false;
 
         if (!InvoiceDAL.getInstance().delete(id)) {
             return false;
@@ -35,51 +36,57 @@ public class InvoiceBUS extends BaseBUS<InvoiceDTO, Integer>{
         return true;
     }
 
-    public InvoiceDTO getByIdLocal(int roleId) {
-        if (roleId <= 0) return null;
+    public InvoiceDTO getByIdLocal(int id) {
+        if (id <= 0) return null;
         for (InvoiceDTO invoice : arrLocal) {
-            if (Objects.equals(invoice.getId(), roleId)) {
+            if (Objects.equals(invoice.getId(), id)) {
                 return new InvoiceDTO(invoice);
             }
         }
         return null;
     }
 
-    public boolean insert(InvoiceDTO obj, int employee_roleId) {
-        if (obj == null || employee_roleId <= 0 || !hasPermission(employee_roleId, 13) || !validateInvoiceInput(obj)) {
-            return false;
-        }
+    public boolean insert(InvoiceDTO obj, int employee_roleId, int codeAccess, int employeeLoginId) {
+        if (codeAccess != ServiceAccessCode.INVOICE_DETAILINVOICE_SERVICE || obj == null) return false;
+        if (!AuthorizationService.getInstance().hasPermission(employeeLoginId, employee_roleId, 13) || !isValidateInvoiceInput(obj)) return false;
 
         obj.setCreateDate(LocalDateTime.now());
-
-        if (InvoiceDAL.getInstance().insert(obj)) {
-            arrLocal.add(new InvoiceDTO(obj));
-            return true;
-        }
-        return false;
+        if (!InvoiceDAL.getInstance().insert(obj)) return false;
+        arrLocal.add(new InvoiceDTO(obj));
+        return true;
     }
 
-    private boolean validateInvoiceInput(InvoiceDTO obj) {
+    private boolean isValidateInvoiceInput(InvoiceDTO obj) {
         if (obj.getEmployeeId() <= 0 || obj.getCustomerId() <= 0) return false;
 
-        if (obj.getDiscountCode() == null && obj.getDiscountAmount().compareTo(BigDecimal.ZERO) != 0) {
+        ValidationUtils validator = ValidationUtils.getInstance();
+
+        // Kiểm tra giá trị số hợp lệ
+        if (!validator.validateBigDecimal(obj.getTotalPrice(), 10, 2, false)
+                || !validator.validateBigDecimal(obj.getDiscountAmount(), 10, 2, false)) {
             return false;
         }
 
-        ValidationUtils validator = ValidationUtils.getInstance();
-        return validator.validateBigDecimal(obj.getTotalPrice(), 10, 2, false)
-                && validator.validateBigDecimal(obj.getDiscountAmount(), 10, 2, false);
+        // Nếu có discountCode, kiểm tra độ dài
+        if (obj.getDiscountCode() != null && !validator.validateStringLength(obj.getDiscountCode(), 50)) {
+            return false;
+        }
+
+        // Nếu discountAmount > 0 nhưng không có mã giảm giá => sai
+        return obj.getDiscountAmount().compareTo(BigDecimal.ZERO) <= 0 || obj.getDiscountCode() != null;
     }
 
-    public boolean isValidForDelete(Integer id, int maxMinute) {
-        if (id == null || id <= 0 || maxMinute < 0) return false;
+    private boolean isValidForDelete(Integer id) {
+        if (id == null || id <= 0) return false;
 
         LocalDateTime now = LocalDateTime.now();
+        int maxMinutes = SystemConfig.INVOICE_DELETE_TIME_LIMIT / (60 * 1000);
 
         for (InvoiceDTO invoice : arrLocal) {
             if (Objects.equals(invoice.getId(), id)) {
+                if (invoice.getCreateDate() == null) return false; // Tránh NullPointerException
                 long minutesDifference = Duration.between(invoice.getCreateDate(), now).toMinutes();
-                return minutesDifference <= maxMinute;
+                return minutesDifference <= maxMinutes;
             }
         }
         return false;

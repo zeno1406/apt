@@ -43,7 +43,7 @@ public class AccountDAL extends BaseDAL<AccountDTO, Integer> {
 
     @Override
     protected String getUpdateQuery() {
-        return "UPDATE account SET password = ? WHERE employee_id = ?";
+        return "SET password = ? WHERE employee_id = ?";
     }
 
     @Override

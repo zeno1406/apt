@@ -1,12 +1,11 @@
 package BUS;
 
-import DAL.CustomerDAL;
 import DAL.EmployeeDAL;
-import DTO.CustomerDTO;
 import DTO.EmployeeDTO;
+import SERVICE.AuthorizationService;
+import UTILS.AvailableUtils;
 import UTILS.ValidationUtils;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -35,15 +34,25 @@ public class EmployeeBUS extends BaseBUS <EmployeeDTO, Integer> {
         return null;
     }
 
-    @Override
-    public boolean delete(Integer id, int employee_roleId) {
-        throw new UnsupportedOperationException("Cannot delete module records.");
-    }
+    public boolean delete(Integer id, int employee_roleId, int employeeLoginId) {
+        if (id == null || id <= 0) return false;
 
-    public boolean deleteCustomer(Integer id, int employee_roleId, int employeeLoginId) {
-        if (id == null || id <= 0 || id == 1 || id == employeeLoginId || employee_roleId <= 0 || !hasPermission(employee_roleId, 2)) {
+        // Ngăn chặn tự xóa thông tin employee của chính mình
+        if (employeeLoginId == id) return false;
+
+        // Ngăn chặn xóa thông tin nhân viên gốc (id = 1) để bảo vệ hệ thống
+        if (id == 1) {
+            System.out.println("Không thể xóa nhân viên gốc (employeeId = 1)!");
             return false;
         }
+
+        // Nếu người thực hiện không có quyền 2, từ chối luôn
+        if (employee_roleId <= 0 || !AuthorizationService.getInstance().hasPermission(employeeLoginId, employee_roleId, 2)) return false;
+
+        // Nếu employee đang bị xóa có quyền 2, chỉ cho phép role 1 xóa nó
+        EmployeeDTO targetEmployee = getByIdLocal(id);
+        if (targetEmployee == null) return false;
+        if (AuthorizationService.getInstance().hasPermission(targetEmployee.getId(), targetEmployee.getRoleId(), 2) && employee_roleId != 1) return false;
         if (!EmployeeDAL.getInstance().delete(id)) {
             return false;
         }
@@ -56,8 +65,8 @@ public class EmployeeBUS extends BaseBUS <EmployeeDTO, Integer> {
         return false;
     }
 
-    public boolean insert(EmployeeDTO obj, int employee_roleId) {
-        if (obj == null || obj.getRoleId() <= 0 || employee_roleId <= 0 || !hasPermission(employee_roleId, 1) || !isValidEmployeeInput(obj)) {
+    public boolean insert(EmployeeDTO obj, int employee_roleId, int employeeLoginId) {
+        if (obj == null || obj.getRoleId() <= 0 || employee_roleId <= 0 || !AuthorizationService.getInstance().hasPermission(employeeLoginId, employee_roleId, 1) || !isValidEmployeeInput(obj)) {
             return false;
         }
         // image_url và date_of_birth có thể null
@@ -72,25 +81,66 @@ public class EmployeeBUS extends BaseBUS <EmployeeDTO, Integer> {
     }
 
     public boolean update(EmployeeDTO obj, int employee_roleId, int employeeLoginId) {
-        if (obj == null || obj.getId() == 1 || obj.getId() == employeeLoginId || obj.getId() <= 0 || employee_roleId <= 0 ||
-                !hasPermission(employee_roleId, 3) || !isValidEmployeeInput(obj)) {
+        if (obj == null || obj.getId() <= 0 || employee_roleId <= 0) return false;
+
+        // Không có quyền 3 thì không chỉnh chính mình hay người khác
+        if (!AuthorizationService.getInstance().hasPermission(employeeLoginId, employee_roleId, 3)) {
             return false;
         }
 
-        if (!EmployeeDAL.getInstance().update(obj)) {
+        // Ngăn chặn cập nhật nhân viên gốc nếu không phải chính nó
+        if (obj.getId() == 1 && employeeLoginId != 1) {
+//            System.out.println("Không thể cập nhật nhân viên gốc (employeeId = 1)!");
             return false;
         }
+
+        // Kiểm tra đang cập nhật chính mình hay người khác
+        boolean isSelfUpdate = (employeeLoginId == obj.getId());
+
+        // Role 1: có quyền cao nhất nhưng vẫn không tự sửa role_id & status
+        if (employee_roleId == 1) {
+            boolean canUpdateAdvanced = !isSelfUpdate; // Chỉ cập nhật full nếu không phải chính mình
+            if (isInvalidEmployeeUpdate(obj, canUpdateAdvanced, true)) {
+                return false;
+            }
+            if (!EmployeeDAL.getInstance().updateAdvance(obj, canUpdateAdvanced)) return false;
+            updateLocalCache(obj);
+            return true;
+        }
+
+        // Các role khác
+        if (isSelfUpdate) {
+            // Chỉ có thể cập nhật basic của chính mình
+            if (isInvalidEmployeeUpdate(obj, false, false)) return false;
+            if (!EmployeeDAL.getInstance().updateBasic(obj, false)) return false;
+        } else {
+            // Nếu cập nhật người khác, chỉ được phép nếu người đó có quyền thấp hơn
+            if (AuthorizationService.getInstance().hasPermission(obj.getId(), obj.getRoleId(), 3)) return false;
+            if (isInvalidEmployeeUpdate(obj, true, false)) return false;
+            if (!EmployeeDAL.getInstance().updateBasic(obj, true)) return false;
+        }
+
+        updateLocalCache(obj);
+        return true;
+    }
+
+    // Cập nhật cache local
+    private void updateLocalCache(EmployeeDTO obj) {
         for (int i = 0; i < arrLocal.size(); i++) {
             if (Objects.equals(arrLocal.get(i).getId(), obj.getId())) {
                 arrLocal.set(i, new EmployeeDTO(obj));
-                return true;
+                break;
             }
         }
-        return false;
     }
 
     private boolean isValidEmployeeInput(EmployeeDTO obj) {
         if (obj.getFirstName() == null || obj.getLastName() == null || obj.getSalary() == null) {
+            return false;
+        }
+
+        if (!AvailableUtils.getInstance().isValidRole(obj.getRoleId())) {
+            System.err.println("Không thể cập nhật: RoleId không tồn tại!");
             return false;
         }
 
@@ -99,5 +149,24 @@ public class EmployeeBUS extends BaseBUS <EmployeeDTO, Integer> {
         return validator.validateVietnameseText100(obj.getFirstName()) &&
                 validator.validateVietnameseText100(obj.getLastName()) &&
                 validator.validateBigDecimal(obj.getSalary(), 10, 2, false);
+    }
+
+    private boolean isInvalidEmployeeUpdate(EmployeeDTO obj, boolean allowAdvanceChange, boolean isAdvance) {
+        if (obj.getFirstName() == null || obj.getLastName() == null || (isAdvance && obj.getSalary() == null)) {
+            return true;
+        }
+
+        if (!AvailableUtils.getInstance().isValidRole(obj.getRoleId())) {
+            System.err.println("Không thể cập nhật: RoleId không tồn tại!");
+            return true;
+        }
+
+        if (allowAdvanceChange && obj.getRoleId() <= 0) return true;
+
+        ValidationUtils validator = ValidationUtils.getInstance();
+
+        return !validator.validateVietnameseText100(obj.getFirstName()) ||
+                !validator.validateVietnameseText100(obj.getLastName()) ||
+                (isAdvance && !validator.validateBigDecimal(obj.getSalary(), 10, 2, false));
     }
 }

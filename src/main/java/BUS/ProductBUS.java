@@ -2,6 +2,7 @@ package BUS;
 
 import DAL.ProductDAL;
 import DTO.ProductDTO;
+import SERVICE.AuthorizationService;
 import UTILS.ValidationUtils;
 
 import java.math.BigDecimal;
@@ -33,9 +34,8 @@ public class ProductBUS  extends BaseBUS <ProductDTO, String>{
         return null;
     }
 
-    @Override
-    public boolean delete(String id, int employee_roleId) {
-        if (id == null || id.isEmpty() || employee_roleId <= 0 || !hasPermission(employee_roleId, 8)) {
+    public boolean delete(String id, int employee_roleId, int employeeLoginId) {
+        if (id == null || id.isEmpty() || employee_roleId <= 0 || !AuthorizationService.getInstance().hasPermission(employeeLoginId, employee_roleId, 8)) {
             return false;
         }
 
@@ -67,8 +67,8 @@ public class ProductBUS  extends BaseBUS <ProductDTO, String>{
         }
     }
 
-    public boolean insert(ProductDTO obj, int employee_roleId) {
-        if (obj == null || employee_roleId <= 0 || !hasPermission(employee_roleId, 7) || !isValidProductInput(obj)) {
+    public boolean insert(ProductDTO obj, int employee_roleId, int employeeLoginId) {
+        if (obj == null || employee_roleId <= 0 || !AuthorizationService.getInstance().hasPermission(employeeLoginId, employee_roleId, 7) || !isValidProductInput(obj)) {
             return false;
         }
 
@@ -86,8 +86,8 @@ public class ProductBUS  extends BaseBUS <ProductDTO, String>{
         return true;
     }
 
-    public boolean update(ProductDTO obj, int employee_roleId) {
-        if (obj == null || obj.getId().isEmpty() || employee_roleId <= 0 || !hasPermission(employee_roleId, 9) || !isValidProductUpdate(obj)) {
+    public boolean update(ProductDTO obj, int employee_roleId, int employeeLoginId) {
+        if (obj == null || obj.getId().isEmpty() || employee_roleId <= 0 || !AuthorizationService.getInstance().hasPermission(employeeLoginId, employee_roleId, 9) || !isValidProductUpdate(obj)) {
             return false;
         }
 
