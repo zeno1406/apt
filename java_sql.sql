@@ -83,7 +83,7 @@ INSERT INTO `permission` (`id`, `name`, `module_id`) VALUES
 (38, 'Xóa quyền', 10),
 (39, 'Tạo tài khoản', 11),
 (40, 'Xóa tài khoản', 11),
-(31, 'Xem thống kê', 12);
+(41, 'Xem thống kê', 12);
 
 CREATE TABLE `role_permission` (
   `role_id` int(11) NOT NULL,

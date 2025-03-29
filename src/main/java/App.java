@@ -1,3 +1,5 @@
+import BUS.AccountBUS;
+import DTO.AccountDTO;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -39,6 +41,9 @@ public class App extends Application {
 
 
     public static void main(String[] args) {
+        AccountDTO newAccount = new AccountDTO(40, "KieuTai", "Thethienlang01!");
+        AccountBUS.getInstance().loadLocal();
+        AccountBUS.getInstance().insert(newAccount, 1, 40);
         launch(args);
     }
 }
