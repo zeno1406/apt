@@ -6,6 +6,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
@@ -16,7 +17,10 @@
    <children>
       <Pane fx:id="pFormLoginRegisImage" prefHeight="200.0" prefWidth="600.0" styleClass="pFormLoginRegisContent" stylesheets="@../../../css/login.css">
          <children>
-            <ImageView fx:id="imgFormLoginRegisPanel" fitHeight="476.0" fitWidth="600.0" pickOnBounds="true" preserveRatio="true" />
+            <ImageView fx:id="imgFormLoginRegisPanel" fitHeight="474.0" fitWidth="476.0" layoutX="63.0" layoutY="1.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../../images/logo/attachment_129810702.jpg" />
+               </image></ImageView>
          </children></Pane>
       <Pane fx:id="pFormLoginRegisContent" prefHeight="200.0" prefWidth="400.0" styleClass="pFormLoginRegisContent" stylesheets="@../../../css/login.css">
          <children>
@@ -107,7 +111,7 @@
                               </HBox>
                               <Pane prefHeight="50.0" prefWidth="400.0">
                                  <children>
-                                    <Label layoutX="107.0" layoutY="12.0" opacity="0.26" text="----------OR----------">
+                                    <Label layoutX="107.0" layoutY="12.0" opacity="0.38" text="----------OR----------" textFill="#e9ffff">
                                        <font>
                                           <Font name="System Italic" size="20.0" />
                                        </font>
@@ -120,7 +124,7 @@
                   </Pane>
                   <Pane fx:id="pFormLoginRegisFooter" prefHeight="50.0" prefWidth="200.0" styleClass="pFormLoginRegisFooter" stylesheets="@../../../css/login.css">
                      <children>
-                        <Button fx:id="btnFormSignUp" alignment="CENTER" contentDisplay="CENTER" layoutX="50.0" layoutY="6.0" mnemonicParsing="false" styleClass="btnFormSignUp" stylesheets="@../../../css/login.css" text="Sign Up">
+                        <Button fx:id="btnFormSignUp" alignment="CENTER" contentDisplay="CENTER" layoutX="71.0" layoutY="6.0" mnemonicParsing="false" styleClass="btnFormSignUp" stylesheets="@../../../css/login.css" text="Sign Up">
                            <font>
                               <Font size="18.0" />
                            </font>

@@ -11,16 +11,29 @@
     -fx-cursor: hand;
 }
 
-/*Left list functions*/
-.vbMainMenu {
+.pLogoutButtonContainer {
+    -fx-pref-height: 50px;
     -fx-background-color: lightcyan;
     -fx-pref-width: 160px;
-    -fx-pref-height: 1000px;
+}
+
+.btnLogout {
+    -fx-pref-height: 50px;
+    -fx-background-color: transparent;
+    -fx-text-fill: black;
+}
+
+/*Left list functions*/
+.vbMainMenu {
+    -fx-background-color: rgb(188, 229, 255);
+    -fx-pref-width: 160px;
+    -fx-pref-height: 950px;
     -fx-spacing: 10px;
+    -fx-border-color: cyan;
 }
 
 .vbMainMenu .lbAccountName {
-    /*visibility: hidden;*/
+    visibility: hidden;
     -fx-text-alignment: center;
 }
 
@@ -28,42 +41,33 @@
     -fx-pref-height: 195px;
 }
 
-.vbMainMenu .pProductButtonContainer,
-.vbMainMenu .pCustomerButtonContainer,
-.vbMainMenu .pBillButtonContainer,
-.vbMainMenu . pRecipeButtonContainer {
-    -fx-background-color: white;
-    -fx-pref-height: 80px;
+.vbMainMenu .pMainMenuContainer {
+    -fx-background-color: #acdaff;
+    -fx-pref-height: 50px;
     -fx-pref-width: inherit;
     -fx-cursor: hand;
 }
 
-.vbMainMenu .pLogoutButtonContainer {
-    -fx-background-color: transparent;
-    -fx-pref-height: 80px;
+.pLogoutButtonContainer {
+    -fx-background-color: rgb(188, 229, 255);
+    -fx-pref-height: 50px;
+    -fx-pref-width: 160px;
     -fx-cursor: hand;
 }
 
-.pProductButtonContainer .btnProducts,
-.pCustomerButtonContainer .btnCustomer,
-.pLogoutButtonContainer .btnLogout,
-.pBillButtonContainer .btnBill,
-.pRecipeButtonContainer .btnRecipe {
-    -fx-font-family: inherit;
-    -fx-font-size: 20;
+.btnMainMenuChild {
+    -fx-font: 18 "System";
     -fx-font-weight: bold;
-    -fx-text-fill: red;
+    -fx-text-fill: black;
     -fx-background-color: transparent;
-    -fx-pref-height: 80px;
+    -fx-pref-height: 50px;
     -fx-pref-width: inherit;
 }
 
-.pLogoutButtonContainer .btnLogout {
-    -fx-border-color: transparent;
-    -fx-background-radius: 0;
+.vbMainMenu .btnMainMenuChild:hover {
+    -fx-background-color: lightcyan;
 }
 
 .root .pMainContentPane {
     -fx-background-color: black;
 }
-

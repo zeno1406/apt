@@ -14,9 +14,11 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
+import javax.swing.*;
 import javax.xml.stream.EventFilter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -57,23 +59,21 @@ public class LoginController {
         AccountBUS.getInstance().loadLocal();
         String userNameInput = txtFormLoginUserName.getText();
         String passwordInput = pswdFormLoginPassword.getText();
+//        stage for gene main page, check an account and show the main page with specific functions for this role
+        Stage stage = (Stage) (((Node) event.getSource()).getScene().getWindow());
         boolean checkAccount = AccountBUS.getInstance().checkLogin(userNameInput, passwordInput);
         if(checkAccount) {
             lbErrorUserNameMessage.setText("done");
             lbErrorPasswordMessage.setText("done");
         }
         else if (userNameInput.equals("admin") && (passwordInput.equals("1234"))) {
-            try {
-                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("hello-view.fxml"));
-                Parent root = fxmlLoader.load();
-                Stage stage = (Stage) (((Node) event.getSource()).getScene().getWindow());
-                Scene scene = new Scene(root);
-                stage.setScene(scene);
-                (new ISetPositionScreen()).setPositionScreen(stage, scene);
-                stage.show();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            (new GenerateMainController()).generateMainPage(stage, "hello-view.fxml", "ADMIN");
+        }
+        else if (userNameInput.equals("staff") && (passwordInput.equals("1234"))) {
+            (new GenerateMainController()).generateMainPage(stage, "hello-view.fxml", "STAFF");
+        }
+        else if (userNameInput.equals("owner") && (passwordInput.equals("1234"))) {
+            (new GenerateMainController()).generateMainPage(stage, "hello-view.fxml", "OWNER");
         }
         else {
             lbErrorUserNameMessage.setText("Error password or username");
@@ -83,6 +83,7 @@ public class LoginController {
         }
     }
 
+//    handle enter button for quick swap next text fields
     @FXML
     protected void onFormFieldKeyEnterPressed(KeyEvent event) {
         if (event.getCode().equals(KeyCode.ENTER)) {

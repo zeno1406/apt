@@ -7,10 +7,7 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Hyperlink;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
@@ -18,20 +15,26 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import lombok.Getter;
 
 import java.io.IOException;
 
 public class HelloController {
     @FXML
-    private TextField txtSearchProduct;
-    @FXML
     private Pane pMainContentPane;
+    @Getter
     @FXML
     private VBox vbMainMenu;
+    @Getter
     @FXML
+    private Label lbAccountName ;
+    @FXML
+    private Pane pLogoutButtonContainer;
+    @FXML
+    private Button btnProducts;
 
+    @FXML
     protected void onBtnAccountClicked(MouseEvent event) {
-        txtSearchProduct.setText("Welcome to JavaFX Application!");
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("login.fxml"));
             Parent root = fxmlLoader.load();
@@ -52,7 +55,7 @@ public class HelloController {
         pMainContentPane.setLayoutY(0);
         pMainContentPane.setPrefHeight(parentHeight);
         pMainContentPane.setPrefWidth(parentWidth - vBoxMainMenuWidth);
-        txtSearchProduct.setText(String.valueOf(parentWidth));
-
+        pLogoutButtonContainer.setLayoutY(parentHeight - 50);
+        pLogoutButtonContainer.setLayoutX(0);
     }
 }

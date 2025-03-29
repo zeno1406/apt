@@ -1,6 +1,6 @@
 /*Form account*/
 .hbFormLoginRegisContainer {
-    -fx-background-color: black;
+    -fx-background-color: rgb(5, 14, 53);
 }
 
 .pFormLoginRegisContent,
@@ -22,15 +22,16 @@ pFormLoginRegisImage {
 .btnFormLogin,
 .btnFormSignUp {
     -fx-background-color: lightcyan;
-    -fx-border-color: cyan;
-    -fx-border-radius: 5px;
+    -fx-border-color: lightcyan;
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
     -fx-cursor: hand;
 }
 
 .pswdFormLoginPassword,
 .txtFormLoginUserName {
     -fx-background-color: white;
-    -fx-background-radius: 4px;
+    -fx-background-radius: 8px;
 }
 
 .pFormLoginRegisFooter .btnFormSignUp {
