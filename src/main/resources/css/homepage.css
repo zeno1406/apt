@@ -46,6 +46,8 @@
     -fx-pref-height: 50px;
     -fx-pref-width: inherit;
     -fx-cursor: hand;
+    -fx-text-alignment: left;
+    -fx-alignment: center-left;
 }
 
 .pLogoutButtonContainer {
@@ -53,6 +55,8 @@
     -fx-pref-height: 50px;
     -fx-pref-width: 160px;
     -fx-cursor: hand;
+    -fx-text-alignment: left;
+    -fx-alignment: center-left;
 }
 
 .btnMainMenuChild {
@@ -62,6 +66,8 @@
     -fx-background-color: transparent;
     -fx-pref-height: 50px;
     -fx-pref-width: inherit;
+    -fx-text-alignment: left;
+    -fx-alignment: center-left;
 }
 
 .vbMainMenu .btnMainMenuChild:hover {
