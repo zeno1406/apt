@@ -3,8 +3,6 @@ package DTO;
 import lombok.Builder;
 import lombok.Data;
 
-@Data
-@Builder(toBuilder = true)
 public class CategoryDTO {
     private int id;
     private String name;
@@ -17,6 +15,14 @@ public class CategoryDTO {
         this.id = id;
         this.name = name;
         this.status = status;
+    }
+
+    public CategoryDTO(CategoryDTO other) {
+        if (other != null) { // Kiểm tra null để tránh NullPointerException
+            this.id = other.id;
+            this.name = other.name;
+            this.status = other.status;
+        }
     }
 
     public int getId() {

@@ -19,7 +19,7 @@ public class SessionManagerService {
         allowedPermissions = new HashSet<>();
     }
 
-    public static synchronized SessionManagerService getInstance() {
+    public static SessionManagerService getInstance() {
         if (instance == null) {
             instance = new SessionManagerService();
         }
@@ -70,4 +70,13 @@ public class SessionManagerService {
     public EmployeeDTO currEmployee() {
         return loggedInEmployee != null ? new EmployeeDTO(loggedInEmployee) : null;
     }
+
+    public int numAllowedModules() {
+        return allowedModules.size();
+    }
+
+    public HashSet<Integer> getAllowedModules() {
+        return new HashSet<>(allowedModules); // Trả về bản sao để tránh thay đổi dữ liệu gốc
+    }
+
 }

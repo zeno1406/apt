@@ -4,8 +4,10 @@ import BUS.EmployeeBUS;
 import BUS.RoleBUS;
 import DTO.EmployeeDTO;
 import DTO.RoleDTO;
+import INTERFACE.IController;
 import SERVICE.SessionManagerService;
 import UTILS.NotificationUtils;
+import UTILS.UiUtils;
 import UTILS.ValidationUtils;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
@@ -13,12 +15,11 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.util.Duration;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
 
-public class EmployeeController {
+public class EmployeeController implements IController {
     @FXML
     private TableView<EmployeeDTO> tblEmployee;
     @FXML
@@ -30,7 +31,7 @@ public class EmployeeController {
     @FXML
     private TableColumn<EmployeeDTO, String> tlb_col_dateOfBirth;
     @FXML
-    private TableColumn<EmployeeDTO, String> tlb_col_roleId;
+    private TableColumn<EmployeeDTO, String> tlb_col_roleName;
     @FXML
     private TableColumn<EmployeeDTO, String> tlb_col_salary;
     @FXML
@@ -42,40 +43,37 @@ public class EmployeeController {
     @FXML
     private TextField txtSearch;
     @FXML
-    private CheckBox cbStatusFilter;
+    private CheckBox ckbStatusFilter;
     @FXML
     private ComboBox<String> cbSearchBy;
     @FXML
     private ComboBox<String> cbRoleFilter;
 
     // Biến lưu bộ lọc để tránh truy xuất UI nhiều lần
-    private String searchBy = null;
+    private String searchBy = "Mã nhân viên";
     private String keyword = "";
     private int roleId = -1;
     private int statusFilter = 1;
-
-    // HashMap lưu role để tìm ID nhanh hơn
     private final HashMap<String, Integer> roleMap = new HashMap<>();
 
     @FXML
     public void initialize() {
-        Platform.runLater(() -> tblEmployee.getSelectionModel().clearSelection());
-
         if (EmployeeBUS.getInstance().isLocalEmpty()) EmployeeBUS.getInstance().loadLocal();
         if (RoleBUS.getInstance().isLocalEmpty()) RoleBUS.getInstance().loadLocal();
-
         tblEmployee.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS); // Tránh deprecated
+        Platform.runLater(() -> tblEmployee.getSelectionModel().clearSelection());
+
 
         hideButtonWithoutPermission();
         loadComboBox();
         setupListeners();
-        searchBy = cbSearchBy.getSelectionModel().getSelectedItem();
-        roleId = getSelectedRoleId();
+
         loadTable();
         applyFilters();
     }
 
-    private void loadTable() {
+    @Override
+    public void loadTable() {
         ValidationUtils validationUtils = ValidationUtils.getInstance();
         RoleBUS roleBUS = RoleBUS.getInstance();
         EmployeeBUS employeeBUS = EmployeeBUS.getInstance();
@@ -86,7 +84,7 @@ public class EmployeeController {
         tlb_col_dateOfBirth.setCellValueFactory(cellData ->
                 formatCell(validationUtils.formatDateTime(cellData.getValue().getDateOfBirth())));
 
-        tlb_col_roleId.setCellValueFactory(cellData -> formatCell(roleBUS.getByIdLocal(cellData.getValue().getRoleId()).getName()));
+        tlb_col_roleName.setCellValueFactory(cellData -> formatCell(roleBUS.getByIdLocal(cellData.getValue().getRoleId()).getName()));
         tlb_col_salary.setCellValueFactory(cellData ->
                 formatCell(validationUtils.formatCurrency(cellData.getValue().getSalary())));
 
@@ -94,38 +92,14 @@ public class EmployeeController {
                 formatCell(validationUtils.formatCurrency(calculateFinalSalary(cellData.getValue(), roleBUS))));
 
         tlb_col_status.setCellValueFactory(cellData ->
-                formatCell(cellData.getValue().isStatus() ? "Active" : "Inactive"));
+                formatCell(cellData.getValue().isStatus() ? "Hoạt động" : "Ngưng hoạt động"));
 
-        addTooltipToColumn(tlb_col_roleId, 10);
-
+        UiUtils.gI().addTooltipToColumn(tlb_col_roleName, 10);
+        UiUtils.gI().addTooltipToColumn(tlb_col_status, 10);
         tblEmployee.setItems(FXCollections.observableArrayList(employeeBUS.getAllLocal()));
     }
 
-    private void addTooltipToColumn(TableColumn<EmployeeDTO, String> column, int maxLength) {
-        column.setCellFactory(tc -> new TableCell<>() {
-            private final Tooltip tooltip = new Tooltip();
 
-            @Override
-            protected void updateItem(String item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null) {
-                    setText(null);
-                    setTooltip(null);
-                } else {
-                    if (item.length() > maxLength) {
-                        setText(item.substring(0, maxLength) + "...");
-                        tooltip.setText(item);
-                        tooltip.setShowDelay(Duration.millis(100)); // Giảm thời gian delay
-                        tooltip.setHideDelay(Duration.millis(50));
-                        setTooltip(tooltip);
-                    } else {
-                        setText(item);
-                        setTooltip(null);
-                    }
-                }
-            }
-        });
-    }
 
     private void loadComboBox() {
         cbSearchBy.getItems().addAll("Mã nhân viên", "Họ đệm", "Tên");
@@ -141,23 +115,22 @@ public class EmployeeController {
             roleMap.put(role.getName(), role.getId());
         }
 
-        cbSearchBy.getSelectionModel().selectFirst(); // Chọn giá trị đầu tiên
-        cbRoleFilter.getSelectionModel().select("Tất cả");
-        cbStatusFilter.setSelected(false);
-
+        cbSearchBy.getSelectionModel().selectFirst();
+        cbRoleFilter.getSelectionModel().selectFirst();
+        ckbStatusFilter.setSelected(false);
     }
 
-
-    private void setupListeners() {
+    @Override
+    public void setupListeners() {
         cbSearchBy.setOnAction(event -> handleSearchByChange());
         cbRoleFilter.setOnAction(event -> handleRoleFilterChange());
-        cbStatusFilter.setOnAction(event -> handleStatusFilterChange());
+        ckbStatusFilter.setOnAction(event -> handleStatusFilterChange());
         txtSearch.textProperty().addListener((observable, oldValue, newValue) -> handleKeywordChange());
         refreshBtn.setOnAction(event -> resetFilters());
     }
 
     private void handleStatusFilterChange() {
-        statusFilter = cbStatusFilter.isSelected() ? -1 : 1;
+        statusFilter = ckbStatusFilter.isSelected() ? -1 : 1;
         applyFilters();
     }
 
@@ -180,7 +153,8 @@ public class EmployeeController {
         return roleMap.getOrDefault(cbRoleFilter.getValue(), -1);
     }
 
-    private void applyFilters() {
+    @Override
+    public void applyFilters() {
         EmployeeBUS employeeBUS = EmployeeBUS.getInstance();
         tblEmployee.setItems(FXCollections.observableArrayList(
                 employeeBUS.filterEmployees(searchBy, keyword, roleId, statusFilter)
@@ -189,19 +163,18 @@ public class EmployeeController {
 
     }
 
-    private void resetFilters() {
+    @Override
+    public void resetFilters() {
         cbSearchBy.getSelectionModel().selectFirst(); // Chọn giá trị đầu tiên
         cbRoleFilter.getSelectionModel().select("Tất cả");
-
-        cbStatusFilter.setSelected(false); // Mặc định lọc Active
+        ckbStatusFilter.setSelected(false); // Mặc định lọc Active
         txtSearch.clear();
 
         // Cập nhật lại các biến bộ lọc
-        searchBy = null;
+        searchBy = "Mã nhân viên";
         keyword = "";
         roleId = -1;
         statusFilter = 1; // Chỉ Active
-
         applyFilters(); // Áp dụng lại bộ lọc
 
         NotificationUtils.showInfoAlert("Làm mới thành công", "Thông báo");
@@ -216,9 +189,19 @@ public class EmployeeController {
         return employee.getSalary().multiply(BigDecimal.ONE.add(coefficient));
     }
 
-    private void hideButtonWithoutPermission() {
-        addBtn.setVisible(SessionManagerService.getInstance().hasPermission(1));
-        editBtn.setVisible(SessionManagerService.getInstance().hasPermission(3));
-        deleteBtn.setVisible(SessionManagerService.getInstance().hasModuleAccess(2));
+    @Override
+    public void hideButtonWithoutPermission() {
+        boolean canAdd = SessionManagerService.getInstance().hasPermission(1);
+        boolean canEdit = SessionManagerService.getInstance().hasPermission(3);
+        boolean canDelete = SessionManagerService.getInstance().hasPermission(2);
+
+        addBtn.setVisible(canAdd);
+        addBtn.setManaged(canAdd);
+
+        editBtn.setVisible(canEdit);
+        editBtn.setManaged(canEdit);
+
+        deleteBtn.setVisible(canDelete);
+        deleteBtn.setManaged(canDelete);
     }
 }

@@ -19,8 +19,12 @@ public class DiscountDAL extends BaseDAL<DiscountDTO, String> {
                 resultSet.getString("code"),
                 resultSet.getString("name"),
                 resultSet.getInt("type"),
-                resultSet.getTimestamp("startDate") != null ? resultSet.getTimestamp("startDate").toLocalDateTime() : null,
-                resultSet.getTimestamp("endDate") != null ? resultSet.getTimestamp("endDate").toLocalDateTime() : null
+                resultSet.getDate("startDate") != null
+                        ? resultSet.getDate("startDate").toLocalDate().atStartOfDay()
+                        : null,
+                resultSet.getDate("endDate") != null
+                        ? resultSet.getDate("endDate").toLocalDate().atStartOfDay()
+                        : null
         );
     }
 
@@ -34,8 +38,8 @@ public class DiscountDAL extends BaseDAL<DiscountDTO, String> {
         statement.setString(1, obj.getCode());
         statement.setString(2, obj.getName());
         statement.setInt(3, obj.getType());
-        statement.setTimestamp(4, obj.getStartDate() != null ? Timestamp.valueOf(obj.getStartDate()) : null);
-        statement.setTimestamp(5, obj.getEndDate() != null ? Timestamp.valueOf(obj.getEndDate()) : null);
+        statement.setDate(4, obj.getStartDate() != null ? java.sql.Date.valueOf(obj.getStartDate().toLocalDate()) : null);
+        statement.setDate(5, obj.getEndDate() != null ? java.sql.Date.valueOf(obj.getEndDate().toLocalDate()) : null);
     }
 
     @Override
@@ -47,8 +51,8 @@ public class DiscountDAL extends BaseDAL<DiscountDTO, String> {
     protected void setUpdateParameters(PreparedStatement statement, DiscountDTO obj) throws SQLException {
         statement.setString(1, obj.getName());
         statement.setInt(2, obj.getType());
-        statement.setTimestamp(3, obj.getStartDate() != null ? Timestamp.valueOf(obj.getStartDate()) : null);
-        statement.setTimestamp(4, obj.getEndDate() != null ? Timestamp.valueOf(obj.getEndDate()) : null);
+        statement.setDate(3, obj.getStartDate() != null ? java.sql.Date.valueOf(obj.getStartDate().toLocalDate()) : null);
+        statement.setDate(4, obj.getEndDate() != null ? java.sql.Date.valueOf(obj.getEndDate().toLocalDate()) : null);
         statement.setString(5, obj.getCode());
     }
 
@@ -65,8 +69,8 @@ public class DiscountDAL extends BaseDAL<DiscountDTO, String> {
             statement.setString(1, newCode);
             statement.setString(2, obj.getName());
             statement.setInt(3, obj.getType());
-            statement.setTimestamp(4, obj.getStartDate() != null ? Timestamp.valueOf(obj.getStartDate()) : null);
-            statement.setTimestamp(5, obj.getEndDate() != null ? Timestamp.valueOf(obj.getEndDate()) : null);
+            statement.setDate(3, obj.getStartDate() != null ? java.sql.Date.valueOf(obj.getStartDate().toLocalDate()) : null);
+            statement.setDate(4, obj.getEndDate() != null ? java.sql.Date.valueOf(obj.getEndDate().toLocalDate()) : null);
             statement.setString(6, obj.getCode());
 
             return statement.executeUpdate() > 0;

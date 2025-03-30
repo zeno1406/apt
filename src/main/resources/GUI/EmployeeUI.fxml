@@ -14,24 +14,23 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
-
-<AnchorPane prefHeight="600.0" prefWidth="898.4000000000001" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.EmployeeController">
+<AnchorPane prefHeight="649.6" prefWidth="899.2" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.EmployeeController">
    <children>
-      <BorderPane prefHeight="554.4" prefWidth="880.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <BorderPane prefHeight="649.6" prefWidth="899.2" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <top>
             <AnchorPane prefHeight="50.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                <children>
                   <AnchorPane prefHeight="50.0" prefWidth="880.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <children>
                         <FontAwesomeIcon fill="#58c9c9" glyphName="SEARCH" layoutX="169.0" layoutY="32.0" size="1.8em" text="" />
-                        <TextField layoutX="10.0" layoutY="10.0" prefHeight="26.0" prefWidth="158.0" promptText="Nhập để tìm kiếm" styleClass="textfield" stylesheets="@../css/employee.css" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0" />
+                        <TextField layoutX="10.0" layoutY="10.0" prefHeight="26.0" prefWidth="158.0" promptText="Nhập để tìm kiếm" styleClass="textfield" stylesheets="@../css/base.css" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0" />
                         <Line endX="79.0" endY="-3.814697265625E-6" layoutX="111.0" layoutY="38.0" startX="-100.0" stroke="#58c9c9" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="40.0" />
-                        <TextField fx:id="txtSearch" layoutX="10.0" layoutY="10.0" prefHeight="26.0" prefWidth="155.0" promptText="Nhập để tìm kiếm" styleClass="textfield" stylesheets="@../css/employee.css" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="733.0" />
-                        <HBox alignment="CENTER" layoutX="200.0" layoutY="3.0" prefHeight="46.0" prefWidth="395.0" spacing="10.0">
+                        <TextField fx:id="txtSearch" layoutX="10.0" layoutY="10.0" prefHeight="26.0" prefWidth="155.0" promptText="Nhập để tìm kiếm" styleClass="textfield" stylesheets="@../css/base.css" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="733.0" />
+                        <HBox alignment="CENTER" layoutX="200.0" layoutY="3.0" prefHeight="46.0" prefWidth="395.0" spacing="10.0" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="303.2">
                            <children>
-                              <ComboBox fx:id="cbSearchBy" prefHeight="26.0" prefWidth="120.0" promptText="Tìm kiếm theo" styleClass="combo-box" stylesheets="@../css/employee.css" />
-                              <ComboBox fx:id="cbRoleFilter" prefHeight="26.0" prefWidth="120.0" promptText="Lọc theo thức vụ" style="-fx-max-width: 120px;" styleClass="combo-box" stylesheets="@../css/employee.css" />
-                              <CheckBox fx:id="cbStatusFilter" mnemonicParsing="false" prefHeight="19.0" prefWidth="141.0" stylesheets="@../css/employee.css" text="Tất cả trạng thái" textFill="#1f7d84">
+                              <ComboBox fx:id="cbSearchBy" prefHeight="26.0" prefWidth="120.0" styleClass="combo-box" stylesheets="@../css/base.css" />
+                              <ComboBox fx:id="cbRoleFilter" prefHeight="26.0" prefWidth="120.0" style="-fx-max-width: 120px;" styleClass="combo-box" stylesheets="@../css/base.css" />
+                              <CheckBox fx:id="ckbStatusFilter" mnemonicParsing="false" prefHeight="19.0" prefWidth="141.0" stylesheets="@../css/base.css" text="Tất cả trạng thái" textFill="#1f7d84">
                                  <font>
                                     <Font name="Times New Roman Bold Italic" size="16.0" />
                                  </font>
@@ -46,7 +45,7 @@
          <center>
             <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                <children>
-                  <AnchorPane layoutX="10.0" layoutY="9.0" prefHeight="286.0" prefWidth="858.0" stylesheets="@../css/employee.css" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="5.0">
+                  <AnchorPane layoutX="10.0" layoutY="9.0" prefHeight="286.0" prefWidth="858.0" stylesheets="@../css/base.css" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="5.0">
                      <styleClass>
                         <String fx:value="white-bg" />
                         <String fx:value="shadow" />
@@ -58,7 +57,7 @@
                             <TableColumn fx:id="tlb_col_firstName" prefWidth="112.8000259399414" text="Họ đệm" />
                               <TableColumn fx:id="tlb_col_lastName" prefWidth="68.0" text="Tên" />
                               <TableColumn fx:id="tlb_col_dateOfBirth" prefWidth="96.0" text="Ngày sinh" />
-                              <TableColumn fx:id="tlb_col_roleId" prefWidth="99.20001220703125" text="Chức vụ" />
+                              <TableColumn fx:id="tlb_col_roleName" prefWidth="99.20001220703125" text="Chức vụ" />
                               <TableColumn fx:id="tlb_col_salary" minWidth="0.0" prefWidth="103.99996948242188" text="Lương cơ bản" />
                               <TableColumn fx:id="tlb_col_finalSalary" prefWidth="155.199951171875" text="Lương thực tế" />
                               <TableColumn fx:id="tlb_col_status" prefWidth="110.4000244140625" text="Trạng thái" />
@@ -79,7 +78,7 @@
                      <children>
                         <HBox alignment="CENTER" layoutX="680.0" layoutY="2.0" prefHeight="46.0" prefWidth="315.0" spacing="10.0" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
-                              <Button fx:id="addBtn" mnemonicParsing="false" prefHeight="34.0" prefWidth="92.0" styleClass="action-btn" stylesheets="@../css/employee.css" text="Thêm">
+                              <Button fx:id="addBtn" mnemonicParsing="false" prefHeight="34.0" prefWidth="92.0" styleClass="action-btn" stylesheets="@../css/base.css" text="Thêm">
                                  <graphic>
                                     <FontAwesomeIcon glyphName="PLUS_SQUARE" size="1.2em" styleClass="action-icon" />
                                  </graphic>
@@ -87,7 +86,7 @@
                                     <Font size="14.0" />
                                  </font>
                               </Button>
-                              <Button fx:id="editBtn" mnemonicParsing="false" prefWidth="92.0" styleClass="action-btn" stylesheets="@../css/employee.css" text="Sửa">
+                              <Button fx:id="editBtn" mnemonicParsing="false" prefWidth="92.0" styleClass="action-btn" stylesheets="@../css/base.css" text="Sửa">
                                  <graphic>
                                     <FontAwesomeIcon glyphName="PENCIL" size="1.2em" styleClass="action-icon" />
                                  </graphic>
@@ -95,7 +94,7 @@
                                     <Font size="14.0" />
                                  </font>
                               </Button>
-                              <Button fx:id="deleteBtn" mnemonicParsing="false" prefWidth="92.0" styleClass="action-btn" stylesheets="@../css/employee.css" text="Xóa">
+                              <Button fx:id="deleteBtn" mnemonicParsing="false" prefWidth="92.0" styleClass="action-btn" stylesheets="@../css/base.css" text="Xóa">
                                  <graphic>
                                     <FontAwesomeIcon glyphName="TRASH" size="1.2em" styleClass="action-icon" />
                                  </graphic>
@@ -105,7 +104,7 @@
                               </Button>
                            </children>
                         </HBox>
-                        <Button fx:id="refreshBtn" layoutX="14.0" layoutY="5.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="108.0" styleClass="action-btn" stylesheets="@../css/employee.css" text="Làm mới" AnchorPane.bottomAnchor="11.000000000000007" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="758.8" AnchorPane.topAnchor="5.0">
+                        <Button fx:id="refreshBtn" layoutX="14.0" layoutY="5.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="108.0" styleClass="action-btn" stylesheets="@../css/base.css" text="Làm mới" AnchorPane.bottomAnchor="11.000000000000007" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="758.8" AnchorPane.topAnchor="5.0">
                            <font>
                               <Font size="14.0" />
                            </font>

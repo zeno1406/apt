@@ -178,7 +178,7 @@ public class EmployeeBUS extends BaseBUS <EmployeeDTO, Integer> {
 
         keyword = keyword.trim().toLowerCase();
 
-        for (EmployeeDTO emp : getAllLocal()) {
+        for (EmployeeDTO emp : arrLocal) {
             boolean matchesSearch = true;
             boolean matchesRole = (roleIdFilter == -1) || (emp.getRoleId() == roleIdFilter);
             boolean matchesStatus = (statusFilter == -1) || (emp.isStatus() == (statusFilter == 1)); // Sửa lỗi ở đây

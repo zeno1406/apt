@@ -137,5 +137,54 @@
     -fx-font-size:14px;
     -fx-font-weight: bold;
     -fx-cursor: hand;
+    -fx-text-fill: #1f7d84;
+}
+
+/* Định dạng cho DatePicker */
+.date-picker {
+    -fx-font-size: 12px; /* Kích thước phông chữ */
+    -fx-border-color: #58c9c9;
+}
+
+.date-picker .arrow-button {
+    -fx-background-color: linear-gradient(to bottom, #1F7D84, #3AE2F4);
+    -fx-cursor: hand;
+}
+
+.date-picker .arrow {
+    -fx-background-color: white;
+}
+
+.date-picker .arrow-button:hover {
+    -fx-background-color: #3a9d9d;
+}
+
+/* Định dạng cho popup calendar */
+.date-picker .popup-content {
+    -fx-background-color: linear-gradient(to bottom, #1F7D84, #3AE2F4);
+    -fx-border-color: #cccccc; /* Màu viền cho popup */
+    -fx-border-width: 1px; /* Độ dày viền cho popup */
+}
+
+/* Định dạng cho ngày hiện tại */
+.date-picker .day-cell {
+    -fx-background-color: linear-gradient(to bottom, #1F7D84, #3AE2F4); /* Màu nền cho ô ngày */
+}
+
+/* Định dạng cho ngày được chọn */
+.date-picker .day-cell:selected {
+    -fx-background-color: #007BFF; /* Màu nền khi chọn */
+    -fx-background-color: linear-gradient(to bottom, #1F7D84, #3AE2F4); /* Màu chữ khi chọn */
+}
+
+/* Định dạng cho ngày hiện tại */
+.date-picker .day-cell:today {
+    -fx-background-color: #ffeb3b; /* Màu nền cho ngày hôm nay */
+    -fx-font-weight: bold; /* Chữ đậm cho ngày hôm nay */
+}
+
+/* Định dạng cho ngày không khả dụng */
+.date-picker .day-cell:disabled {
+    -fx-text-fill: #aaaaaa; /* Màu chữ cho ngày không khả dụng */
 }
 

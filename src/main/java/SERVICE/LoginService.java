@@ -13,25 +13,26 @@ public class LoginService {
         return INSTANCE;
     }
 
-    public int checkLogin(AccountDTO account) {
+    public boolean checkLogin(AccountDTO account) {
         EmployeeBUS empBus = EmployeeBUS.getInstance();
         AccountBUS accBus = AccountBUS.getInstance();
 
         // Load Account nếu danh sách trống
         if (accBus.isLocalEmpty()) accBus.loadLocal();
-        if (accBus.isLocalEmpty()) return -1; // Kiểm tra lại sau khi load
+        if (accBus.isLocalEmpty()) return false; // Kiểm tra lại sau khi load
 
         // Kiểm tra đăng nhập
         int currAcc = accBus.checkLogin(account.getUsername(), account.getPassword(), ServiceAccessCode.LOGIN_SERVICE);
-        if (currAcc == -1) return -1;
+        if (currAcc == -1) return false;
 
         // Load Employee nếu danh sách trống
         if (empBus.isLocalEmpty()) empBus.loadLocal();
-        if (empBus.isLocalEmpty()) return -1;
+        if (empBus.isLocalEmpty()) return false;
 
         // Kiểm tra Employee
         EmployeeDTO employee = empBus.getByIdLocal(currAcc);
-        return (employee != null && employee.isStatus() && employee.getRoleId() != 0) ? currAcc : -1;
+        SessionManagerService.getInstance().setLoggedInEmployee(EmployeeBUS.getInstance().getByIdLocal(employee.getId()));
+        return (employee != null && employee.isStatus() && employee.getRoleId() != 0 && SessionManagerService.getInstance().numAllowedModules() != 0) ;
     }
 
 

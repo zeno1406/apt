@@ -14,7 +14,7 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="649.6" prefWidth="898.4000000000001" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.ProductController">
+<AnchorPane prefHeight="649.6" prefWidth="898.4000000000001" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.CategoryController">
     <children>
         <BorderPane prefHeight="649.6" prefWidth="898.4000000000001" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <top>
@@ -26,26 +26,16 @@
                                 <TextField layoutX="10.0" layoutY="10.0" prefHeight="26.0" prefWidth="158.0" promptText="Nhập để tìm kiếm" styleClass="textfield" stylesheets="@../css/base.css" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0" />
                                 <Line endX="79.0" endY="-3.814697265625E-6" layoutX="111.0" layoutY="38.0" startX="-100.0" stroke="#58c9c9" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="40.0" />
                                 <TextField fx:id="txtSearch" layoutX="10.0" layoutY="10.0" prefHeight="26.0" prefWidth="155.0" promptText="Nhập để tìm kiếm" styleClass="textfield" stylesheets="@../css/base.css" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="733.0" />
-                                <HBox alignment="CENTER" layoutX="200.0" layoutY="3.0" prefHeight="46.0" prefWidth="246.0" spacing="10.0" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="303.2" AnchorPane.topAnchor="3.0">
+                                <HBox alignment="CENTER" layoutX="200.0" layoutY="3.0" prefHeight="46.0" prefWidth="262.0" spacing="10.0" AnchorPane.bottomAnchor="0.7999999999999972" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="431.2" AnchorPane.topAnchor="3.0">
                                     <children>
-                                        <ComboBox fx:id="cbSearchBy" prefHeight="26.0" prefWidth="120.0" stylesheets="@../css/base.css" />
-                                        <ComboBox fx:id="cbCategoryFilter" prefHeight="26.0" prefWidth="120.0" styleClass="combo-box" stylesheets="@../css/base.css" />
+                                        <ComboBox fx:id="cbSearchBy" prefHeight="26.0" prefWidth="120.0" styleClass="combo-box" stylesheets="@../css/base.css" />
                                         <CheckBox fx:id="ckbStatusFilter" mnemonicParsing="false" prefHeight="19.0" prefWidth="141.0" stylesheets="@../css/base.css" text="Tất cả trạng thái" textFill="#1f7d84">
                                             <font>
-                                                <Font name="Times New Roman" size="16.0" />
+                                                <Font name="Times New Roman Bold Italic" size="16.0" />
                                             </font>
                                         </CheckBox>
                                     </children>
                                 </HBox>
-                                <HBox alignment="CENTER" layoutX="617.0" layoutY="2.0" prefHeight="46.0" prefWidth="257.0" spacing="10.0" AnchorPane.bottomAnchor="1.0" AnchorPane.rightAnchor="9.0" AnchorPane.topAnchor="3.0">
-                                    <children>
-                                        <FontAwesomeIcon fill="#58c9c9" glyphName="MONEY" size="2em" text="" />
-                                        <TextField prefHeight="26.0" prefWidth="92.0" promptText="Giá bán từ" styleClass="textfield" stylesheets="@../css/base.css" />
-                                        <Line endX="-78.20001220703125" endY="-3.814697265625E-6" startX="-89.199951171875" startY="-3.814697265625E-6" stroke="#1f7d84" />
-                                        <TextField prefHeight="26.0" prefWidth="92.0" promptText="Giá bán đến" styleClass="textfield" stylesheets="@../css/base.css" />
-                                    </children>
-                                </HBox>
-                                <Line endX="79.53179168701172" endY="2.3639202481717803E-5" layoutX="808.2681335449219" layoutY="43.107096874713896" startX="293.22454833984375" startY="3.734826896106824E-5" stroke="#58c9c9" AnchorPane.leftAnchor="673.4" AnchorPane.rightAnchor="9.892974853515625" AnchorPane.topAnchor="42.4" />
                             </children>
                         </AnchorPane>
                     </children>
@@ -60,15 +50,10 @@
                                 <String fx:value="shadow" />
                             </styleClass>
                             <children>
-                                <TableView fx:id="tblProduct" editable="true" prefHeight="444.0" prefWidth="859.2" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                <TableView fx:id="tblCategory" editable="true" prefHeight="444.0" prefWidth="859.2" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                     <columns>
-                                        <TableColumn fx:id="tlb_col_id" prefWidth="110.39999234676361" text="Mã sản phẩm" />
-                                        <TableColumn fx:id="tlb_col_name" prefWidth="112.8000259399414" text="Tên sản phẩm" />
-                                        <TableColumn fx:id="tlb_col_imageUrl" prefWidth="68.0" text="Hình ảnh" />
-                                        <TableColumn fx:id="tlb_col_description" prefWidth="96.0" text="Mô tả" />
-                                        <TableColumn fx:id="tlb_col_categoryId" prefWidth="99.20001220703125" text="Thể loại" />
-                                        <TableColumn fx:id="tlb_col_sellingPrice" minWidth="0.0" prefWidth="103.99996948242188" text="Giá bán" />
-                                        <TableColumn fx:id="tlb_col_stockQuantity" prefWidth="155.199951171875" text="Còn lại" />
+                                        <TableColumn fx:id="tlb_col_id" prefWidth="110.39999234676361" text="Mã thể loại" />
+                                        <TableColumn fx:id="tlb_col_name" prefWidth="112.8000259399414" text="Tên thể loại" />
                                         <TableColumn fx:id="tlb_col_status" prefWidth="110.4000244140625" text="Trạng thái" />
                                     </columns>
                                     <columnResizePolicy>

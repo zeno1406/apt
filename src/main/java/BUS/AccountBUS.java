@@ -2,6 +2,7 @@ package BUS;
 
 import DAL.AccountDAL;
 import DTO.AccountDTO;
+import DTO.EmployeeDTO;
 import INTERFACE.ServiceAccessCode;
 import SERVICE.AuthorizationService;
 import UTILS.AvailableUtils;
@@ -155,5 +156,36 @@ public class AccountBUS extends BaseBUS <AccountDTO, Integer> {
         ValidationUtils validator = ValidationUtils.getInstance();
         return !validator.validateUsername(obj.getUsername(), 4, 255) ||
                 !validator.validatePassword(obj.getPassword(), 6, 255);
+    }
+
+    public ArrayList<AccountDTO> filterAccounts(String searchBy, String keyword) {
+        ArrayList<AccountDTO> filteredList = new ArrayList<>();
+
+        if (keyword == null) keyword = "";
+        if (searchBy == null) searchBy = "";
+
+        keyword = keyword.trim().toLowerCase();
+
+        for (AccountDTO acc : arrLocal) {
+            boolean matchesSearch = true;
+
+            // Kiểm tra null tránh lỗi khi gọi .toLowerCase()
+            String employeeId = String.valueOf(acc.getEmployeeId());
+            String username = acc.getUsername() != null ? acc.getUsername().toLowerCase() : "";
+
+            if (!keyword.isEmpty()) {
+                switch (searchBy) {
+                    case "Mã nhân viên" -> matchesSearch = employeeId.contains(keyword);
+                    case "Tài khoản" -> matchesSearch = username.contains(keyword);
+                }
+            }
+
+            // Chỉ thêm vào danh sách nếu thỏa tất cả điều kiện
+            if (matchesSearch) {
+                filteredList.add(acc);
+            }
+        }
+
+        return filteredList;
     }
 }
