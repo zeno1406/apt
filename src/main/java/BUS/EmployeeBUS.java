@@ -3,9 +3,11 @@ package BUS;
 import DAL.EmployeeDAL;
 import DTO.EmployeeDTO;
 import SERVICE.AuthorizationService;
+import SERVICE.ExcelService;
 import UTILS.AvailableUtils;
 import UTILS.ValidationUtils;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -168,5 +170,10 @@ public class EmployeeBUS extends BaseBUS <EmployeeDTO, Integer> {
         return !validator.validateVietnameseText100(obj.getFirstName()) ||
                 !validator.validateVietnameseText100(obj.getLastName()) ||
                 (isAdvance && !validator.validateBigDecimal(obj.getSalary(), 10, 2, false));
+    }
+
+    private boolean exportToExcel(String filePath) throws IOException {
+        ExcelService.getInstance().exportToFileExcel(filePath, "employee");
+        return true;
     }
 }
