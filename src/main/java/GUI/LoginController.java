@@ -1,49 +1,58 @@
 package GUI;
 
+import BUS.EmployeeBUS;
 import DTO.AccountDTO;
 import SERVICE.LoginService;
+import SERVICE.SessionManagerService;
 import UTILS.NotificationUtils;
+import UTILS.UiUtils;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import lombok.extern.slf4j.Slf4j;
+import java.util.prefs.Preferences;
+
 
 import java.io.IOException;
 
 @Slf4j
 public class LoginController {
-
     @FXML
     private Button closeBtn;
-
     @FXML
     private Button loginBtn;
-
     @FXML
     private AnchorPane main_form;
-
     @FXML
     private PasswordField txtPassword;
-
     @FXML
     private TextField txtUsername;
-
-    private double x = 0;
-    private double y = 0;
+    @FXML
+    private CheckBox ckbRememberMe;
+    private Preferences prefs;
 
     @FXML
     public void initialize() {
-        txtUsername.setText("huyhoang119763");
-        txtPassword.setText("huyhoang123");
+        prefs = Preferences.userNodeForPackage(LoginController.class);
+
+        // Kiểm tra xem rememberMe có được bật không
+        boolean rememberMe = prefs.getBoolean("rememberMe", false);
+        ckbRememberMe.setSelected(rememberMe);
+
+        if (rememberMe) {
+            txtUsername.setText(prefs.get("savedUsername", ""));
+            txtPassword.setText(prefs.get("savedPassword", ""));
+        }
+
         closeBtn.setOnMouseClicked(e -> close());
         loginBtn.setOnMouseClicked(e -> handleLogin());
         txtUsername.setOnAction(e -> handleLogin());
@@ -59,9 +68,18 @@ public class LoginController {
             NotificationUtils.showErrorAlert("Vui lòng điền tài khoản và mật khẩu", "Thông báo");
         } else {
             AccountDTO account = new AccountDTO(0, txtUsername.getText(), txtPassword.getText());
-
             if(LoginService.getInstance().checkLogin(account)) {
                 NotificationUtils.showInfoAlert("Đăng nhập thành công!", "Thông báo");
+
+                // Lưu hoặc xóa thông tin tài khoản
+                prefs.putBoolean("rememberMe", ckbRememberMe.isSelected()); // Lưu trạng thái checkbox
+                if (ckbRememberMe.isSelected()) {
+                    prefs.put("savedUsername", txtUsername.getText());
+                    prefs.put("savedPassword", txtPassword.getText());
+                } else {
+                    prefs.remove("savedUsername");
+                    prefs.remove("savedPassword");
+                }
 
                 // Tắt giao diện login
                 loginBtn.getScene().getWindow().hide();
@@ -81,22 +99,7 @@ public class LoginController {
             Stage stage = new Stage();
             Scene scene = new Scene(root);
 
-            root.setOnMousePressed((MouseEvent e) -> {
-                x = e.getSceneX();
-                y = e.getSceneY();
-            });
-
-            root.setOnMouseDragged((MouseEvent e) -> {
-                if (e.getScreenX() != x || e.getScreenY() != y) {
-                    stage.setX(e.getScreenX() - x);
-                    stage.setY(e.getScreenY() - y);
-                    stage.setOpacity(.8);
-                }
-            });
-
-            root.setOnMouseReleased((MouseEvent e) -> {
-                stage.setOpacity(1);
-            });
+            UiUtils.gI().makeWindowDraggable(root, stage);
             stage.initStyle(StageStyle.TRANSPARENT);
 
             stage.setTitle("Lego Store");

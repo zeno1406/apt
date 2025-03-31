@@ -17,28 +17,25 @@ public class LoginService {
         EmployeeBUS empBus = EmployeeBUS.getInstance();
         AccountBUS accBus = AccountBUS.getInstance();
 
-        if (accBus.isLocalEmpty()) {
-            accBus.loadLocal();
-        }
+        // Load Account nếu danh sách trống
+        if (accBus.isLocalEmpty()) accBus.loadLocal();
+        if (accBus.isLocalEmpty()) return false; // Kiểm tra lại sau khi load
 
-        if (accBus.isLocalEmpty()) return false; // Kiểm tra sau khi load
-
-        // Kiểm tra đăng nhập trước
+        // Kiểm tra đăng nhập
         int currAcc = accBus.checkLogin(account.getUsername(), account.getPassword(), ServiceAccessCode.LOGIN_SERVICE);
-        if (currAcc == -1) return false;
+        if (currAcc == -1)
+            return false;
 
-        // Nếu đăng nhập thành công, kiểm tra Employee
-        if (empBus.isLocalEmpty()) {
-            empBus.loadLocal();
-        }
-        if (empBus.isLocalEmpty()) return false; // Kiểm tra sau khi load
+        // Load Employee nếu danh sách trống
+        if (empBus.isLocalEmpty()) empBus.loadLocal();
+        if (empBus.isLocalEmpty()) return false;
 
-        EmployeeDTO temp = empBus.getByIdLocal(currAcc);
-//        System.out.println("Employee Info: " + temp);
-
-        // Kiểm tra employee sau khi đã đăng nhập
-        return temp != null && temp.isStatus() && temp.getRoleId() != 0;
+        // Kiểm tra Employee
+        EmployeeDTO employee = empBus.getByIdLocal(currAcc);
+        SessionManagerService.getInstance().setLoggedInEmployee(EmployeeBUS.getInstance().getByIdLocal(employee.getId()));
+        return employee.isStatus() && employee.getRoleId() != 0 && SessionManagerService.getInstance().numAllowedModules() != 0;
     }
+
 
 
 //    public boolean registerAccount(AccountDTO account, int employee_id, int employeeLoginId) {

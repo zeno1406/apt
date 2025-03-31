@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="acSellingPaneRoot" minHeight="-Infinity" prefHeight="0.0" prefWidth="1110.0" styleClass="main-pane-container" stylesheets="@../css/base.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.SellingController">
+   <children>
+      <VBox prefHeight="200.0" prefWidth="100.0" styleClass="main-pane-container">
+         <children>
+            <Pane prefHeight="50.0" prefWidth="1100.0">
+               <children>
+                  <Pane layoutX="1050.0" layoutY="3.0" prefHeight="50.0" prefWidth="50.0">
+                     <children>
+                        <Button layoutX="7.0" layoutY="17.0" mnemonicParsing="false" text="Button" />
+                     </children>
+                  </Pane>
+                  <Label layoutX="491.0" layoutY="5.0" text="BAN THAN">
+                     <font>
+                        <Font name="System Bold" size="30.0" />
+                     </font>
+                  </Label>
+               </children></Pane>
+            <HBox prefHeight="650.0" prefWidth="200.0">
+               <children>
+                  <Pane prefHeight="200.0" prefWidth="700.0">
+                     <children>
+                        <GridPane prefHeight="650.0" prefWidth="700.0">
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                        </GridPane>
+                     </children>
+                  </Pane>
+                  <Pane prefHeight="200.0" prefWidth="400.0">
+                     <children>
+                        <VBox prefHeight="650.0" prefWidth="400.0">
+                           <children>
+                              <Pane prefHeight="200.0" prefWidth="200.0" />
+                              <Pane prefHeight="200.0" prefWidth="200.0" />
+                              <Pane prefHeight="200.0" prefWidth="200.0" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </Pane>
+               </children></HBox>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

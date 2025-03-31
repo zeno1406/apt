@@ -60,6 +60,13 @@
     -fx-fill: black;
 }
 
+.nav-btn-selected {
+    -fx-background-color: #4CAF50; /* Màu khi nút được chọn */
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+
 .logout{
     -fx-background-color: transparent;
     -fx-background-radius:10px;
@@ -77,4 +84,8 @@
 .icon {
     -fx-fit-width: 27px;
     -fx-fit-height: 27px;
+}
+
+.nav-btn-active {
+    -fx-background-color: linear-gradient(to bottom, #1F7D84, #3AE2F4);
 }

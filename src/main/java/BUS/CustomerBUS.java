@@ -2,6 +2,7 @@ package BUS;
 
 import DAL.CustomerDAL;
 import DTO.CustomerDTO;
+import DTO.EmployeeDTO;
 import SERVICE.AuthorizationService;
 import UTILS.ValidationUtils;
 
@@ -122,6 +123,40 @@ public class CustomerBUS extends BaseBUS <CustomerDTO, Integer> {
                 validator.validateVietnameseText100(obj.getLastName()) &&
                 validator.validateVietnamesePhoneNumber(obj.getPhone()) &&
                 validator.validateVietnameseText255(obj.getAddress());
+    }
+
+    public ArrayList<CustomerDTO> filterCustomers(String searchBy, String keyword, int statusFilter) {
+        ArrayList<CustomerDTO> filteredList = new ArrayList<>();
+
+        if (keyword == null) keyword = "";
+        if (searchBy == null) searchBy = "";
+
+        keyword = keyword.trim().toLowerCase();
+
+        for (CustomerDTO cus : arrLocal) {
+            boolean matchesSearch = true;
+            boolean matchesStatus = (statusFilter == -1) || (cus.isStatus() == (statusFilter == 1)); // Sửa lỗi ở đây
+
+            // Kiểm tra null tránh lỗi khi gọi .toLowerCase()
+            String firstName = cus.getFirstName() != null ? cus.getFirstName().toLowerCase() : "";
+            String lastName = cus.getLastName() != null ? cus.getLastName().toLowerCase() : "";
+            String id = String.valueOf(cus.getId());
+
+            if (!keyword.isEmpty()) {
+                switch (searchBy) {
+                    case "Mã khách hàng" -> matchesSearch = id.contains(keyword);
+                    case "Họ đệm" -> matchesSearch = firstName.contains(keyword);
+                    case "Tên" -> matchesSearch = lastName.contains(keyword);
+                }
+            }
+
+            // Chỉ thêm vào danh sách nếu thỏa tất cả điều kiện
+            if (matchesSearch && matchesStatus) {
+                filteredList.add(cus);
+            }
+        }
+
+        return filteredList;
     }
 
 }

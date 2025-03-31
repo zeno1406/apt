@@ -122,7 +122,7 @@ CREATE TABLE `account` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 INSERT INTO `account` (`employee_id`, `username`, `password`) VALUES
-(1, 'huyhoang119763', '$2a$12$XwSn2hObV3HqGBv5/ZdUBe8H9gDhSGeJZfbrQpohJhHa8r.GzxBMC');
+(1, 'huyhoang119763', '$2a$12$16qVYVlZdsEJIQTC1YDBZeVMAgNZtvOaKra8BGrYdl.KCrvj0BF1O');
 
 CREATE TABLE `customer` (
   `id` INT NOT NULL AUTO_INCREMENT,

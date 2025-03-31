@@ -1,6 +1,7 @@
 package BUS;
 
 import DAL.RoleDAL;
+import DTO.AccountDTO;
 import DTO.RoleDTO;
 import INTERFACE.ServiceAccessCode;
 import SERVICE.AuthorizationService;
@@ -157,7 +158,34 @@ public class RoleBUS extends BaseBUS<RoleDTO, Integer> {
         return obj.getDescription() == null || validator.validateStringLength(obj.getDescription(), 255);
     }
 
+    public ArrayList<RoleDTO> filterRoles(String searchBy, String keyword) {
+        ArrayList<RoleDTO> filteredList = new ArrayList<>();
 
+        if (keyword == null) keyword = "";
+        if (searchBy == null) searchBy = "";
+
+        keyword = keyword.trim().toLowerCase();
+
+        for (RoleDTO role : arrLocal) {
+            boolean matchesSearch = true;
+
+            String id = String.valueOf(role.getId());
+            String name = role.getName() != null ? role.getName().toLowerCase() : "";
+
+            if (!keyword.isEmpty()) {
+                switch (searchBy) {
+                    case "Mã chức vụ" -> matchesSearch = id.contains(keyword);
+                    case "Tên chức vụ" -> matchesSearch = name.contains(keyword);
+                }
+            }
+
+            if (matchesSearch) {
+                filteredList.add(role);
+            }
+        }
+
+        return filteredList;
+    }
 
 
 }
