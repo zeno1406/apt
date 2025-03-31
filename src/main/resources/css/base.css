@@ -69,7 +69,7 @@
 .table-view .column-header .label {
     -fx-font-family: "Arial";
     -fx-font-size: 13px;
-    -fx-text-fill: white;
+    -fx-text-fill: #fff;
     -fx-font-weight: bold;
 }
 
@@ -138,6 +138,65 @@
     -fx-font-weight: bold;
     -fx-cursor: hand;
     -fx-text-fill: #1f7d84;
+}
+
+.check-box .box {
+   -fx-background-color: #ffffff; /* Màu nền cho ô checkbox */
+   -fx-border-color: #1f7d84; /* Màu viền */
+   -fx-border-width: 1px; /* Độ dày viền */
+   -fx-border-radius: 6px;
+   -fx-font-size:12px;
+}
+
+.check-box-m {
+    -fx-font-family: "Arial";
+    -fx-font-size:14px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-text-fill: black;
+}
+
+.check-box-m .box {
+   -fx-background-color: #ffffff; /* Màu nền cho ô checkbox */
+   -fx-border-color: #1f7d84; /* Màu viền */
+   -fx-border-width: 1px; /* Độ dày viền */
+   -fx-border-radius: 6px;
+   -fx-font-size:12px;
+}
+
+.check-box-m:selected .box {
+    -fx-background-color: #eeeeee;
+    -fx-background-radius: 6px;
+}
+
+.check-box-m:selected .box .mark {
+    -fx-background-color: #3AE2F4; /* Màu của dấu tích */
+}
+
+
+.check-box-s {
+    -fx-font-family: "Arial";
+    -fx-font-size:16px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-text-fill: #1f7d84;
+}
+
+.check-box-s .box {
+    -fx-background-color: #ffffff; /* Màu nền cho ô checkbox */
+    -fx-border-color: #1f7d84; /* Màu viền */
+    -fx-border-width: 1px; /* Độ dày viền */
+    -fx-border-radius: 6px;
+    -fx-font-size:14px;
+}
+
+.check-box-s:selected .box {
+    -fx-background-color: #eeeeee;
+    -fx-background-radius: 6px;
+}
+
+.check-box-s:selected .box .mark {
+    -fx-background-color: #3AE2F4; /* Màu của dấu tích */
 }
 
 /* Định dạng cho DatePicker */
