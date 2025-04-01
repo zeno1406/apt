@@ -40,3 +40,7 @@
     -fx-background-color: #b1b9cc;
     -fx-border-style: solid;
 }
+
+.gpDetailEditProduct Pane {
+    -fx-border-style: solid;
+}

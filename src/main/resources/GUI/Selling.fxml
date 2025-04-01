@@ -36,7 +36,7 @@
                         </Button>
                      </children>
                   </Pane>
-                  <Label fx:id="lbSellingFormzName" layoutX="479.0" layoutY="1.0" text="BÁN HÀNG">
+                  <Label fx:id="lbSellingFormzName" layoutX="479.0" layoutY="1.0" styleClass="ocean-color" text="BÁN HÀNG">
                      <font>
                         <Font name="System Bold" size="28.0" />
                      </font>
@@ -180,7 +180,7 @@
                            <children>
                               <Pane prefHeight="40.0" prefWidth="384.0">
                                  <children>
-                                    <Label fx:id="lbHeaderCreateInvoiceDetail" layoutX="88.0" prefHeight="40.0" text="Chi Tiết Đơn Hàng">
+                                    <Label fx:id="lbHeaderCreateInvoiceDetail" layoutX="88.0" prefHeight="40.0" styleClass="ocean-color" text="Chi Tiết Đơn Hàng">
                                        <font>
                                           <Font name="System Bold" size="24.0" />
                                        </font>
@@ -202,38 +202,38 @@
                                        <children>
                                           <Pane fx:id="pFiledInvoiceID" prefHeight="200.0" prefWidth="200.0">
                                              <children>
-                                                <Label layoutX="14.0" layoutY="14.0" text="Mã HĐ:" />
+                                                <Label layoutX="14.0" layoutY="14.0" styleClass="ocean-color" text="Mã HĐ:" />
                                                 <TextField fx:id="txtFieldInvoiceID" layoutX="59.0" layoutY="12.0" prefHeight="20.0" prefWidth="109.0" styleClass="txtFieldTempSellingInvoice" stylesheets="@../css/sellingform.css" />
                                              </children>
                                           </Pane>
                                           <Pane fx:id="pFiledInvoiceDate" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1">
                                              <children>
-                                                <Label layoutX="14.0" layoutY="14.0" text="Ngày:" />
-                                                <TextField fx:id="txtFieldInvoiceDate" layoutX="71.0" layoutY="12.0" prefHeight="20.0" prefWidth="109.0" styleClass="txtFieldTempSellingInvoice" />
+                                                <Label layoutX="14.0" layoutY="14.0" styleClass="ocean-color" text="Ngày:" />
+                                                <TextField fx:id="txtFieldInvoiceDate" layoutX="63.0" layoutY="7.0" prefHeight="20.0" prefWidth="109.0" styleClass="txtFieldTempSellingInvoice" />
                                              </children>
                                           </Pane>
                                           <Pane fx:id="pFieldInvoiceEMPID" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
                                              <children>
-                                                <Label layoutX="14.0" layoutY="13.0" text="Mã NV:" />
+                                                <Label layoutX="14.0" layoutY="13.0" styleClass="ocean-color" text="Mã NV:" />
                                                 <TextField fx:id="txtFieldInvoiceEMPID" layoutX="59.0" layoutY="11.0" prefHeight="20.0" prefWidth="109.0" styleClass="txtFieldTempSellingInvoice" />
                                              </children>
                                           </Pane>
                                           <Pane fx:id="pFieldInvoiceCUSID" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                              <children>
-                                                <Label layoutX="14.0" layoutY="13.0" text="Mã KH:" />
-                                                <TextField fx:id="txtFieldInvoiceCUSID" layoutX="71.0" layoutY="12.0" prefHeight="20.0" prefWidth="109.0" styleClass="txtFieldTempSellingInvoice" />
+                                                <Label layoutX="14.0" layoutY="13.0" styleClass="ocean-color" text="Mã KH:" />
+                                                <TextField fx:id="txtFieldInvoiceCUSID" layoutX="63.0" layoutY="11.0" prefHeight="20.0" prefWidth="109.0" styleClass="txtFieldTempSellingInvoice" />
                                              </children>
                                           </Pane>
                                           <Pane fx:id="pFieldInvoiceEMPName" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="2">
                                              <children>
-                                                <Label layoutX="14.0" layoutY="13.0" text="Tên NV:" />
+                                                <Label layoutX="14.0" layoutY="13.0" styleClass="ocean-color" text="Tên NV:" />
                                                 <TextField fx:id="txtFieldInvoiceEMPName" layoutX="59.0" layoutY="12.0" prefHeight="20.0" prefWidth="109.0" styleClass="txtFieldTempSellingInvoice" />
                                              </children>
                                           </Pane>
                                           <Pane fx:id="pFieldInvoiceCUSName" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
                                              <children>
-                                                <Label layoutX="14.0" layoutY="13.0" text="Tên KH:" />
-                                                <TextField fx:id="txtFieldINvoiceCUSName" layoutX="71.0" layoutY="12.0" prefHeight="20.0" prefWidth="109.0" styleClass="txtFieldTempSellingInvoice" />
+                                                <Label layoutX="14.0" layoutY="13.0" styleClass="ocean-color" text="Tên KH:" />
+                                                <TextField fx:id="txtFieldINvoiceCUSName" layoutX="63.0" layoutY="11.0" prefHeight="20.0" prefWidth="109.0" styleClass="txtFieldTempSellingInvoice" />
                                              </children>
                                           </Pane>
                                        </children>
@@ -284,9 +284,9 @@
                                           </Pane>
                                           <Pane fx:id="pShowInvoiceSaleEvent" prefHeight="200.0" prefWidth="200.0">
                                              <children>
-                                                <Label layoutX="14.0" layoutY="15.0" text="Mã KM:" />
+                                                <Label layoutX="14.0" layoutY="15.0" styleClass="ocean-color" text="Mã KM:" />
                                                 <TextField fx:id="txtFieldShowInvoiceSaleCode" editable="false" layoutX="72.0" layoutY="13.0" prefHeight="7.0" prefWidth="120.0" styleClass="txtFieldShowInvoiceSaleCode" />
-                                                <Label layoutX="207.0" layoutY="15.0" text="Giảm :" />
+                                                <Label layoutX="207.0" layoutY="15.0" styleClass="ocean-color" text="Giảm :" />
                                                 <TextField fx:id="txtFieldShowInvoiceSaleValue" editable="false" layoutX="250.0" layoutY="13.0" prefWidth="120.0" styleClass="txtFieldShowInvoiceSaleValue" />
                                              </children>
                                           </Pane>

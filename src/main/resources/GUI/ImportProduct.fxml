@@ -37,7 +37,7 @@
                         </Button>
                      </children>
                   </Pane>
-                  <Label fx:id="lbImportzFormzName" layoutX="479.0" layoutY="1.0" text="NHẬP HÀNG">
+                  <Label fx:id="lbImportzFormzName" layoutX="479.0" layoutY="1.0" styleClass="ocean-color" text="NHẬP HÀNG">
                      <font>
                         <Font name="System Bold" size="28.0" />
                      </font>
@@ -180,7 +180,7 @@
                            <children>
                               <Pane prefHeight="40.0" prefWidth="384.0">
                                  <children>
-                                    <Label fx:id="lbHeaderImportingDetail" layoutX="90.0" prefHeight="40.0" text="Phiếu Nhập Hàng">
+                                    <Label fx:id="lbHeaderImportingDetail" layoutX="90.0" prefHeight="40.0" styleClass="ocean-color" text="Phiếu Nhập Hàng">
                                        <font>
                                           <Font name="System Bold" size="24.0" />
                                        </font>
@@ -201,25 +201,25 @@
                                        <children>
                                           <Pane fx:id="pFiledImportID" prefHeight="200.0" prefWidth="200.0">
                                              <children>
-                                                <Label layoutX="14.0" layoutY="14.0" text="Mã HĐ:" />
+                                                <Label layoutX="14.0" layoutY="14.0" styleClass="ocean-color" text="Mã HĐ:" />
                                                 <TextField fx:id="txtFieldImportID" layoutX="59.0" layoutY="12.0" prefHeight="20.0" prefWidth="109.0" styleClass="txtFieldTempSellingInvoice" stylesheets="@../css/sellingform.css" />
                                              </children>
                                           </Pane>
                                           <Pane fx:id="pFiledImportDate" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1">
                                              <children>
-                                                <Label layoutX="14.0" layoutY="14.0" text="Ngày:" />
+                                                <Label layoutX="14.0" layoutY="14.0" styleClass="ocean-color" text="Ngày:" />
                                                 <TextField fx:id="txtFieldImportDate" layoutX="63.0" layoutY="12.0" prefHeight="20.0" prefWidth="109.0" styleClass="txtFieldTempSellingInvoice" />
                                              </children>
                                           </Pane>
                                           <Pane fx:id="pFieldImportEMPID" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
                                              <children>
-                                                <Label layoutX="14.0" layoutY="13.0" text="Mã NV:" />
+                                                <Label layoutX="14.0" layoutY="13.0" styleClass="ocean-color" text="Mã NV:" />
                                                 <TextField fx:id="txtFieldImportEMPID" layoutX="59.0" layoutY="11.0" prefHeight="20.0" prefWidth="109.0" styleClass="txtFieldTempSellingInvoice" />
                                              </children>
                                           </Pane>
                                           <Pane fx:id="pFieldImportEMPName" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                              <children>
-                                                <Label layoutX="14.0" layoutY="13.0" text="Tên NV:" />
+                                                <Label layoutX="14.0" layoutY="13.0" styleClass="ocean-color" text="Tên NV:" />
                                                 <TextField fx:id="txtFieldImportEMPName" layoutX="63.0" layoutY="11.0" prefHeight="20.0" prefWidth="109.0" styleClass="txtFieldTempSellingInvoice" />
                                              </children>
                                           </Pane>
@@ -349,7 +349,7 @@
                      <children>
                         <Pane fx:id="pFieldEditImg" prefHeight="200.0" prefWidth="200.0">
                            <children>
-                              <Label fx:id="lbFieldEditImg" layoutX="14.0" layoutY="24.0" text="Image: " />
+                              <Label fx:id="lbFieldEditImg" layoutX="14.0" layoutY="24.0" styleClass="ocean-color" text="Image: " />
                               <TextField fx:id="txtFieldProoductImage" layoutX="88.0" layoutY="24.0">
                                  <styleClass>
                                     <String fx:value="txtFieldTempSellingInvoice" />
@@ -360,7 +360,7 @@
                         </Pane>
                         <Pane fx:id="pFieldEditName" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1">
                            <children>
-                              <Label fx:id="lbFieldEditName" layoutX="14.0" layoutY="24.0" text="Name: " />
+                              <Label fx:id="lbFieldEditName" layoutX="14.0" layoutY="24.0" styleClass="ocean-color" text="Name: " />
                               <TextField fx:id="txtFieldProductName" layoutX="88.0" layoutY="24.0">
                                  <styleClass>
                                     <String fx:value="txtFieldTempSellingInvoice" />
@@ -371,7 +371,7 @@
                         </Pane>
                         <Pane fx:id="pFieldEditQuantity" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
                            <children>
-                              <Label fx:id="lbFieldEditQuantity" layoutX="14.0" layoutY="24.0" text="Quantity:" />
+                              <Label fx:id="lbFieldEditQuantity" layoutX="14.0" layoutY="24.0" styleClass="ocean-color" text="Quantity:" />
                               <TextField fx:id="txtFieldProductQuantity" layoutX="88.0" layoutY="25.0">
                                  <styleClass>
                                     <String fx:value="txtFieldTempSellingInvoice" />
@@ -382,7 +382,7 @@
                         </Pane>
                         <Pane fx:id="pFieldEditPrice" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                            <children>
-                              <Label fx:id="lbFieldEditPrice" layoutX="14.0" layoutY="24.0" text="Price:" />
+                              <Label fx:id="lbFieldEditPrice" layoutX="14.0" layoutY="24.0" styleClass="ocean-color" text="Price:" />
                               <TextField fx:id="txtProductPrice" layoutX="88.0" layoutY="25.0">
                                  <styleClass>
                                     <String fx:value="txtFieldTempSellingInvoice" />
@@ -393,13 +393,13 @@
                         </Pane>
                         <Pane fx:id="pFieldsEditCategory" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="2">
                            <children>
-                              <Label fx:id="lbFieldEditCategory" layoutX="14.0" layoutY="24.0" text="Category:" />
+                              <Label fx:id="lbFieldEditCategory" layoutX="14.0" layoutY="24.0" styleClass="ocean-color" text="Category:" />
                               <ComboBox fx:id="cbxFieldProductCategory" layoutX="80.0" layoutY="25.0" prefWidth="150.0" />
                            </children>
                         </Pane>
                         <Pane fx:id="pFieldEditSupplier" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
                            <children>
-                              <Label fx:id="lbFieldEditSupplier" layoutX="14.0" layoutY="24.0" text="Supplier:" />
+                              <Label fx:id="lbFieldEditSupplier" layoutX="14.0" layoutY="24.0" styleClass="ocean-color" text="Supplier:" />
                               <ComboBox fx:id="txtFieldProductSupplier" layoutX="80.0" layoutY="24.0" prefWidth="150.0" />
                            </children>
                         </Pane>
