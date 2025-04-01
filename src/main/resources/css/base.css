@@ -14,6 +14,10 @@
 
 }
 
+.ocean-color {
+    -fx-text-fill: #a8d7ff;
+}
+
 .background-silver {
     -fx-background-color: #c0c0c0;
 
