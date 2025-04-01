@@ -3,21 +3,9 @@ HBox, VBox {
     -fx-end-margin: 0;
 }
 
-.acSellingRoot,
-.vbSellingContainer {
-    -fx-pref-width: 1100px;
-    -fx-pref-height: 900px;
-    -fx-background-color: white;
-}
-
-.pSellingHeader,
 .pProductSearchAndFilter,
 .pExitBtnContainer {
     -fx-pref-height: 42px;
-}
-
-.pSellingHeader {
-    -fx-background-color: #d8dee9;
 }
 
 /*selling show product header*/
@@ -56,21 +44,6 @@ HBox, VBox {
     -fx-background-color: #6b86a1;
 }
 
-.pExitBtnContainer,
-.btnExitSellingForm {
-    -fx-pref-width: 120px;
-    -fx-pref-height: 38px;
-    -fx-background-color: transparent;
-    -fx-font: 16px System;
-    -fx-font-weight: bold;
-    -fx-cursor: hand;
-}
-
-.hbSellingMainContentContainer {
-    -fx-pref-width: inherit;
-    -fx-pref-height: 850px;
-}
-
 .pDetailInvoice,
 .pListProduct {
     -fx-background-color: #e5e9f0;
@@ -107,35 +80,12 @@ HBox, VBox {
     -fx-background-color: white;
 }
 
-.tbvDetailInvoiceProduct,
-.pShowDetailInvoiceProductContainer {
-    -fx-background-color: #c0d9ee;
-    -fx-pref-height: 500px;
-}
-
 .pShowDetailInvoiceProductContainer {
     -fx-background-color: #e5e9f0;
 }
 
 .pShowOtherInvoiceProduct {
     -fx-pref-height: 182px;
-}
-
-.btnInvoiceListProductClear,
-.btnInvoiceListProductEdit,
-.btnInvoiceListProductRemove {
-    -fx-padding: 8px;
-    -fx-background-color: #0b304d;
-    -fx-text-fill: white;
-    -fx-font-weight: bold;
-    -fx-background-radius: 6px;
-    -fx-cursor: hand;
-}
-
-.btnInvoiceListProductClear:hover,
-.btnInvoiceListProductEdit:hover,
-.btnInvoiceListProductRemove:hover {
-    -fx-background-color: #b1b9cc;
 }
 
 .txtFieldShowInvoiceSaleValue,
