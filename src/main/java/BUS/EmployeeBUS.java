@@ -196,7 +196,6 @@ public class EmployeeBUS extends BaseBUS <EmployeeDTO, Integer> {
                 }
             }
 
-            // Chỉ thêm vào danh sách nếu thỏa tất cả điều kiện
             if (matchesSearch && matchesRole && matchesStatus) {
                 filteredList.add(emp);
             }

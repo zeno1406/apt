@@ -1,6 +1,19 @@
 .search {
 }
 
+.main-content {
+    -fx-pref-width: 900px;
+    -fx-pref-height: 650px;
+    -fx-background-color: white;
+}
+
+.main-pane-container {
+    -fx-pref-width: 1100px;
+    -fx-pref-height: 700px;
+    -fx-background-color: white;
+
+}
+
 .textfield {
     -fx-background-color: linear-gradient(to bottom, #efefef, #eeeeee);
     -fx-border-color: none;
@@ -148,6 +161,16 @@
    -fx-font-size:12px;
 }
 
+.check-box:selected .box {
+    -fx-background-color: #eeeeee;
+    -fx-background-radius: 6px;
+}
+
+.check-box:selected .box .mark {
+    -fx-background-color: #3AE2F4; /* Màu của dấu tích */
+}
+
+
 .check-box-m {
     -fx-font-family: "Arial";
     -fx-font-size:14px;
@@ -246,4 +269,37 @@
 .date-picker .day-cell:disabled {
     -fx-text-fill: #aaaaaa; /* Màu chữ cho ngày không khả dụng */
 }
+
+.spinner {
+    -fx-font-family: "Arial";
+    -fx-font-size: 14px;
+    -fx-background-color: linear-gradient(to bottom, #efefef, #eeeeee);
+    -fx-border-color: none;
+}
+
+.spinner .arrow-button {
+    -fx-background-color: linear-gradient(to bottom, #1F7D84, #3AE2F4);
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-pref-width: 30px;
+    -fx-pref-height: 30px;
+}
+
+/* Tùy chỉnh khi di chuột lên nút */
+.spinner .arrow-button:hover {
+    -fx-background-color: linear-gradient(to bottom, #1F7D84, #3AE2F4);
+}
+
+/* Tùy chỉnh khi nút bị nhấn */
+.spinner .arrow-button:pressed {
+    -fx-background-color: linear-gradient(to bottom, #3AE2F4, #1F7D84);
+}
+
+.textfield-1 {
+    -fx-background-color: linear-gradient(to bottom, #efefef, #eeeeee);
+    -fx-border-color: none;
+    -fx-font-family: "Arial";
+    -fx-font-size:16px;
+}
+
 

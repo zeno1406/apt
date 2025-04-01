@@ -31,11 +31,7 @@ public class InvoiceService {
             invBus.delete(invoice.getId(), employee_roleId, ServiceAccessCode.INVOICE_DETAILINVOICE_SERVICE, eployeeLoginId);
             return false;
         }
-//        BigDecimal total_capital = new BigDecimal(0);
-//        for ()
-//        // Thêm thành công thì phải lưu statistic tương ứng
-//        StatisticDTO statistic = new StatisticDTO(invoice.getCreateDate(), invoice.getId(), total_capital);
-//        StatisticDAL.getInstance().insert()
+
         return true;
     }
 
