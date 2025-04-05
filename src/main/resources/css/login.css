@@ -1,9 +1,13 @@
 .left-form {
     -fx-background-color: linear-gradient(to bottom, #006A71, #48A6A7);
+    -fx-border-color: #000;
+    -fx-border-width: .4px 0px .4px .4px;
 }
 
 .right-form {
     -fx-background-color: #fff;
+    -fx-border-color: #000;
+    -fx-border-width: .1px .4px .4px 0px;
 }
 
 .close {
@@ -62,4 +66,9 @@
     -fx-font-style: italic; /* Để chữ nghiêng */
     -fx-cursor: hand;
     -fx-text-fill: #1f7d84;
+}
+
+.hlkNavToSignUpForm {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
 }

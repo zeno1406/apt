@@ -14,6 +14,16 @@
 
 }
 
+.ocean-color {
+    -fx-text-fill: #00b0d4;
+}
+
+.background-silver {
+    -fx-background-color: #c0c0c0;
+
+    -fx-border-style: solid;
+}
+
 .textfield {
     -fx-background-color: linear-gradient(to bottom, #efefef, #eeeeee);
     -fx-border-color: none;
@@ -260,7 +270,7 @@
 }
 
 /* Định dạng cho ngày hiện tại */
-.date-picker .day-cell:today {
+.date-picker .day-cell {
     -fx-background-color: #ffeb3b; /* Màu nền cho ngày hôm nay */
     -fx-font-weight: bold; /* Chữ đậm cho ngày hôm nay */
 }
@@ -302,4 +312,72 @@
     -fx-font-size:16px;
 }
 
+.pExitBtnContainer,
+.btnExitForm {
+    -fx-pref-width: 120px;
+    -fx-pref-height: 38px;
+    -fx-background-color: transparent;
+    -fx-font: 16px System;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+}
 
+.acContainerRoot,
+.vbContainerRoot {
+    -fx-pref-width: 1100px;
+    -fx-pref-height: 900px;
+    -fx-background-color: white;
+}
+
+.pContainerHeader {
+    -fx-background-color: #d8dee9;
+    -fx-pref-height: 42px;
+}
+
+.hbMainContentContainer {
+    -fx-pref-width: inherit;
+    -fx-pref-height: 850px;
+}
+
+.tbvDetailProduct,
+.pShowDetailProductContainer {
+    -fx-background-color: #c0d9ee;
+    -fx-pref-height: 492px;
+}
+
+.btnFunctionForm {
+    -fx-padding: 8px;
+    -fx-background-color: #0b304d;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 6px;
+    -fx-cursor: hand;
+}
+
+.btnFunctionForm:hover {
+    -fx-background-color: #b1b9cc;
+}
+
+.action-btn-sub {
+    -fx-background-color: #efefef;
+    -fx-font-family: "Arial";
+    -fx-font-size:12px;
+    -fx-cursor: hand;
+    -fx-text-fill: #bceff5;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+    -fx-border-color: #1F7D84;
+}
+
+.action-btn-sub:hover {
+    -fx-background-color: linear-gradient(to bottom, #1F7D84, #3AE2F4);
+    -fx-text-fill: #fff;
+}
+
+.action-icon-sub {
+    -fx-transition: fill 0.3s ease-in-out;
+}
+
+.action-btn-sub:hover .action-icon-sub {
+    -fx-fill: white;
+}

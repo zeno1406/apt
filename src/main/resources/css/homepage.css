@@ -1,0 +1,95 @@
+.root {
+    -fx-background-color: white;
+    -fx-pref-width: 1200px;
+    -fx-pref-height: 1000px;
+    -fx-padding: 0;
+    -fx-start-margin: 0;
+    -fx-end-margin: 0;
+}
+
+.root .imgMainPageLogo {
+    -fx-cursor: hand;
+}
+
+/*Left list functions*/
+.pLogoutButtonContainer {
+    -fx-pref-height: 50px;
+    -fx-background-color: lightcyan;
+    -fx-pref-width: 160px;
+    -fx-spacing: 10px;
+}
+
+.vbMainMenu .lbAccountName {
+    /*visibility: hidden;*/
+    -fx-text-alignment: center;
+}
+
+.btnLogout {
+    -fx-pref-height: 50px;
+    -fx-background-color: transparent;
+    -fx-text-fill: black;
+}
+
+/*Left list functions*/
+.vbMainMenu {
+    -fx-background-color: rgb(188, 229, 255);
+    -fx-pref-width: 160px;
+    -fx-pref-height: 950px;
+    -fx-spacing: 10px;
+    -fx-border-color: cyan;
+}
+
+.vbMainMenu .lbAccountName {
+    visibility: hidden;
+    -fx-text-alignment: center;
+}
+
+.vbMainMenu .acAppLogo {
+    -fx-pref-height: 195px;
+}
+
+.vbMainMenu .pMainMenuContainer {
+    -fx-background-color: #acdaff;
+    -fx-pref-height: 50px;
+    -fx-pref-width: inherit;
+    -fx-cursor: hand;
+    -fx-text-alignment: left;
+    -fx-alignment: center-left;
+}
+
+.vbMainMenu .acAppLogo {
+    -fx-pref-height: 195px;
+}
+.pLogoutButtonContainer {
+    -fx-background-color: rgb(188, 229, 255);
+    -fx-pref-height: 50px;
+    -fx-pref-width: 160px;
+    -fx-cursor: hand;
+    -fx-text-alignment: left;
+    -fx-alignment: center-left;
+}
+
+.btnMainMenuChild {
+    -fx-font: 18 "System";
+    -fx-font-weight: bold;
+    -fx-text-fill: black;
+    -fx-background-color: transparent;
+    -fx-pref-height: 50px;
+    -fx-pref-width: inherit;
+    -fx-text-alignment: left;
+    -fx-alignment: center-left;
+}
+
+.vbMainMenu .btnMainMenuChild:hover {
+    -fx-background-color: lightcyan;
+}
+
+
+    .pLogoutButtonContainer .btnLogout {
+        -fx-border-color: transparent;
+        -fx-background-radius: 0;
+    }
+
+    .root .pMainContentPane {
+        -fx-background-color: black;
+    }

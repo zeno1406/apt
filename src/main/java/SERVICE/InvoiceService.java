@@ -19,6 +19,8 @@ public class InvoiceService {
         InvoiceBUS invBus = InvoiceBUS.getInstance();
         DetailInvoiceBUS dinvBus = DetailInvoiceBUS.getInstance();
 
+
+
         if (invBus.isLocalEmpty()) invBus.loadLocal();
         if (!invBus.insert(invoice, employee_roleId, ServiceAccessCode.INVOICE_DETAILINVOICE_SERVICE, eployeeLoginId)) {
             return false;

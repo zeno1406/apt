@@ -1,10 +1,10 @@
 package BUS;
 
 import DAL.RoleDAL;
-import DTO.AccountDTO;
 import DTO.RoleDTO;
 import INTERFACE.ServiceAccessCode;
 import SERVICE.AuthorizationService;
+import UTILS.AvailableUtils;
 import UTILS.ValidationUtils;
 
 import java.util.ArrayList;
@@ -28,11 +28,17 @@ public class RoleBUS extends BaseBUS<RoleDTO, Integer> {
         // Ngăn chặn tự xóa role của chính mình
         if (roleId == employee_roleId) return false;
 
+        if (!AvailableUtils.getInstance().isValidRole(roleId)) {
+            if (!RoleDAL.getInstance().delete(roleId)) return false;
+            arrLocal.removeIf(role -> role.getId() == roleId);
+            return true;
+        }
+
         // Nếu người thực hiện không có quyền 24, từ chối
         if (!AuthorizationService.getInstance().hasPermission(employeeLoginId, employee_roleId, 24)) return false;
 
         // Nếu role đang bị xóa có quyền 24, chỉ cho phép role 1 xóa nó
-        if (AuthorizationService.getInstance().canDeletUpdateRole(roleId, 24) && employee_roleId != 1) return false;
+        if (AuthorizationService.getInstance().canDeleteUpdateRole(roleId, 24) && employee_roleId != 1) return false;
 
         if (!RoleDAL.getInstance().delete(roleId)) return false;
 
@@ -54,40 +60,44 @@ public class RoleBUS extends BaseBUS<RoleDTO, Integer> {
     public int insert(RoleDTO obj, int employee_roleId, int codeAccess, int employeeLoginId) {
         if (codeAccess != ServiceAccessCode.ROLE_PERMISSION_SERVICE || obj == null) return 2;
         if (!AuthorizationService.getInstance().hasPermission(employeeLoginId, employee_roleId, 23)) return 3;
-        if (!isValidRoleInput(obj) || isDuplicateRoleName(-1, obj.getName())) return 4;
-
+        if (isNotValidRoleInput(obj) || isDuplicateRoleName(-1, obj.getName())) return 4;
         if (!RoleDAL.getInstance().insert(obj)) return 5;
 
         arrLocal.add(new RoleDTO(obj));
         return 1;
     }
 
-    public boolean update(RoleDTO obj, int employee_roleId, int employeeLoginId) {
-        if (obj == null || obj.getId() <= 0) return false;
+    public int update(RoleDTO obj, int employee_roleId, int employeeLoginId) {
+        if (obj == null || obj.getId() <= 0) return 2;
 
         // Kiểm tra đang cập nhật chính role của mình hiện có hay người khác
         boolean isSelfUpdate = employee_roleId == obj.getId();
         boolean isAdmin = (employee_roleId == 1);
         // Không có quyền 25 thì không chỉnh chính role của mình hay người khác
-        if (!AuthorizationService.getInstance().hasPermission(employeeLoginId, employee_roleId, 25)) return false;
+        if (!AuthorizationService.getInstance().hasPermission(employeeLoginId, employee_roleId, 25)) return 3;
 
         // Trường hợp role 1 (admin) có quyền cao nhất
         if (isAdmin) {
             // Tự cập nhật bản thân thì truyền id role vào để k kiểm tra trùng lập trên chính tên role đang cập nhật
-            if (isValidRoleInput(obj)) return false;
-            if (isDuplicateRoleName(isSelfUpdate ? employee_roleId : obj.getId(), obj.getName())) return false;
-            return updateRole(obj);
+            if (isNotValidRoleInput(obj)) return 4;
+            if (isDuplicateRoleName(isSelfUpdate ? employee_roleId : obj.getId(), obj.getName())) return 5;
+            if (isDuplicateRole(obj)) {
+                return 1;
+            }
+            return updateRole(obj) ? 1 : 7;
         }
 
         // Nếu không phải admin, kiểm tra update hợp lệ
-        if (!isValidRoleUpdateBasic(obj)) return false;
+        if (!isValidRoleUpdateBasic(obj)) return 4;
 
         // Nếu cập nhật role khác, đảm bảo role đó có quyền thấp hơn
-        if (!isSelfUpdate && AuthorizationService.getInstance().canDeletUpdateRole(obj.getId(), 25)) return false;
+        if (!isSelfUpdate && !AuthorizationService.getInstance().canDeleteUpdateRole(obj.getId(), 25)) return 6;
         // Kiểm tra trùng tên role
-        if (isDuplicateRoleName(isSelfUpdate ? employee_roleId : obj.getId(), obj.getName())) return false;
-
-        return updateRoleBasic(obj);
+        if (isDuplicateRoleName(isSelfUpdate ? employee_roleId : obj.getId(), obj.getName())) return 5;
+        if (isDuplicateRole(obj)) {
+            return 1;
+        }
+        return updateRoleBasic(obj) ? 1 : 7;
     }
 
     private boolean updateRole(RoleDTO obj) {
@@ -114,32 +124,33 @@ public class RoleBUS extends BaseBUS<RoleDTO, Integer> {
     private boolean isDuplicateRoleName(int id, String name) {
         if (name == null) return false;
         for (RoleDTO role : arrLocal) {
-            if (!Objects.equals(role.getId(), id) && Objects.equals(role.getName(), name)) {
+            if (!Objects.equals(role.getId(), id) && role.getName().trim().equalsIgnoreCase(name)) {
                 return true;
             }
         }
         return false;
     }
 
-    private boolean isValidRoleInput(RoleDTO obj) {
+    private boolean isNotValidRoleInput(RoleDTO obj) {
         if (obj.getName() == null || obj.getSalaryCoefficient() == null) {
-            return false;
+            return true;
         }
 
+        obj.setDescription(obj.getDescription() != null && obj.getDescription().trim().isEmpty() ? null : obj.getDescription());
         ValidationUtils validator = ValidationUtils.getInstance();
 
         // Kiểm tra tên
         if (!validator.validateVietnameseText50(obj.getName())) {
-            return false;
+            return true;
         }
 
         // Kiểm tra mô tả nếu có
         if (obj.getDescription() != null && !validator.validateVietnameseText255(obj.getDescription())) {
-            return false;
+            return true;
         }
 
         // Kiểm tra hệ số lương
-        return validator.validateBigDecimal(obj.getSalaryCoefficient(), 5, 2, false);
+        return !validator.validateBigDecimal(obj.getSalaryCoefficient(), 5, 2, false);
     }
 
     private boolean isValidRoleUpdateBasic(RoleDTO obj) {
@@ -147,16 +158,26 @@ public class RoleBUS extends BaseBUS<RoleDTO, Integer> {
             return false;
         }
 
+        obj.setDescription(obj.getDescription() != null && obj.getDescription().trim().isEmpty() ? null : obj.getDescription());
         ValidationUtils validator = ValidationUtils.getInstance();
 
-        // Kiểm tra name hợp lệ
-        if (!validator.validateVietnameseText100(obj.getName())) {
+        if (!validator.validateVietnameseText50(obj.getName())) {
             return false;
         }
 
-        // Nếu description không null, kiểm tra độ dài
-        return obj.getDescription() == null || validator.validateStringLength(obj.getDescription(), 255);
+        return obj.getDescription() == null || validator.validateVietnameseText255(obj.getDescription());
     }
+
+    private boolean isDuplicateRole(RoleDTO obj) {
+        RoleDTO existingRole = getByIdLocal(obj.getId());
+
+        // Kiểm tra xem tên, mô tả, và hệ số lương có trùng không
+        return existingRole != null &&
+                Objects.equals(existingRole.getName(), obj.getName()) &&
+                Objects.equals(existingRole.getDescription(), obj.getDescription()) &&
+                Objects.equals(existingRole.getSalaryCoefficient(), obj.getSalaryCoefficient());
+    }
+
 
     public ArrayList<RoleDTO> filterRoles(String searchBy, String keyword) {
         ArrayList<RoleDTO> filteredList = new ArrayList<>();

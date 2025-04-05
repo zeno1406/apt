@@ -42,5 +42,9 @@ public class EmployeeDTO extends BaseInformationDTO {
 
     public int getRoleId() { return roleId; }
     public void setRoleId(int roleId) { this.roleId = roleId; }
+
+    public String getFullName() {
+        return this.firstName + " " + this.lastName;
+    }
 }
 

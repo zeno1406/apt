@@ -3,9 +3,11 @@ package BUS;
 import DAL.EmployeeDAL;
 import DTO.EmployeeDTO;
 import SERVICE.AuthorizationService;
+import SERVICE.ExcelService;
 import UTILS.AvailableUtils;
 import UTILS.ValidationUtils;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -204,6 +206,21 @@ public class EmployeeBUS extends BaseBUS <EmployeeDTO, Integer> {
         return filteredList;
     }
 
+    public int numEmployeeHasRoleId(int roleId) {
+        if (roleId <= 0) return 0;
 
+        int num = 0; // Khởi tạo biến đếm
+        for (EmployeeDTO e : arrLocal) {
+            if (e.getRoleId() == roleId) {
+                num++;
+            }
+        }
+        return num;
+    }
+
+    private boolean exportToExcel(String filePath) throws IOException {
+        ExcelService.getInstance().exportToFileExcel(filePath, "employee");
+        return true;
+    }
 
 }
