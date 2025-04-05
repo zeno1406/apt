@@ -161,15 +161,6 @@ public class MainController {
         groupBtn.getChildren().clear();
         List<Button> buttons = new ArrayList<>();
 
-        // Thêm các nút đặc biệt nếu có quyền
-        if (SessionManagerService.getInstance().hasModuleAccess(5) && SessionManagerService.getInstance().hasPermission(13)) {
-            buttons.add(createModuleButton("Bán hàng", "invoice_special.png", () -> handleModuleClick(12, "Bán hàng")));
-        }
-
-        if (SessionManagerService.getInstance().hasModuleAccess(6) && SessionManagerService.getInstance().hasPermission(15)) {
-            buttons.add(createModuleButton("Nhập hàng", "import_special.png", () -> handleModuleClick(13, "Nhập hàng")));
-        }
-
         // Thêm các module bình thường
         for (Integer moduleId : orderedModules) {
             if (SessionManagerService.getInstance().hasModuleAccess(moduleId)) {

@@ -79,4 +79,10 @@ public class SessionManagerService {
         return new HashSet<>(allowedModules); // Trả về bản sao để tránh thay đổi dữ liệu gốc
     }
 
+    public int employeeLoginId() {
+        return loggedInEmployee.getId();
+    }
+    public int employeeRoleId() {
+        return loggedInEmployee.getRoleId();
+    }
 }

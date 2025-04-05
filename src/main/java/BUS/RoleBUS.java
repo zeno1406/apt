@@ -51,15 +51,15 @@ public class RoleBUS extends BaseBUS<RoleDTO, Integer> {
         return null;
     }
 
-    public boolean insert(RoleDTO obj, int employee_roleId, int codeAccess, int employeeLoginId) {
-        if (codeAccess != ServiceAccessCode.ROLE_PERMISSION_SERVICE || obj == null) return false;
-        if (!AuthorizationService.getInstance().hasPermission(employeeLoginId, employee_roleId, 23)) return false;
-        if (!isValidRoleInput(obj) || isDuplicateRoleName(-1, obj.getName())) return false;
+    public int insert(RoleDTO obj, int employee_roleId, int codeAccess, int employeeLoginId) {
+        if (codeAccess != ServiceAccessCode.ROLE_PERMISSION_SERVICE || obj == null) return 2;
+        if (!AuthorizationService.getInstance().hasPermission(employeeLoginId, employee_roleId, 23)) return 3;
+        if (!isValidRoleInput(obj) || isDuplicateRoleName(-1, obj.getName())) return 4;
 
-        if (!RoleDAL.getInstance().insert(obj)) return false;
+        if (!RoleDAL.getInstance().insert(obj)) return 5;
 
         arrLocal.add(new RoleDTO(obj));
-        return true;
+        return 1;
     }
 
     public boolean update(RoleDTO obj, int employee_roleId, int employeeLoginId) {

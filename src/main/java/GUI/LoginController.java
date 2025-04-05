@@ -57,6 +57,7 @@ public class LoginController {
         loginBtn.setOnMouseClicked(e -> handleLogin());
         txtUsername.setOnAction(e -> handleLogin());
         txtPassword.setOnAction(e -> handleLogin());
+        loginBtn.setDefaultButton(true);
     }
 
     public void close() {
@@ -81,9 +82,9 @@ public class LoginController {
                     prefs.remove("savedPassword");
                 }
 
-                // Tắt giao diện login
+                // Tắt giao diện login (mở giao diện chọn chức năng)
                 loginBtn.getScene().getWindow().hide();
-                openStage("/GUI/MainUI.fxml");
+                openStage("/GUI/NavigatePermission.fxml");
             } else {
                 NotificationUtils.showErrorAlert("Đăng nhập thất bại!", "Thông báo");
             }

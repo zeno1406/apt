@@ -10,8 +10,8 @@ import java.time.LocalDateTime;
 public class ValidationUtils {
     private static final ValidationUtils INSTANCE = new ValidationUtils();
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-    private static final Pattern VIETNAMESE_TEXT_PATTERN = Pattern.compile("^[\\p{L}]+(\\s[\\p{L}]+)*$");
-    private static final Pattern USERNAME_PATTERN = Pattern.compile("^[a-zA-Z0-9._-]+$");
+    private static final Pattern VIETNAMESE_TEXT_PATTERN = Pattern.compile("^[\\p{L}\\d_-]+(\\s[\\p{L}\\d_-]+)*$");
+    private static final Pattern USERNAME_PATTERN = Pattern.compile("^[a-zA-Z0-9]+$");
     private static final Pattern VIETNAMESE_PHONE_PATTERN = Pattern.compile("^0\\d{9}$");
 
     private ValidationUtils() {}

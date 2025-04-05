@@ -13,7 +13,7 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="649.6" prefWidth="899.2" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.RoleController">
+<AnchorPane prefHeight="650.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.RoleController">
     <children>
         <BorderPane prefHeight="600.0" prefWidth="880.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <top>
@@ -26,6 +26,11 @@
                                 <Line endX="79.0" endY="-3.814697265625E-6" layoutX="111.0" layoutY="38.0" startX="-100.0" stroke="#58c9c9" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="40.0" />
                                 <TextField fx:id="txtSearch" layoutX="10.0" layoutY="10.0" prefHeight="26.0" prefWidth="155.0" promptText="Nhập để tìm kiếm" styleClass="textfield" stylesheets="@../css/base.css" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="733.0" />
                                   <ComboBox fx:id="cbSearchBy" layoutX="206.39999389648438" layoutY="13.59999942779541" prefHeight="26.0" prefWidth="117.0" styleClass="combo-box" stylesheets="@../css/base.css" AnchorPane.leftAnchor="200.0" />
+                        <Button fx:id="authorizeBtn" layoutX="796.0" layoutY="13.0" mnemonicParsing="false" styleClass="action-btn" stylesheets="@../css/base.css" text="Button" AnchorPane.rightAnchor="10.0">
+                           <graphic>
+                              <FontAwesomeIcon glyphName="COGS" size="1.2em" styleClass="action-icon" />
+                           </graphic>
+                        </Button>
                             </children>
                         </AnchorPane>
                     </children>
@@ -61,7 +66,7 @@
                     <children>
                         <AnchorPane prefHeight="50.0" prefWidth="880.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                             <children>
-                                <HBox alignment="CENTER" layoutX="680.0" layoutY="2.0" prefHeight="46.0" prefWidth="315.0" spacing="10.0" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                <HBox fx:id="functionBtns" alignment="CENTER_RIGHT" layoutX="680.0" layoutY="2.0" prefHeight="46.0" prefWidth="315.0" spacing="10.0" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="9.0" AnchorPane.topAnchor="0.0">
                                     <children>
                                         <Button fx:id="addBtn" mnemonicParsing="false" prefHeight="34.0" prefWidth="92.0" styleClass="action-btn" stylesheets="@../css/base.css" text="Thêm">
                                             <graphic>
