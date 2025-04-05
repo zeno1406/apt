@@ -21,10 +21,9 @@
                     <children>
                         <AnchorPane prefHeight="50.0" prefWidth="880.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                             <children>
-                                <FontAwesomeIcon fill="#58c9c9" glyphName="SEARCH" layoutX="169.0" layoutY="32.0" size="1.8em" text="" />
-                                <TextField layoutX="10.0" layoutY="10.0" prefHeight="26.0" prefWidth="158.0" promptText="Nhập để tìm kiếm" styleClass="textfield" stylesheets="@../css/base.css" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0" />
-                                <Line endX="79.0" endY="-3.814697265625E-6" layoutX="111.0" layoutY="38.0" startX="-100.0" stroke="#58c9c9" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="40.0" />
-                                <TextField fx:id="txtSearch" layoutX="10.0" layoutY="10.0" prefHeight="26.0" prefWidth="155.0" promptText="Nhập để tìm kiếm" styleClass="textfield" stylesheets="@../css/base.css" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="733.0" />
+                                <FontAwesomeIcon fill="#58c9c9" glyphName="SEARCH" layoutX="169.0" layoutY="32.0" size="1.8em" text="" AnchorPane.leftAnchor="169.0" AnchorPane.topAnchor="15.0" />
+                                <Line endX="79.0" endY="-3.814697265625E-6" layoutX="111.0" layoutY="38.0" startX="-100.0" stroke="#58c9c9" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="45.0" />
+                                <TextField fx:id="txtSearch" layoutX="10.0" layoutY="10.0" prefHeight="26.0" prefWidth="145.6" promptText="Nhập để tìm kiếm" styleClass="textfield" stylesheets="@../css/base.css" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="15.0" />
                                 <ComboBox fx:id="cbSearchBy" layoutX="206.39999389648438" layoutY="13.59999942779541" prefHeight="26.0" prefWidth="117.0" styleClass="combo-box" stylesheets="@../css/base.css" AnchorPane.leftAnchor="200.0" />
                             </children>
                         </AnchorPane>
@@ -42,9 +41,10 @@
                             <children>
                                 <TableView fx:id="tblAccount" editable="true" prefHeight="444.0" prefWidth="859.2" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                     <columns>
-                                        <TableColumn fx:id="tlb_col_employeeId" prefWidth="110.39999234676361" text="Mã nhân viên" />
-                                        <TableColumn fx:id="tlb_col_username" prefWidth="112.8000259399414" text="Tài khoản" />
-                                        <TableColumn fx:id="tlb_col_password" prefWidth="68.0" text="Mật khẩu" />
+                                        <TableColumn fx:id="tlb_col_employeeId" prefWidth="139.2000126838684" text="Mã nhân viên" />
+                              <TableColumn fx:id="tlb_col_fullName" prefWidth="202.39999389648438" text="Họ và tên" />
+                                        <TableColumn fx:id="tlb_col_username" prefWidth="281.5999755859375" text="Tài khoản" />
+                                        <TableColumn fx:id="tlb_col_password" prefWidth="235.99993896484375" text="Mật khẩu" />
                                     </columns>
                                     <columnResizePolicy>
                                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -60,7 +60,7 @@
                     <children>
                         <AnchorPane prefHeight="50.0" prefWidth="880.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                             <children>
-                                <HBox alignment="CENTER" layoutX="680.0" layoutY="2.0" prefHeight="46.0" prefWidth="315.0" spacing="10.0" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                <HBox fx:id="functionBtns" alignment="CENTER_RIGHT" layoutX="680.0" layoutY="2.0" prefHeight="46.0" prefWidth="315.0" spacing="10.0" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="9.5" AnchorPane.topAnchor="0.0">
                                     <children>
                                         <Button fx:id="addBtn" mnemonicParsing="false" prefHeight="34.0" prefWidth="92.0" styleClass="action-btn" stylesheets="@../css/base.css" text="Thêm">
                                             <graphic>

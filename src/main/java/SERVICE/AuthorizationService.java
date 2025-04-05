@@ -24,7 +24,7 @@ public class AuthorizationService {
         return RolePermissionBUS.getInstance().hasPermission(roleId, permissionId);
     }
 
-    public boolean canDeletUpdateRole(int roleId, int permissionId) {
+    public boolean canDeleteUpdateRole(int roleId, int permissionId) {
         if (roleId <= 0 || permissionId <= 0) return false;
         // Nếu role này không có quyền đó => false => trả về true
         return !RolePermissionBUS.getInstance().hasPermission(roleId, permissionId);

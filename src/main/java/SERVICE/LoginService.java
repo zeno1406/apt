@@ -37,29 +37,4 @@ public class LoginService {
     }
 
 
-
-//    public boolean registerAccount(AccountDTO account, int employee_id, int employeeLoginId) {
-//        EmployeeBUS empBus = EmployeeBUS.getInstance();
-//        AccountBUS accBus = AccountBUS.getInstance();
-//
-//        if (empBus.isLocalEmpty()) empBus.loadLocal();
-//        if (empBus.isLocalEmpty()) {
-//            System.out.println("Register failed: No employee records found.");
-//            return false;
-//        }
-//
-//        EmployeeDTO temp = empBus.getByIdLocal(employee_id);
-//        if (temp == null || !temp.isStatus()) {
-//            System.out.println("Register failed: Employee is inactive or not found.");
-//            return false;
-//        }
-//
-//        if (accBus.getByIdLocal(employee_id) != null) {
-//            System.out.println("Register failed: Employee already has an account.");
-//            return false;
-//        }
-//
-//        return accBus.insert(account, employee_id, employeeLoginId);
-//    }
-
 }

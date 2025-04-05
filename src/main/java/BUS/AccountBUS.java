@@ -8,8 +8,10 @@ import SERVICE.AuthorizationService;
 import UTILS.AvailableUtils;
 import UTILS.PasswordUtils;
 import UTILS.ValidationUtils;
+import com.google.protobuf.Internal;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Objects;
 
 public class AccountBUS extends BaseBUS <AccountDTO, Integer> {
@@ -27,32 +29,32 @@ public class AccountBUS extends BaseBUS <AccountDTO, Integer> {
         return AccountDAL.getInstance().getAll();
     }
 
-    public boolean delete(Integer id, int employee_roleId, int employeeLoginId) {
-        if (id == null || id <= 0 ) return false;
+    public int delete(Integer id, int employee_roleId, int employeeLoginId) {
+        if (id == null || id <= 0 ) return 2;
 
         // Ngăn chặn xóa tài khoản gốc (employeeId = 1) để bảo vệ hệ thống
         if (id == 1) {
             System.out.println("Không thể xóa tài khoản gốc (employeeId = 1)!");
-            return false;
+            return 3;
         }
 
         // Ngăn chặn tự xóa tài khoản của chính mình
         if (employeeLoginId == id) {
             System.out.println("Không thể tự xóa tài khoản của chính mình!");
-            return false;
+            return 4;
         }
 
         // Nếu người thực hiện không có quyền 28, từ chối
-        if (!AuthorizationService.getInstance().hasPermission(employeeLoginId, employee_roleId, 28)) return false;
+        if (!AuthorizationService.getInstance().hasPermission(employeeLoginId, employee_roleId, 28)) return 5;
 
         // Nếu account đang bị xóa thuộc về employee có role có quyền 28, chỉ cho phép role 1 xóa nó
-        if (AuthorizationService.getInstance().canDeleteUpdateAccount(id, 28)  && employee_roleId != 1 ) return false;
+        if (!AuthorizationService.getInstance().canDeleteUpdateAccount(id, 28) && employee_roleId != 1) return 6;
 
         if (!AccountDAL.getInstance().delete(id)) {
-            return false;
+            return 7;
         }
         arrLocal.removeIf(role -> Objects.equals(role.getEmployeeId(), id));
-        return true;
+        return 1;
     }
 
     public AccountDTO getByIdLocal(int id) {
@@ -65,22 +67,33 @@ public class AccountBUS extends BaseBUS <AccountDTO, Integer> {
         return null;
     }
 
-    public boolean insert(AccountDTO obj, int employee_roleId, int employeeLoginId) {
-        if (obj == null || obj.getEmployeeId() <= 0 || !AuthorizationService.getInstance().hasPermission(employeeLoginId, employee_roleId, 27) || isInvalidAccountInput(obj)) {
-            return false;
+    public int insert(AccountDTO obj, int employee_roleId, int employeeLoginId) {
+        if (obj == null || obj.getEmployeeId() <= 0 || isInvalidAccountInput(obj)) {
+            return 2;
         }
 
-        if (!AvailableUtils.getInstance().isValidForCreateAccount(obj.getEmployeeId())) return false;
+        if (!AuthorizationService.getInstance().hasPermission(employeeLoginId, employee_roleId, 27)) return 3;
+
+        // Nếu người thực hiện việc tạo tài khoản không phải role 1 thì phải gọi hàm kiểm tra sau để đảm bảo không được tạo tài khoản cho role 1
+        if (employee_roleId != 1) {
+            if (!AvailableUtils.getInstance().isValidForCreateAccount(obj.getEmployeeId(), 0)) return 4;
+        } else {
+            if (!AvailableUtils.getInstance().isValidForCreateAccount(obj.getEmployeeId(), 1)) return 4;
+        }
+
+        // Không phân biệt hoa thường
+        if (isDuplicateUsername(0, obj.getUsername())) return 5;
+
 
         obj.setUsername(obj.getUsername().toLowerCase());
         obj.setPassword(PasswordUtils.getInstance().hashPassword(obj.getPassword()));
 
-        if (isDuplicateUsername(0, obj.getUsername()) || !AccountDAL.getInstance().insert(obj)) {
-            return false;
+        if (!AccountDAL.getInstance().insert(obj)) {
+            return 6;
         }
 
         arrLocal.add(new AccountDTO(obj));
-        return true;
+        return 1;
     }
 
     public boolean update(AccountDTO obj, int employee_roleId, int employeeLoginId) {
@@ -133,7 +146,7 @@ public class AccountBUS extends BaseBUS <AccountDTO, Integer> {
     private boolean isDuplicateUsername(int id, String username) {
         if (username == null) return false;
         for (AccountDTO account : arrLocal) {
-            if (!Objects.equals(account.getEmployeeId(), id) && Objects.equals(account.getUsername(), username)) {
+            if (!Objects.equals(account.getEmployeeId(), id) && account.getUsername().equalsIgnoreCase(username)) {
                 return true;
             }
         }
@@ -143,7 +156,7 @@ public class AccountBUS extends BaseBUS <AccountDTO, Integer> {
     public int checkLogin(String username, String password, int codeAccess) {
         if (codeAccess != ServiceAccessCode.LOGIN_SERVICE || username == null || password == null) return -1;
         for (AccountDTO account : arrLocal) {
-            if (account.getUsername().equals(username) && PasswordUtils.getInstance().verifyPassword(password, account.getPassword())) {
+            if (account.getUsername().equalsIgnoreCase(username) && PasswordUtils.getInstance().verifyPassword(password, account.getPassword())) {
                 return account.getEmployeeId();
             }
         }
@@ -154,8 +167,16 @@ public class AccountBUS extends BaseBUS <AccountDTO, Integer> {
         if (obj.getUsername() == null || obj.getPassword() == null) return true;
 
         ValidationUtils validator = ValidationUtils.getInstance();
-        return !validator.validateUsername(obj.getUsername(), 4, 255) ||
+        return !validator.validateUsername(obj.getUsername(), 4, 50) ||
                 !validator.validatePassword(obj.getPassword(), 6, 255);
+    }
+
+    public HashSet<Integer> employeesWithAccount() {
+        HashSet<Integer> result = new HashSet<>();
+        for (AccountDTO account : arrLocal) {
+            result.add(account.getEmployeeId());
+        }
+        return result;
     }
 
     public ArrayList<AccountDTO> filterAccounts(String searchBy, String keyword) {

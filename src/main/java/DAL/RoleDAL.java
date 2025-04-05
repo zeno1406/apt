@@ -1,9 +1,6 @@
 package DAL;
 
-import DTO.CustomerDTO;
-import DTO.EmployeeDTO;
 import DTO.RoleDTO;
-import DTO.RolePermissionDTO;
 
 import java.sql.*;
 

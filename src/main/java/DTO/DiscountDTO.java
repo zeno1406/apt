@@ -21,6 +21,14 @@ public class DiscountDTO {
         this.endDate = endDate;
     }
 
+    public DiscountDTO(DiscountDTO discountDTO) {
+        this.code = discountDTO.code;
+        this.name = discountDTO.name;
+        this.type = discountDTO.type;
+        this.startDate = discountDTO.startDate;
+        this.endDate = discountDTO.endDate;
+    }
+
     // Getters and Setters
     public String getCode() {
         return code;

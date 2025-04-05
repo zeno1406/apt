@@ -4,8 +4,10 @@ import BUS.ModuleBUS;
 import BUS.PermissionBUS;
 import BUS.RoleBUS;
 import BUS.RolePermissionBUS;
+import DAL.RoleDAL;
 import DTO.*;
 import INTERFACE.ServiceAccessCode;
+import UTILS.AvailableUtils;
 
 import java.util.ArrayList;
 
@@ -47,6 +49,10 @@ public class RolePermissionService {
         ArrayList<RolePermissionDTO> tempList = rolePermissionBus.getAllRolePermissionByRoleIdLocal(roleId);
 
         // Xóa role_permission trước
+        if (!AvailableUtils.getInstance().isValidRole(roleId)) {
+            return roleBus.delete(roleId, employee_roleId, ServiceAccessCode.ROLE_PERMISSION_SERVICE, employeeLoginId) ? 1: 2;
+        }
+
         int resultrp = rolePermissionBus.delete(roleId, employee_roleId, ServiceAccessCode.ROLE_PERMISSION_SERVICE, employeeLoginId);
         if (resultrp != 1) return resultrp;
 
@@ -57,7 +63,7 @@ public class RolePermissionService {
             System.err.println("Failed to delete role. Attempting to roll back role permissions.");
 
             // Khôi phục role_permission nếu role không xóa được
-            return rolePermissionBus.insertRollbackPermission(tempList, 1, ServiceAccessCode.ROLE_PERMISSION_SERVICE, employeeLoginId) ? 1 : 2;
+            return rolePermissionBus.insertRollbackPermission(tempList, 1, ServiceAccessCode.ROLE_PERMISSION_SERVICE, 1) ? 1 : 2;
         }
 
         return 1;

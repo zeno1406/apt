@@ -9,13 +9,13 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="300.0" prefWidth="450.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.RoleModalController">
+<AnchorPane prefHeight="300.0" prefWidth="450.0" styleClass="white-bg" stylesheets="@../css/base.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.RoleModalController">
     <children>
         <BorderPane prefHeight="425.0" prefWidth="600.0" style="-fx-border-color: #30bac4; -fx-border-width: 2px;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <top>
                 <AnchorPane prefHeight="60.0" prefWidth="550.0" BorderPane.alignment="CENTER">
                     <children>
-                        <Label fx:id="modalName" alignment="CENTER" layoutX="122.0" layoutY="18.0" prefHeight="23.0" prefWidth="202.0" text="Thêm chức vụ" textFill="#30bac4">
+                        <Label fx:id="modalName" alignment="CENTER" layoutX="122.0" layoutY="18.0" prefHeight="23.0" prefWidth="202.0" textFill="#30bac4">
                             <font>
                                 <Font name="Arial Bold" size="20.0" />
                             </font>
@@ -59,7 +59,7 @@
                                     <Font size="20.0" />
                                  </font>
                               </Label>
-                              <TextField fx:id="txtdescription" promptText="Mô tả" styleClass="textfield-1">
+                              <TextField fx:id="txtDescription" promptText="Mô tả" styleClass="textfield-1">
                                  <font>
                                     <Font size="16.0" />
                                  </font>

@@ -58,7 +58,7 @@ public class EmployeeDAL extends BaseDAL<EmployeeDTO, Integer> {
     public boolean updateAdvance(EmployeeDTO obj, boolean allowAdvanceChange) {
         String query = allowAdvanceChange
                 ? "UPDATE employee SET first_name = ?, last_name = ?, salary = ?, date_of_birth = ?, role_id = ?, status = ? WHERE id = ?"
-                : "UPDATE employee SET first_name = ?, last_name = ?, salary = ?, date_of_birth = ? WHERE id = ?"; // ĐÃ SỬA!
+                : "UPDATE employee SET first_name = ?, last_name = ?, salary = ?, date_of_birth = ? WHERE id = ?";
 
         try (Connection connection = connectionFactory.newConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {

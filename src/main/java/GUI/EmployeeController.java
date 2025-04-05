@@ -63,7 +63,7 @@ public class EmployeeController implements IController {
     public void initialize() {
         if (EmployeeBUS.getInstance().isLocalEmpty()) EmployeeBUS.getInstance().loadLocal();
         if (RoleBUS.getInstance().isLocalEmpty()) RoleBUS.getInstance().loadLocal();
-        tblEmployee.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS); // Tránh deprecated
+        tblEmployee.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
         Platform.runLater(() -> tblEmployee.getSelectionModel().clearSelection());
 
 
@@ -86,7 +86,11 @@ public class EmployeeController implements IController {
         tlb_col_dateOfBirth.setCellValueFactory(cellData ->
                 formatCell(validationUtils.formatDateTime(cellData.getValue().getDateOfBirth())));
 
-        tlb_col_roleName.setCellValueFactory(cellData -> formatCell(roleBUS.getByIdLocal(cellData.getValue().getRoleId()).getName()));
+        tlb_col_roleName.setCellValueFactory(cellData -> {
+            var role = roleBUS.getByIdLocal(cellData.getValue().getRoleId());
+            return new SimpleStringProperty(role != null && role.getName() != null ? role.getName() : "Không có");
+        });
+
         tlb_col_salary.setCellValueFactory(cellData ->
                 formatCell(validationUtils.formatCurrency(cellData.getValue().getSalary())));
 
@@ -133,6 +137,8 @@ public class EmployeeController implements IController {
         });
 
         addBtn.setOnAction(event -> handleAddBtn());
+        deleteBtn.setOnAction(e -> handleDeleteBtn());
+        editBtn.setOnAction(e -> handleEditBtn());
     }
 
     private void handleStatusFilterChange() {
@@ -189,9 +195,15 @@ public class EmployeeController implements IController {
     }
 
     private BigDecimal calculateFinalSalary(EmployeeDTO employee, RoleBUS roleBUS) {
-        BigDecimal coefficient = roleBUS.getByIdLocal(employee.getRoleId()).getSalaryCoefficient();
-        return employee.getSalary().multiply(BigDecimal.ONE.add(coefficient));
+        RoleDTO role = roleBUS.getByIdLocal(employee.getRoleId());
+
+        if (role == null || role.getSalaryCoefficient() == null) {
+            return employee.getSalary(); // Trả về lương gốc nếu role hoặc coefficient null
+        }
+
+        return employee.getSalary().multiply(BigDecimal.ONE.add(role.getSalaryCoefficient()));
     }
+
 
     @Override
     public void hideButtonWithoutPermission() {
@@ -205,6 +217,14 @@ public class EmployeeController implements IController {
     }
 
     public void handleAddBtn() {
+
+    }
+
+    public void handleDeleteBtn() {
+
+    }
+
+    public void handleEditBtn() {
 
     }
 }

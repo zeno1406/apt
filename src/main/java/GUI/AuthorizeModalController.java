@@ -4,7 +4,8 @@ import BUS.ModuleBUS;
 import BUS.PermissionBUS;
 import BUS.RolePermissionBUS;
 import DTO.*;
-import INTERFACE.IModal;
+import SERVICE.SessionManagerService;
+import UTILS.NotificationUtils;
 import UTILS.UiUtils;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -19,7 +20,7 @@ import lombok.Getter;
 import java.net.URL;
 import java.util.ArrayList;
 
-public class AuthorizeModalController implements IModal {
+public class AuthorizeModalController {
     @Getter
     private boolean isSaved;
     @FXML
@@ -29,17 +30,15 @@ public class AuthorizeModalController implements IModal {
     @FXML
     private Label roleName;
     private RoleDTO role;
-    @Getter
     private ArrayList<RolePermissionDTO> allRolePermissionByRoleId;
 
     @FXML
     public void initialize() {
-        loadCss();
         loadRoleData();
+        loadCss();
         setupListeners();
     }
 
-    @Override
     public void loadCss() {
         URL cssUrl = getClass().getResource("/css/base.css");
         if (cssUrl != null) {
@@ -52,18 +51,16 @@ public class AuthorizeModalController implements IModal {
     private void loadRoleData() {
         if (role != null) {
             roleName.setText(role.getName());
-        }
+        } else handleClose();
     }
 
-    @Override
-    public void setupListeners() {
+    private void setupListeners() {
         saveBtn.setOnAction(e -> handleSave());
         closeBtn.setOnAction(e -> handleClose());
     }
 
     public void setRole(RoleDTO role) {
         this.role = role;
-//        System.out.println("Đã nhận role: " + role.getName());
         loadRolePermissions();
         addCheckboxesToGrid();
     }
@@ -197,14 +194,48 @@ public class AuthorizeModalController implements IModal {
     }
 
     private void handleSave() {
-        isSaved = UiUtils.gI().showConfirmAlert("Bạn chắc chắn lưu phân quyền này?", "Thông báo xác nhận");
-        if (isSaved) {
+        if (UiUtils.gI().showConfirmAlert("Bạn chắc chắn lưu phân quyền này?", "Thông báo xác nhận")) {
+            handleAuthorize();
+        }
+    }
+
+    private void handleAuthorize() {
+        RolePermissionBUS rpBus = RolePermissionBUS.getInstance();
+        boolean result = true;
+
+        for (RolePermissionDTO rp : allRolePermissionByRoleId) {
+            int updateResult = rpBus.update(rp,
+                    SessionManagerService.getInstance().employeeRoleId(),
+                    SessionManagerService.getInstance().employeeLoginId());
+
+            if (updateResult != 1) {
+                result = handleUpdateError(updateResult);
+                break;
+            }
+        }
+
+        if (result) {
+            isSaved = true;
             handleClose();
         }
     }
 
+    private boolean handleUpdateError(int updateResult) {
+        switch (updateResult) {
+            case 2 -> NotificationUtils.showErrorAlert("Có lỗi khi cập nhật phân quyền. Vui lòng thử lại.", "Thông báo");
+            case 3 -> NotificationUtils.showErrorAlert("Bạn không thể cập nhật phân quyền của chính mình.", "Thông báo");
+            case 4 -> NotificationUtils.showErrorAlert("Bạn không thể cập nhật phân quyền của chức vụ ngang quyền.", "Thông báo");
+            case 5 -> NotificationUtils.showErrorAlert("Bạn không có quyền \"Sửa phân quyền\" để thực hiện thao tác này.", "Thông báo");
+            case 6 -> NotificationUtils.showErrorAlert("Cập nhật phân quyền thất bại. Vui lòng thử lại sau.", "Thông báo");
+            default -> NotificationUtils.showErrorAlert("Lỗi không xác định, vui lòng thử lại sau.", "Thông báo");
+        }
+        return false;
+    }
+
     private void handleClose() {
+        if (closeBtn.getScene() != null && closeBtn.getScene().getWindow() != null) {
         Stage stage = (Stage) closeBtn.getScene().getWindow();
         stage.close();
+        }
     }
 }

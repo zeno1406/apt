@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="350.0" prefWidth="500.0" styleClass="white-bg" stylesheets="@../css/base.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.AccountModalController">
+    <children>
+        <BorderPane prefHeight="425.0" prefWidth="600.0" style="-fx-border-color: #30bac4; -fx-border-width: 2px;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <top>
+                <AnchorPane prefHeight="60.0" prefWidth="550.0" BorderPane.alignment="CENTER">
+                    <children>
+                        <Label fx:id="modalName" alignment="CENTER" layoutX="147.0" layoutY="18.0" prefHeight="23.0" prefWidth="202.0" textFill="#30bac4">
+                            <font>
+                                <Font name="Arial Bold" size="20.0" />
+                            </font>
+                        </Label>
+                    </children>
+                </AnchorPane>
+            </top>
+            <center>
+                <AnchorPane prefHeight="362.0" prefWidth="589.0" BorderPane.alignment="CENTER">
+                    <children>
+                        <VBox prefHeight="200.0" prefWidth="421.6" stylesheets="@../css/base.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                            <children>
+                        <HBox alignment="CENTER" layoutX="10.0" layoutY="133.0" prefHeight="61.0" prefWidth="422.0" spacing="10.0">
+                           <children>
+                              <Label prefHeight="22.0" prefWidth="170.0" text="Nhân viên" textFill="#30bac4">
+                                 <font>
+                                    <Font name="Arial Bold" size="18.0" />
+                                 </font>
+                              </Label>
+                              <Label text=":" textFill="#30bac4">
+                                 <font>
+                                    <Font size="20.0" />
+                                 </font>
+                              </Label>
+                              <HBox alignment="CENTER" maxHeight="31.2" maxWidth="200.8" prefHeight="38.0" prefWidth="200.8" spacing="5.0">
+                                 <children>
+                                    <ComboBox fx:id="cbSelectEmployee" prefHeight="31.2" prefWidth="200.8" promptText="Chọn nhân viên" />
+                                    <Button fx:id="addEmployeeSubBtn" maxHeight="31.2" minWidth="32.0" mnemonicParsing="false" prefHeight="31.2" styleClass="action-btn-sub">
+                                       <graphic>
+                                          <FontAwesomeIcon glyphName="PLUS" size="1.2em" styleClass="action-icon-sub" />
+                                       </graphic>
+                                    </Button>
+                                 </children>
+                              </HBox>
+                           </children>
+                        </HBox>
+                                <HBox alignment="CENTER" prefHeight="61.0" prefWidth="422.0" spacing="10.0">
+                                    <children>
+                                        <Label prefHeight="22.0" prefWidth="170.0" text="Tài khoản" textFill="#30bac4">
+                                            <font>
+                                                <Font name="Arial Bold" size="18.0" />
+                                            </font>
+                                        </Label>
+                                        <Label text=":" textFill="#30bac4">
+                                            <font>
+                                                <Font size="20.0" />
+                                            </font>
+                                        </Label>
+                                        <TextField fx:id="txtUsername" promptText="Nhập tài khoản" styleClass="textfield-1">
+                                            <font>
+                                                <Font size="16.0" />
+                                            </font>
+                                        </TextField>
+                                    </children>
+                                </HBox>
+                                <HBox alignment="CENTER" layoutX="10.0" layoutY="10.0" prefHeight="61.0" prefWidth="422.0" spacing="10.0">
+                                    <children>
+                                        <Label prefHeight="22.0" prefWidth="170.0" text="Mật khẩu mới" textFill="#30bac4">
+                                            <font>
+                                                <Font name="Arial Bold" size="18.0" />
+                                            </font>
+                                        </Label>
+                                        <Label text=":" textFill="#30bac4">
+                                            <font>
+                                                <Font size="20.0" />
+                                            </font>
+                                        </Label>
+                              <PasswordField fx:id="txtPassword" promptText="Nhập mật khẩu mới" styleClass="textfield-1" />
+                                    </children>
+                                </HBox>
+                                <HBox alignment="CENTER" layoutX="10.0" layoutY="10.0" prefHeight="61.0" prefWidth="422.0" spacing="10.0">
+                                    <children>
+                                        <Label prefHeight="22.0" prefWidth="170.0" text="Xác nhận mật khẩu" textFill="#30bac4">
+                                            <font>
+                                                <Font name="Arial Bold" size="18.0" />
+                                            </font>
+                                        </Label>
+                                        <Label text=":" textFill="#30bac4">
+                                            <font>
+                                                <Font size="20.0" />
+                                            </font>
+                                        </Label>
+                              <PasswordField fx:id="txtRePassword" promptText="Xác nhận lại mật khẩu" styleClass="textfield-1" />
+                                    </children>
+                                </HBox>
+                            </children>
+                        </VBox>
+                    </children>
+                </AnchorPane>
+            </center>
+            <bottom>
+                <AnchorPane prefHeight="60.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+                    <children>
+                        <HBox alignment="CENTER" layoutX="80.0" prefHeight="60.0" prefWidth="286.0" spacing="60.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="80.0" AnchorPane.rightAnchor="80.79999999999995" AnchorPane.topAnchor="0.0">
+                            <children>
+                                <Button fx:id="closeBtn" mnemonicParsing="false" prefHeight="26.0" prefWidth="140.0" styleClass="action-btn" stylesheets="@../css/base.css" text="Thoát" />
+                                <Button fx:id="saveBtn" mnemonicParsing="false" prefHeight="26.0" prefWidth="140.0" styleClass="action-btn" stylesheets="@../css/base.css" text="Lưu" />
+                            </children>
+                        </HBox>
+                    </children>
+                </AnchorPane>
+            </bottom>
+        </BorderPane>
+    </children>
+</AnchorPane>

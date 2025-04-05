@@ -1,6 +1,7 @@
 package GUI;
 
 import BUS.AccountBUS;
+import BUS.EmployeeBUS;
 import BUS.RoleBUS;
 import BUS.RolePermissionBUS;
 import DTO.RoleDTO;
@@ -10,7 +11,9 @@ import SERVICE.RolePermissionService;
 import SERVICE.SessionManagerService;
 import UTILS.NotificationUtils;
 import UTILS.UiUtils;
+import UTILS.ValidationUtils;
 import javafx.application.Platform;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -56,8 +59,9 @@ public class RoleController implements IController {
     public void loadTable() {
         tlb_col_id.setCellValueFactory(new PropertyValueFactory<>("id"));
         tlb_col_name.setCellValueFactory(new PropertyValueFactory<>("name"));
-        tlb_col_description.setCellValueFactory(new PropertyValueFactory<>("description"));
-        tlb_col_salaryCoefficient.setCellValueFactory(new PropertyValueFactory<>("salaryCoefficient"));
+        tlb_col_description.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDescription() == null ? "Không có" : cellData.getValue().getDescription()));
+        tlb_col_salaryCoefficient.setCellValueFactory(cellData ->
+                new SimpleStringProperty(ValidationUtils.getInstance().formatCurrency(cellData.getValue().getSalaryCoefficient())));
         tblRole.setItems(FXCollections.observableArrayList(RoleBUS.getInstance().getAllLocal()));
     }
 
@@ -76,6 +80,8 @@ public class RoleController implements IController {
             NotificationUtils.showInfoAlert("Làm mới thành công", "Thông báo");
         });
         authorizeBtn.setOnAction(event -> handleAuthorize());
+        addBtn.setOnAction(e -> handleAdd());
+        editBtn.setOnAction(e -> handleEdit());
         deleteBtn.setOnAction(e -> handleDelete());
     }
 
@@ -120,7 +126,10 @@ public class RoleController implements IController {
     }
 
     private void handleAuthorize() {
-        if (isNotSelectedRole()) return;
+        if (isNotSelectedRole()) {
+            NotificationUtils.showErrorAlert("Vui lòng chọn chức vụ", "Thông báo");
+            return;
+        }
         if (selectedRole.getId() == SessionManagerService.getInstance().employeeRoleId()) {
             NotificationUtils.showErrorAlert("Bạn không thể cập nhật phân quyền của chính mình.", "Thông báo");
             return;
@@ -131,58 +140,26 @@ public class RoleController implements IController {
                 "Phân quyền"
         );
 
-        RolePermissionBUS rpBus = RolePermissionBUS.getInstance();
         if (modalController != null && modalController.isSaved()) {
-            boolean result = true;
-            for (RolePermissionDTO rp : modalController.getAllRolePermissionByRoleId()) {
-                int updateResult = rpBus.update(rp, SessionManagerService.getInstance().employeeRoleId(), SessionManagerService.getInstance().employeeLoginId());
-
-                switch (updateResult) {
-                    case 1:
-                        // Thành công, tiếp tục cập nhật các phân quyền
-                        break;
-                    case 2:
-                        NotificationUtils.showErrorAlert("Có lỗi khi cập nhật phân quyền. Vui lòng thử lại.", "Thông báo");
-                        result = false;
-                        break;
-                    case 3:
-                        NotificationUtils.showErrorAlert("Bạn không thể cập nhật phân quyền của chính mình.", "Thông báo");
-                        result = false;
-                        break;
-                    case 4:
-                        NotificationUtils.showErrorAlert("Bạn không thể cập nhật phân quyền của chức vụ ngang quyền.", "Thông báo");
-                        result = false;
-                        break;
-                    case 5:
-                        NotificationUtils.showErrorAlert("Bạn không có quyền \"Sửa phân quyền\" để thực hiện thao tác này.", "Thông báo");
-                        result = false;
-                        break;
-                    case 6:
-                        NotificationUtils.showErrorAlert("Cập nhật phân quyền thất bại. Vui lòng thử lại sau.", "Thông báo");
-                        result = false;
-                        break;
-                    default:
-                        NotificationUtils.showErrorAlert("Lỗi không xác định, vui lòng thử lại sau.", "Thông báo");
-                        result = false;
-                }
-
-                if (!result) {
-                    break;
-                }
-            }
-
-            if (result) {
-                NotificationUtils.showInfoAlert("Cập nhật phân quyền thành công", "Thông báo");
-                resetFilters();
-            }
+            NotificationUtils.showInfoAlert("Cập nhật phân quyền thành công", "Thông báo");
+            resetFilters();
         }
     }
 
     private void handleDelete() {
-        if (isNotSelectedRole()) return;
+        if (isNotSelectedRole()) {
+            NotificationUtils.showErrorAlert("Vui lòng chọn chức vụ", "Thông báo");
+            return;
+        }
         if (selectedRole.getId() == SessionManagerService.getInstance().employeeRoleId()) {
             NotificationUtils.showErrorAlert("Bạn không thể xóa chức vụ của chính mình.", "Thông báo");
             return;
+        }
+
+        int numEmployeeHasRole = EmployeeBUS.getInstance().numEmployeeHasRoleId(selectedRole.getId());
+        if (numEmployeeHasRole != 0) {
+            String ask = "Hiện có " + numEmployeeHasRole + " nhân viên sở hữu chức vụ này!";
+            if (!UiUtils.gI().showConfirmAlert("Bạn chắc muốn xóa chức vụ này? " + ask, "Thông báo xác nhận")) return;
         }
 
         int deleteResult = RolePermissionService.getInstance().deleteRoleWithPermissions(selectedRole.getId(),SessionManagerService.getInstance().employeeRoleId(), SessionManagerService.getInstance().employeeLoginId());
@@ -201,64 +178,52 @@ public class RoleController implements IController {
                 // Không thể tự xóa chức vụ của chính mình
                     NotificationUtils.showErrorAlert("Bạn không thể xóa chức vụ của chính mình.", "Thông báo");
             case 4 ->
-                // Người thực hiện không có quyền 24
                     NotificationUtils.showErrorAlert("Bạn không có quyền \"Xóa chức vụ\" để thực hiện thao tác này.", "Thông báo");
             case 5 ->
-                // Role có quyền 24, chỉ role 1 mới có thể xóa
                     NotificationUtils.showErrorAlert("Bạn không thể xóa chức vụ ngang quyền", "Thông báo");
             case 6 ->
-                // Lỗi khi xóa phân quyền
                     NotificationUtils.showErrorAlert("Xóa chức vụ thất bại. Vui lòng thử lại sau.", "Thông báo");
             case 7 ->
-                // Role không hợp lệ
                     NotificationUtils.showErrorAlert("Chức vụ không hợp lệ hoặc đã bị xóa.", "Thông báo");
             default ->
-                // Trường hợp không xác định
                     NotificationUtils.showErrorAlert("Lỗi không xác định, vui lòng thử lại sau.", "Thông báo");
         }
 
     }
 
     private void handleAdd() {
-//        int addResult = RolePermissionService.getInstance().createRoleWithPermissions(selectedRole.getId(),SessionManagerService.getInstance().employeeRoleId(), SessionManagerService.getInstance().employeeLoginId());
-//
-//        switch (updateResult) {
-//            case 1 ->
-//            // Thành công
-//            {
-//                NotificationUtils.showInfoAlert("Xóa chức vụ thành công.", "Thông báo");
-//                resetFilters();
-//            }
-//            case 2 ->
-//                // Không hợp lệ, roleId không đúng hoặc không có quyền
-//                    NotificationUtils.showErrorAlert("Có lỗi khi xóa chức vụ. Vui lòng thử lại.", "Thông báo");
-//            case 3 ->
-//                // Không thể tự xóa chức vụ của chính mình
-//                    NotificationUtils.showErrorAlert("Bạn không thể xóa chức vụ của chính mình.", "Thông báo");
-//            case 4 ->
-//                // Người thực hiện không có quyền 24
-//                    NotificationUtils.showErrorAlert("Bạn không có quyền \"Xóa chức vụ\" để thực hiện thao tác này.", "Thông báo");
-//            case 5 ->
-//                // Role có quyền 24, chỉ role 1 mới có thể xóa
-//                    NotificationUtils.showErrorAlert("Bạn không thể xóa chức vụ ngang quyền", "Thông báo");
-//            case 6 ->
-//                // Lỗi khi xóa phân quyền
-//                    NotificationUtils.showErrorAlert("Xóa chức vụ thất bại. Vui lòng thử lại sau.", "Thông báo");
-//            case 7 ->
-//                // Role không hợp lệ
-//                    NotificationUtils.showErrorAlert("Chức vụ không hợp lệ hoặc đã bị xóa.", "Thông báo");
-//            default ->
-//                // Trường hợp không xác định
-//                    NotificationUtils.showErrorAlert("Lỗi không xác định, vui lòng thử lại sau.", "Thông báo");
-//        }
+        RoleModalController modalController = UiUtils.gI().openStageWithController(
+                "/GUI/RoleModal.fxml",
+                controller -> controller.setTypeModal(0),
+                "Thêm chức vụ"
+        );
+        if (modalController != null && modalController.isSaved()) {
+            NotificationUtils.showInfoAlert("Thêm chức vụ thành công", "Thông báo");
+            resetFilters();
+        }
+    }
+
+    private void handleEdit() {
+        if (isNotSelectedRole()) {
+            NotificationUtils.showErrorAlert("Vui lòng chọn chức vụ", "Thông báo");
+            return;
+        }
+        RoleModalController modalController = UiUtils.gI().openStageWithController(
+                "/GUI/RoleModal.fxml",
+                controller -> {
+                    controller.setTypeModal(1);
+                    controller.setRole(selectedRole);
+                },
+                "Sửa chức vụ"
+        );
+        if (modalController != null && modalController.isSaved()) {
+            NotificationUtils.showInfoAlert("Sửa chức vụ thành công", "Thông báo");
+            applyFilters();
+        }
     }
 
     private boolean isNotSelectedRole() {
         selectedRole = tblRole.getSelectionModel().getSelectedItem();
-        if (selectedRole == null) {
-            NotificationUtils.showErrorAlert("Vui lòng chọn chức vụ", "Thông báo");
-            return true;
-        }
-        return false;
+        return selectedRole == null;
     }
 }
