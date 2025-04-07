@@ -1,6 +1,7 @@
 package BUS;
 
 import DAL.ProductDAL;
+
 import DTO.ProductDTO;
 import SERVICE.AuthorizationService;
 import UTILS.ValidationUtils;
@@ -68,7 +69,7 @@ public class ProductBUS  extends BaseBUS <ProductDTO, String>{
     }
 
     public boolean insert(ProductDTO obj, int employee_roleId, int employeeLoginId) {
-        if (obj == null || employee_roleId <= 0 || !AuthorizationService.getInstance().hasPermission(employeeLoginId, employee_roleId, 7) || !isValidProductInput(obj)) {
+        if (obj == null || obj.getCategoryId() <= 0 || employee_roleId <= 0 || !AuthorizationService.getInstance().hasPermission(employeeLoginId, employee_roleId, 7) || !isValidProductInput(obj)) {
             return false;
         }
 
@@ -87,7 +88,7 @@ public class ProductBUS  extends BaseBUS <ProductDTO, String>{
     }
 
     public boolean update(ProductDTO obj, int employee_roleId, int employeeLoginId) {
-        if (obj == null || obj.getId().isEmpty() || employee_roleId <= 0 || !AuthorizationService.getInstance().hasPermission(employeeLoginId, employee_roleId, 9) || !isValidProductUpdate(obj)) {
+        if (obj == null || obj.getId().isEmpty() || employee_roleId <= 0 || obj.getCategoryId() <= 0 || !AuthorizationService.getInstance().hasPermission(employeeLoginId, employee_roleId, 9) || !isValidProductUpdate(obj)) {
             return false;
         }
 
@@ -118,7 +119,8 @@ public class ProductBUS  extends BaseBUS <ProductDTO, String>{
     private boolean isValidProductInput(ProductDTO obj) {
         if (obj.getName() == null) return false;
 
-        return ValidationUtils.getInstance().validateVietnameseText255(obj.getName());
+        return ValidationUtils.getInstance().validateVietnameseText255(obj.getName())
+                && ValidationUtils.getInstance().validateVietnameseText255(obj.getImageUrl());
     }
 
     private boolean isValidProductUpdate(ProductDTO obj) {
@@ -132,5 +134,35 @@ public class ProductBUS  extends BaseBUS <ProductDTO, String>{
                 && validator.validateBigDecimal(obj.getSellingPrice(), 10, 2, false);
     }
 
+    public ArrayList<ProductDTO> filterProducts(String searchBy, String keyword, int categoryIdFilter, int statusFilter) {
+        ArrayList<ProductDTO> filteredList = new ArrayList<>();
+
+        if (keyword == null) keyword = "";
+        if (searchBy == null) searchBy = "";
+
+        keyword = keyword.trim().toLowerCase();
+
+        for (ProductDTO pro : arrLocal) {
+            boolean matchesSearch = true;
+            boolean matchesCategory = (categoryIdFilter == -1) || (pro.getCategoryId() == categoryIdFilter);
+            boolean matchesStatus = (statusFilter == -1) || (pro.isStatus() == (statusFilter == 1));
+
+            String name = pro.getName() != null ? pro.getName().toLowerCase() : "";
+            String productId = pro.getId() != null ? pro.getId().toLowerCase() : "";
+
+            if (!keyword.isEmpty()) {
+                switch (searchBy) {
+                    case "Mã sản phẩm" -> matchesSearch = productId.contains(keyword);
+                    case "Tên sản phẩm" -> matchesSearch = name.contains(keyword);
+                }
+            }
+
+            if (matchesSearch && matchesCategory && matchesStatus) {
+                filteredList.add(pro);
+            }
+        }
+
+        return filteredList;
+    }
 
 }

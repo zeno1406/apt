@@ -171,6 +171,16 @@
    -fx-font-size:12px;
 }
 
+.check-box:selected .box {
+    -fx-background-color: #eeeeee;
+    -fx-background-radius: 6px;
+}
+
+.check-box:selected .box .mark {
+    -fx-background-color: #3AE2F4; /* Màu của dấu tích */
+}
+
+
 .check-box-m {
     -fx-font-family: "Arial";
     -fx-font-size:14px;
@@ -270,10 +280,42 @@
     -fx-text-fill: #aaaaaa; /* Màu chữ cho ngày không khả dụng */
 }
 
+.spinner {
+    -fx-font-family: "Arial";
+    -fx-font-size: 14px;
+    -fx-background-color: linear-gradient(to bottom, #efefef, #eeeeee);
+    -fx-border-color: none;
+}
+
+.spinner .arrow-button {
+    -fx-background-color: linear-gradient(to bottom, #1F7D84, #3AE2F4);
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-pref-width: 30px;
+    -fx-pref-height: 30px;
+}
+
+/* Tùy chỉnh khi di chuột lên nút */
+.spinner .arrow-button:hover {
+    -fx-background-color: linear-gradient(to bottom, #1F7D84, #3AE2F4);
+}
+
+/* Tùy chỉnh khi nút bị nhấn */
+.spinner .arrow-button:pressed {
+    -fx-background-color: linear-gradient(to bottom, #3AE2F4, #1F7D84);
+}
+
+.textfield-1 {
+    -fx-background-color: linear-gradient(to bottom, #efefef, #eeeeee);
+    -fx-border-color: none;
+    -fx-font-family: "Arial";
+    -fx-font-size:16px;
+}
+
 .pExitBtnContainer,
 .btnExitForm {
-    -fx-pref-width: 120px;
-    -fx-pref-height: 38px;
+    -fx-pref-width: 60px;
+    -fx-pref-height: 42px;
     -fx-background-color: transparent;
     -fx-font: 16px System;
     -fx-font-weight: bold;
@@ -314,4 +356,28 @@
 
 .btnFunctionForm:hover {
     -fx-background-color: #b1b9cc;
+}
+
+.action-btn-sub {
+    -fx-background-color: #efefef;
+    -fx-font-family: "Arial";
+    -fx-font-size:12px;
+    -fx-cursor: hand;
+    -fx-text-fill: #bceff5;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+    -fx-border-color: #1F7D84;
+}
+
+.action-btn-sub:hover {
+    -fx-background-color: linear-gradient(to bottom, #1F7D84, #3AE2F4);
+    -fx-text-fill: #fff;
+}
+
+.action-icon-sub {
+    -fx-transition: fill 0.3s ease-in-out;
+}
+
+.action-btn-sub:hover .action-icon-sub {
+    -fx-fill: white;
 }

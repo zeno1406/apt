@@ -3,12 +3,10 @@ package BUS;
 import DAL.ImportDAL;
 import DTO.ImportDTO;
 import INTERFACE.ServiceAccessCode;
-import INTERFACE.SystemConfig;
 import SERVICE.AuthorizationService;
 import UTILS.ValidationUtils;
 
 import java.math.BigDecimal;
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -25,7 +23,7 @@ public class ImportBUS extends BaseBUS<ImportDTO, Integer>{
     }
 
     public boolean delete(Integer id, int employee_roleId, int codeAccess, int employeeLoginId) {
-        if (codeAccess != ServiceAccessCode.IMPORT_DETAILIMPORT_SERVICE || id == null || id <= 0 || !isValidForDelete(id)) return false;
+        if (codeAccess != ServiceAccessCode.IMPORT_DETAILIMPORT_SERVICE || id == null || id <= 0) return false;
         if (!AuthorizationService.getInstance().hasPermission(employeeLoginId, employee_roleId, 16)) {
             return false;
         }
@@ -69,20 +67,5 @@ public class ImportBUS extends BaseBUS<ImportDTO, Integer>{
                 && validator.validateBigDecimal(obj.getProfitPercent(), 5, 2, false);
     }
 
-    private boolean isValidForDelete(Integer id) {
-        if (id == null || id <= 0) return false;
-
-        LocalDateTime now = LocalDateTime.now();
-        int maxMinutes = SystemConfig.IMPORT_DELETE_TIME_LIMIT / (60 * 1000);
-
-        for (ImportDTO imp : arrLocal) {
-            if (Objects.equals(imp.getId(), id)) {
-                if (imp.getCreateDate() == null) return false; // Tránh NullPointerException
-                long minutesDifference = Duration.between(imp.getCreateDate(), now).toMinutes();
-                return minutesDifference <= maxMinutes;
-            }
-        }
-        return false;
-    }
 
 }

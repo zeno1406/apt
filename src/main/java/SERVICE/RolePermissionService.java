@@ -4,8 +4,10 @@ import BUS.ModuleBUS;
 import BUS.PermissionBUS;
 import BUS.RoleBUS;
 import BUS.RolePermissionBUS;
+import DAL.RoleDAL;
 import DTO.*;
 import INTERFACE.ServiceAccessCode;
+import UTILS.AvailableUtils;
 
 import java.util.ArrayList;
 
@@ -17,15 +19,16 @@ public class RolePermissionService {
         return INSTANCE;
     }
 
-    public boolean createRoleWithPermissions(RoleDTO role, int employee_roleId, int employeeLoginId) {
+    public int createRoleWithPermissions(RoleDTO role, int employee_roleId, int employeeLoginId) {
 
         RoleBUS roleBus = RoleBUS.getInstance();
         RolePermissionBUS rolePermissionBus = RolePermissionBUS.getInstance();
 
         if (roleBus.isLocalEmpty()) roleBus.loadLocal();
-        if (!roleBus.insert(role, employee_roleId, ServiceAccessCode.ROLE_PERMISSION_SERVICE, employeeLoginId)) {
+        int resultr = roleBus.insert(role, employee_roleId, ServiceAccessCode.ROLE_PERMISSION_SERVICE, employeeLoginId);
+        if (resultr != 1) {
             System.err.println("Tạo role thất bại");
-            return false;
+            return resultr;
         }
 
         if (rolePermissionBus.isLocalEmpty()) rolePermissionBus.loadLocal();
@@ -33,12 +36,12 @@ public class RolePermissionService {
 
             // Rollback nếu lỗi
             roleBus.delete(role.getId(), employee_roleId, ServiceAccessCode.ROLE_PERMISSION_SERVICE, employeeLoginId);
-            return false;
+            return 2;
         }
-        return true;
+        return 1;
     }
 
-    public boolean deleteRoleWithPermissions(int roleId, int employee_roleId, int employeeLoginId) {
+    public int deleteRoleWithPermissions(int roleId, int employee_roleId, int employeeLoginId) {
         RoleBUS roleBus = RoleBUS.getInstance();
         RolePermissionBUS rolePermissionBus = RolePermissionBUS.getInstance();
 
@@ -46,20 +49,24 @@ public class RolePermissionService {
         ArrayList<RolePermissionDTO> tempList = rolePermissionBus.getAllRolePermissionByRoleIdLocal(roleId);
 
         // Xóa role_permission trước
-        if (!rolePermissionBus.delete(roleId, employee_roleId, ServiceAccessCode.ROLE_PERMISSION_SERVICE, employeeLoginId)) return false;
+        if (!AvailableUtils.getInstance().isValidRole(roleId)) {
+            return roleBus.delete(roleId, employee_roleId, ServiceAccessCode.ROLE_PERMISSION_SERVICE, employeeLoginId) ? 1: 2;
+        }
+
+        int resultrp = rolePermissionBus.delete(roleId, employee_roleId, ServiceAccessCode.ROLE_PERMISSION_SERVICE, employeeLoginId);
+        if (resultrp != 1) return resultrp;
 
         if (roleBus.isLocalEmpty()) roleBus.loadLocal();
-        RoleDTO temp = roleBus.getByIdLocal(roleId);
 
         // Xóa role sau
         if (!roleBus.delete(roleId, employee_roleId, ServiceAccessCode.ROLE_PERMISSION_SERVICE, employeeLoginId)) {
             System.err.println("Failed to delete role. Attempting to roll back role permissions.");
 
             // Khôi phục role_permission nếu role không xóa được
-            return rolePermissionBus.insertRollbackPermission(tempList, 1, ServiceAccessCode.ROLE_PERMISSION_SERVICE, employeeLoginId);
+            return rolePermissionBus.insertRollbackPermission(tempList, 1, ServiceAccessCode.ROLE_PERMISSION_SERVICE, 1) ? 1 : 2;
         }
 
-        return true;
+        return 1;
     }
 
     public void printPermissionsGroupedByModule() {

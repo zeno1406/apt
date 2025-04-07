@@ -8,7 +8,7 @@ import SERVICE.AuthorizationService;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class DetailImportBUS  extends BaseBUS<DetailImportDTO, Integer>{
+public class DetailImportBUS extends BaseBUS<DetailImportDTO, Integer>{
     private static final DetailImportBUS INSTANCE = new DetailImportBUS();
 
     public static DetailImportBUS getInstance() {

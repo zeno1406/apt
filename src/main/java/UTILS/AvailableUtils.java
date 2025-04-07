@@ -1,10 +1,6 @@
 package UTILS;
 
-import BUS.AccountBUS;
-import BUS.PermissionBUS;
-import BUS.RoleBUS;
-import BUS.RolePermissionBUS;
-import SERVICE.AuthorizationService;
+import BUS.*;
 
 public class AvailableUtils {
     private static final AvailableUtils INSTANCE = new AvailableUtils();
@@ -21,13 +17,16 @@ public class AvailableUtils {
         return RoleBUS.getInstance().getByIdLocal(roleId) != null && isValidRoleWithPermissions(roleId);
     }
 
-    public boolean isValidForCreateAccount(int employeeId) {
-        if (employeeId <= 0) return false;
+    public boolean isValidForCreateAccount(int employeeId, int type) {
+        if (employeeId <= 0 || (type != 0 && type != 1)) return false;
 
         if (AccountBUS.getInstance().isLocalEmpty()) AccountBUS.getInstance().loadLocal();
-
-        // Nếu nhân viên đã có tài khoản rồi thì không được tạo nữa
-        return AccountBUS.getInstance().getByIdLocal(employeeId) == null;
+        if (EmployeeBUS.getInstance().isLocalEmpty()) EmployeeBUS.getInstance().loadLocal();
+        if (type == 0) {
+            return AccountBUS.getInstance().getByIdLocal(employeeId) == null && EmployeeBUS.getInstance().getByIdLocal(employeeId).getRoleId() != 1;
+        } else {
+            return AccountBUS.getInstance().getByIdLocal(employeeId) == null;
+        }
     }
 
     public boolean isExistAccount(int employeeId) {
@@ -49,4 +48,6 @@ public class AvailableUtils {
         // Nếu role không có đủ quyền, từ chối ngay
         return (rolePermissionCount == totalPermissions);
     }
+
+
 }

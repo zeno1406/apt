@@ -15,6 +15,7 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.HBox;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -39,6 +40,8 @@ public class EmployeeController implements IController {
     @FXML
     private TableColumn<EmployeeDTO, String> tlb_col_status;
     @FXML
+    private HBox functionBtns;
+    @FXML
     private Button addBtn, editBtn, deleteBtn, refreshBtn;
     @FXML
     private TextField txtSearch;
@@ -60,7 +63,7 @@ public class EmployeeController implements IController {
     public void initialize() {
         if (EmployeeBUS.getInstance().isLocalEmpty()) EmployeeBUS.getInstance().loadLocal();
         if (RoleBUS.getInstance().isLocalEmpty()) RoleBUS.getInstance().loadLocal();
-        tblEmployee.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS); // Tránh deprecated
+        tblEmployee.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
         Platform.runLater(() -> tblEmployee.getSelectionModel().clearSelection());
 
 
@@ -76,7 +79,6 @@ public class EmployeeController implements IController {
     public void loadTable() {
         ValidationUtils validationUtils = ValidationUtils.getInstance();
         RoleBUS roleBUS = RoleBUS.getInstance();
-        EmployeeBUS employeeBUS = EmployeeBUS.getInstance();
 
         tlb_col_employeeId.setCellValueFactory(new PropertyValueFactory<>("id"));
         tlb_col_firstName.setCellValueFactory(new PropertyValueFactory<>("firstName"));
@@ -84,7 +86,11 @@ public class EmployeeController implements IController {
         tlb_col_dateOfBirth.setCellValueFactory(cellData ->
                 formatCell(validationUtils.formatDateTime(cellData.getValue().getDateOfBirth())));
 
-        tlb_col_roleName.setCellValueFactory(cellData -> formatCell(roleBUS.getByIdLocal(cellData.getValue().getRoleId()).getName()));
+        tlb_col_roleName.setCellValueFactory(cellData -> {
+            var role = roleBUS.getByIdLocal(cellData.getValue().getRoleId());
+            return new SimpleStringProperty(role != null && role.getName() != null ? role.getName() : "Không có");
+        });
+
         tlb_col_salary.setCellValueFactory(cellData ->
                 formatCell(validationUtils.formatCurrency(cellData.getValue().getSalary())));
 
@@ -96,7 +102,6 @@ public class EmployeeController implements IController {
 
         UiUtils.gI().addTooltipToColumn(tlb_col_roleName, 10);
         UiUtils.gI().addTooltipToColumn(tlb_col_status, 10);
-        tblEmployee.setItems(FXCollections.observableArrayList(employeeBUS.getAllLocal()));
     }
 
 
@@ -126,7 +131,14 @@ public class EmployeeController implements IController {
         cbRoleFilter.setOnAction(event -> handleRoleFilterChange());
         ckbStatusFilter.setOnAction(event -> handleStatusFilterChange());
         txtSearch.textProperty().addListener((observable, oldValue, newValue) -> handleKeywordChange());
-        refreshBtn.setOnAction(event -> resetFilters());
+        refreshBtn.setOnAction(event -> {
+            resetFilters();
+            NotificationUtils.showInfoAlert("Làm mới thành công", "Thông báo");
+        });
+
+        addBtn.setOnAction(event -> handleAddBtn());
+        deleteBtn.setOnAction(e -> handleDeleteBtn());
+        editBtn.setOnAction(e -> handleEditBtn());
     }
 
     private void handleStatusFilterChange() {
@@ -176,8 +188,6 @@ public class EmployeeController implements IController {
         roleId = -1;
         statusFilter = 1; // Chỉ Active
         applyFilters(); // Áp dụng lại bộ lọc
-
-        NotificationUtils.showInfoAlert("Làm mới thành công", "Thông báo");
     }
 
     private SimpleStringProperty formatCell(String value) {
@@ -185,9 +195,15 @@ public class EmployeeController implements IController {
     }
 
     private BigDecimal calculateFinalSalary(EmployeeDTO employee, RoleBUS roleBUS) {
-        BigDecimal coefficient = roleBUS.getByIdLocal(employee.getRoleId()).getSalaryCoefficient();
-        return employee.getSalary().multiply(BigDecimal.ONE.add(coefficient));
+        RoleDTO role = roleBUS.getByIdLocal(employee.getRoleId());
+
+        if (role == null || role.getSalaryCoefficient() == null) {
+            return employee.getSalary(); // Trả về lương gốc nếu role hoặc coefficient null
+        }
+
+        return employee.getSalary().multiply(BigDecimal.ONE.add(role.getSalaryCoefficient()));
     }
+
 
     @Override
     public void hideButtonWithoutPermission() {
@@ -195,13 +211,20 @@ public class EmployeeController implements IController {
         boolean canEdit = SessionManagerService.getInstance().hasPermission(3);
         boolean canDelete = SessionManagerService.getInstance().hasPermission(2);
 
-        addBtn.setVisible(canAdd);
-        addBtn.setManaged(canAdd);
+        if (!canAdd) functionBtns.getChildren().remove(addBtn);
+        if (!canEdit) functionBtns.getChildren().remove(editBtn);
+        if (!canDelete) functionBtns.getChildren().remove(deleteBtn);
+    }
 
-        editBtn.setVisible(canEdit);
-        editBtn.setManaged(canEdit);
+    public void handleAddBtn() {
 
-        deleteBtn.setVisible(canDelete);
-        deleteBtn.setManaged(canDelete);
+    }
+
+    public void handleDeleteBtn() {
+
+    }
+
+    public void handleEditBtn() {
+
     }
 }

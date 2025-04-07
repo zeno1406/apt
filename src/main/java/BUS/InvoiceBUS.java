@@ -3,11 +3,9 @@ package BUS;
 import DAL.InvoiceDAL;
 import DTO.InvoiceDTO;
 import INTERFACE.ServiceAccessCode;
-import INTERFACE.SystemConfig;
 import SERVICE.AuthorizationService;
 import UTILS.ValidationUtils;
 import java.math.BigDecimal;
-import java.time.Duration;
 import java.time.LocalDateTime;
 
 
@@ -26,7 +24,7 @@ public class InvoiceBUS extends BaseBUS<InvoiceDTO, Integer>{
     }
 
     public boolean delete(Integer id, int employee_roleId, int codeAccess, int employeeLoginId) {
-        if (codeAccess != ServiceAccessCode.INVOICE_DETAILINVOICE_SERVICE || id == null || id <= 0 || !isValidForDelete(id)) return false;
+        if (codeAccess != ServiceAccessCode.INVOICE_DETAILINVOICE_SERVICE || id == null || id <= 0) return false;
         if (!AuthorizationService.getInstance().hasPermission(employeeLoginId, employee_roleId, 14)) return false;
 
         if (!InvoiceDAL.getInstance().delete(id)) {
@@ -76,20 +74,5 @@ public class InvoiceBUS extends BaseBUS<InvoiceDTO, Integer>{
         return obj.getDiscountAmount().compareTo(BigDecimal.ZERO) <= 0 || obj.getDiscountCode() != null;
     }
 
-    private boolean isValidForDelete(Integer id) {
-        if (id == null || id <= 0) return false;
-
-        LocalDateTime now = LocalDateTime.now();
-        int maxMinutes = SystemConfig.INVOICE_DELETE_TIME_LIMIT / (60 * 1000);
-
-        for (InvoiceDTO invoice : arrLocal) {
-            if (Objects.equals(invoice.getId(), id)) {
-                if (invoice.getCreateDate() == null) return false; // Tránh NullPointerException
-                long minutesDifference = Duration.between(invoice.getCreateDate(), now).toMinutes();
-                return minutesDifference <= maxMinutes;
-            }
-        }
-        return false;
-    }
 
 }

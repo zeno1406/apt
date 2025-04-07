@@ -1,6 +1,6 @@
 package UTILS;
 
-import DTO.EmployeeDTO;
+import GUI.MainController;
 import javafx.animation.FadeTransition;
 import javafx.animation.ParallelTransition;
 import javafx.animation.ScaleTransition;
@@ -8,13 +8,11 @@ import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.Tooltip;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.Duration;
 
 import java.io.IOException;
@@ -71,7 +69,6 @@ public class UiUtils {
         addTooltipToColumn(column, maxLength, Function.identity());
     }
 
-
     public void makeWindowDraggable(Parent root, Stage stage) {
         root.setOnMousePressed((MouseEvent e) -> {
             xOffset = e.getSceneX();
@@ -112,35 +109,38 @@ public class UiUtils {
         return new ParallelTransition(scaleTransition, fadeTransition);
     }
 
-    public void openStage(String fxmlFile, Consumer<Object> controllerInitializer, Runnable onCloseCallback, Class<?> referenceClass) {
-        Platform.runLater(() -> {
-            try {
-                FXMLLoader loader = new FXMLLoader(referenceClass.getResource(fxmlFile));
-                Parent root = loader.load();
+    public <T> T openStageWithController(String fxmlFile, Consumer<T> onLoad, String title) {
+        try {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(UiUtils.class.getResource(fxmlFile));
+            Parent root = loader.load();
 
-                Object controller = loader.getController();
-                if (controllerInitializer != null) {
-                    controllerInitializer.accept(controller); // Khởi tạo controller
-                }
-
-                Stage stage = new Stage();
-                stage.setTitle("Your Dialog Title");
-                stage.initModality(Modality.APPLICATION_MODAL); // Block UI chính
-
-                stage.setOnHidden(event -> {
-                    if (onCloseCallback != null) {
-                        onCloseCallback.run(); // Gọi callback khi modal đóng
-                    }
-                });
-
-                stage.getIcons().add(new javafx.scene.image.Image("img/logo.png"));
-                stage.setScene(new Scene(root));
-                stage.showAndWait(); // Chặn UI chính cho đến khi modal đóng
-
-            } catch (IOException e) {
-                System.err.println("Error: " + e.getMessage());
+            T controller = loader.getController();
+            if (controller != null && onLoad != null) {
+                onLoad.accept(controller);
             }
-        });
+
+            Stage stage = new Stage();
+            UiUtils.gI().makeWindowDraggable(root, stage);
+            stage.initStyle(StageStyle.TRANSPARENT);
+            stage.setTitle(title);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setScene(new Scene(root));
+            stage.showAndWait();
+
+            return controller;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public boolean showConfirmAlert(String s, String tile) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle(tile);
+        alert.setHeaderText(null);
+        alert.setContentText(s);
+        return alert.showAndWait().map(buttonType -> buttonType == ButtonType.OK).orElse(false);
     }
 
     /*

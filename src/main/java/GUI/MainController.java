@@ -21,6 +21,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import lombok.extern.slf4j.Slf4j;
+import org.jboss.jandex.Main;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -37,9 +38,15 @@ public class MainController {
     private Label employeeLoginFullName, employeeRoleName;
     @FXML
     private VBox groupBtn;
+    private static final MainController INSTANCE = new MainController();
 
     static boolean isLoaded = false;
     private Button selectedButton = null;
+
+    private MainController() {}
+    public static MainController getInstance() {
+        return INSTANCE;
+    }
 
     @FXML
     public void initialize() {
@@ -161,15 +168,6 @@ public class MainController {
         groupBtn.getChildren().clear();
         List<Button> buttons = new ArrayList<>();
 
-        // Thêm các nút đặc biệt nếu có quyền
-        if (SessionManagerService.getInstance().hasModuleAccess(5) && SessionManagerService.getInstance().hasPermission(13)) {
-            buttons.add(createModuleButton("Bán hàng", "invoice_special.png", () -> handleModuleClick(12, "Bán hàng")));
-        }
-
-        if (SessionManagerService.getInstance().hasModuleAccess(6) && SessionManagerService.getInstance().hasPermission(15)) {
-            buttons.add(createModuleButton("Nhập hàng", "import_special.png", () -> handleModuleClick(13, "Nhập hàng")));
-        }
-
         // Thêm các module bình thường
         for (Integer moduleId : orderedModules) {
             if (SessionManagerService.getInstance().hasModuleAccess(moduleId)) {
@@ -257,6 +255,30 @@ public class MainController {
             case 11 -> System.out.println("Mở giao diện thống kê");
             case 12 -> System.out.println("Mở giao diện bán hàng");
             case 13 -> System.out.println("Mở giao diện nhập hàng");
+        }
+    }
+
+    // Navigate to others stage
+    public void openStage(String fxmlFile) {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(LoginController.class.getResource(fxmlFile));
+            Parent root = fxmlLoader.load(); // Gọi .load() để lấy root từ FXML
+
+
+            Stage stage = new Stage();
+            Scene scene = new Scene(root);
+
+            UiUtils.gI().makeWindowDraggable(root, stage);
+            stage.initStyle(StageStyle.TRANSPARENT);
+
+            stage.setTitle("Lego Store");
+            stage.setScene(scene);
+
+            stage.show();
+            stage.requestFocus();
+
+        } catch (IOException e) {
+            log.error("error", e);
         }
     }
 }
