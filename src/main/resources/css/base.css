@@ -123,7 +123,7 @@
 .combo-box {
     -fx-border-color: #58c9c9;
     -fx-font-family: "Arial";
-    -fx-font-size:12px;
+    -fx-font-size:14px;
     -fx-cursor: hand;
 }
 
@@ -136,6 +136,11 @@
 .combo-box .list-cell:hover {
     -fx-background-color: #58c9c9; /* Màu nền khi hover */
     -fx-text-fill: white; /* Màu chữ khi hover */
+}
+
+.combo-box .list-view .list-cell:selected {
+    -fx-background-color: #279FA5; /* Màu nền khi lựa chọn */
+    -fx-text-fill: white; /* Màu chữ khi lựa chọn */
 }
 
 .combo-box .arrow-button {
@@ -310,6 +315,13 @@
     -fx-border-color: none;
     -fx-font-family: "Arial";
     -fx-font-size:16px;
+}
+
+.textarea-1 {
+    -fx-background-color: linear-gradient(to bottom, #efefef, #eeeeee);
+    -fx-border-color: none;
+    -fx-font-family: "Arial";
+    -fx-font-size: 16px;
 }
 
 .pExitBtnContainer,

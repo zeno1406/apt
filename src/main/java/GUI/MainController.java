@@ -57,6 +57,8 @@ public class MainController {
 
     private void setupEventHandlers() {
         logoutBtn.setOnMouseClicked(e -> {
+            if (!UiUtils.gI().showConfirmAlert("Bạn chắc muốn đăng xuất?", "Thông báo xác nhận")) return;
+            SessionManagerService.getInstance().logout();
             ParallelTransition animation = UiUtils.gI().createButtonAnimation(logoutBtn);
             animation.setOnFinished(event -> logout());
             animation.play();

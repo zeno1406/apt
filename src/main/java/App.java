@@ -17,6 +17,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
+import java.io.File;
 import java.math.BigDecimal;
 import java.net.URL;
 
@@ -39,18 +40,26 @@ public class App extends Application {
     public static void main(String[] args) {
         launch(args);
 //        System.out.println(PasswordUtils.getInstance().hashPassword("TLANG1234"));
-        //        URL resource = App.class.getResource("/images/icon/product.png");
-//        System.out.println("Image Resource: " + (resource != null ? resource.toExternalForm() : "Không tìm thấy ảnh!"));
+        String imagePath = "images/product/sp00001.png";  // Đảm bảo ảnh nằm ngoài thư mục resources
 
-//        EmployeeBUS.getInstance().loadLocal();
-//        EmployeeDTO e = EmployeeBUS.getInstance().getByIdLocal(1);
-//        SessionManagerService.getInstance().setLoggedInEmployee(e);
-//        System.out.println(SessionManagerService.getInstance().getAllowedModules());
-        URL resource = App.class.getResource("/images/product/lego-minifigure/mini-01.png");
-//        System.out.println("Image Resource: " + (resource != null ? resource.toExternalForm() : "Không tìm thấy ảnh!"));
+        // Tạo đường dẫn file từ thư mục gốc dự án
+        File file = new File(imagePath);
 
-//        RoleBUS.getInstance().loadLocal();
-//        RoleDAL.getInstance().update(new RoleDTO(1, "ADmin", " asd", new BigDecimal(2.3)));
+        // Kiểm tra xem ảnh có tồn tại hay không
+        if (file.exists()) {
+            System.out.println("Ảnh tồn tại tại đường dẫn: " + file.getAbsolutePath());
+        } else {
+            System.out.println("Không tìm thấy ảnh tại đường dẫn: " + file.getAbsolutePath());
+        }
+
+        // Kiểm tra tài nguyên bên trong resources (chỉ áp dụng với tài nguyên trong thư mục resources)
+        URL resource = App.class.getResource("/" + imagePath);  // Đảm bảo sử dụng dấu '/' trước đường dẫn
+
+        if (resource != null) {
+            System.out.println("Tài nguyên trong resources: " + resource.toExternalForm());
+        } else {
+            System.out.println("Không tìm thấy tài nguyên trong resources.");
+        }
     }
 }
 

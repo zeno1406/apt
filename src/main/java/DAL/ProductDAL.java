@@ -54,9 +54,10 @@ public class ProductDAL extends BaseDAL<ProductDTO, String> {
         statement.setInt(2, obj.getStockQuantity());
         statement.setBigDecimal(3, obj.getSellingPrice());
         statement.setBoolean(4, obj.isStatus());
-        statement.setString(5, obj.getImageUrl());
-        statement.setInt(6, obj.getCategoryId());
-        statement.setString(7, obj.getId());
+        statement.setString(5, obj.getDescription());
+        statement.setString(6, obj.getImageUrl());
+        statement.setInt(7, obj.getCategoryId());
+        statement.setString(8, obj.getId());
     }
 
     @Override

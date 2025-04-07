@@ -2,18 +2,16 @@ package GUI;
 
 import BUS.AccountBUS;
 import BUS.EmployeeBUS;
-import BUS.RoleBUS;
 import DTO.AccountDTO;
 import DTO.EmployeeDTO;
 import DTO.RoleDTO;
 import SERVICE.SessionManagerService;
 import UTILS.NotificationUtils;
 import UTILS.ValidationUtils;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.Node;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 import lombok.Getter;
 
@@ -63,7 +61,7 @@ public class AccountModalController {
         for (EmployeeDTO em : emBUS.getAllLocal()) {
             if (!employeesWithAccount.contains(em.getId())) {
                 employeeMap.put(em.getFullName(), em.getId());
-                cbSelectEmployee.getItems().add(em.getFirstName() + " " + em.getLastName());
+                cbSelectEmployee.getItems().add(em.getFullName());
             }
         }
     }
@@ -81,13 +79,16 @@ public class AccountModalController {
 
     public void setAccount(AccountDTO account) {
         this.account = account;
-//        txtRoleName.setText(role.getName());
-//        txtDescription.setText(role.getDescription() == null ? "" : role.getDescription());
-//        txtSalaryCoefficient.setText(role.getSalaryCoefficient().toString());
-//        if (SessionManagerService.getInstance().employeeRoleId() != 1) {
-//            txtSalaryCoefficient.setDisable(true);
-//            txtSalaryCoefficient.setStyle("-fx-background-color: #999999;");
-//        }
+        cbSelectEmployee.getItems().clear();
+        EmployeeDTO selectedEmployee = EmployeeBUS.getInstance().getByIdLocal(account.getEmployeeId());
+        if (selectedEmployee != null) {
+            cbSelectEmployee.getItems().add(selectedEmployee.getFullName());
+            cbSelectEmployee.getSelectionModel().select(selectedEmployee.getFullName()); // Chọn đúng tên trong ComboBox
+        }
+        txtUsername.setText(account.getUsername());
+        makeReadOnly(cbSelectEmployee);
+        makeReadOnly(txtUsername);
+        makeReadOnly(addEmployeeSubBtn);
     }
 
     private boolean isValidInput() {
@@ -170,7 +171,58 @@ public class AccountModalController {
     }
 
     private void updateAccount() {
+        AccountBUS accBus = AccountBUS.getInstance();
+        AccountDTO temp = new AccountDTO(account.getEmployeeId(), txtUsername.getText().trim(), txtPassword.getText().trim());
+        if (isValidInput()) {
 
+            int updateResult = accBus.update(temp, SessionManagerService.getInstance().employeeRoleId(), SessionManagerService.getInstance().employeeLoginId());
+            switch (updateResult) {
+                case 1 -> {
+                    isSaved = true;
+                    handleClose();
+                }
+                case 2 -> NotificationUtils.showErrorAlert("Có lỗi khi cập nhật tài khoản. Vui lòng thử lại.", "Thông báo");
+                case 3 ->
+                        NotificationUtils.showErrorAlert("Bạn không có quyền \"Cập nhật tài khoản\" để thực hiện thao tác này.", "Thông báo");
+                case 4 -> NotificationUtils.showErrorAlert("Dữ liệu đầu vào không hợp lệ", "Thông báo");
+                case 5 -> {
+                    NotificationUtils.showErrorAlert("Không thể cập nhật tài khoản gốc.", "Thông báo");
+                    clearAndFocus(txtPassword);
+                    clearAndFocus(txtRePassword);
+                }
+                case 6 -> NotificationUtils.showErrorAlert("Bạn không thể cập nhật chức vụ ngang quyền.", "Thông báo");
+                case 7 -> NotificationUtils.showErrorAlert("Tài khoản không tồn tại. Vui lòng thử lại sau.", "Thông báo");
+                case 8 -> NotificationUtils.showErrorAlert("Cập nhật tài khoản thất bại. Vui lòng thử lại sau.", "Thông báo");
+                default -> NotificationUtils.showErrorAlert("Lỗi không xác định, vui lòng thử lại sau.", "Thông báo");
+            }
+        }
+    }
+
+    private void makeReadOnly(Node node) {
+        node.setDisable(false); // Giữ UI rõ
+        node.setMouseTransparent(true); // Không tương tác
+        node.setFocusTraversable(false); // Không focus
+        node.setStyle("-fx-background-color: #999999; -fx-opacity: 0.75;");
+
+        if (node instanceof TextInputControl textInput) {
+            textInput.setEditable(false);
+        }
+
+        if (node instanceof ComboBox<?> comboBox) {
+            comboBox.setEditable(false);
+
+            Platform.runLater(() -> {
+                Node arrow = comboBox.lookup(".arrow-button");
+                if (arrow != null) {
+                    arrow.setStyle("-fx-background-color: #999999; -fx-opacity: 0.75;");
+                }
+
+                Node arrowIcon = comboBox.lookup(".arrow");
+                if (arrowIcon != null) {
+                    arrowIcon.setStyle("-fx-shape: ''; -fx-background-color: transparent;");
+                }
+            });
+        }
     }
 
 

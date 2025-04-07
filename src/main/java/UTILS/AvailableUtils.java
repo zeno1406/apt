@@ -1,6 +1,7 @@
 package UTILS;
 
 import BUS.*;
+import DTO.CategoryDTO;
 
 public class AvailableUtils {
     private static final AvailableUtils INSTANCE = new AvailableUtils();
@@ -34,7 +35,7 @@ public class AvailableUtils {
 
         if (AccountBUS.getInstance().isLocalEmpty()) AccountBUS.getInstance().loadLocal();
 
-        // Kiểm tra xem tài khoản có tồn tại khôngữa
+        // Kiểm tra xem tài khoản có tồn tại không
         return AccountBUS.getInstance().getByIdLocal(employeeId) != null;
     }
 
@@ -47,6 +48,14 @@ public class AvailableUtils {
         int totalPermissions = PermissionBUS.getInstance().getAllLocal().size();
         // Nếu role không có đủ quyền, từ chối ngay
         return (rolePermissionCount == totalPermissions);
+    }
+
+    public boolean isValidCategory(int categoryId) {
+        if (categoryId <= 0) return false;
+
+        if (CategoryBUS.getInstance().isLocalEmpty()) CategoryBUS.getInstance().loadLocal();
+        CategoryDTO temp = CategoryBUS.getInstance().getByIdLocal(categoryId);
+        return temp != null && temp.isStatus();
     }
 
 
