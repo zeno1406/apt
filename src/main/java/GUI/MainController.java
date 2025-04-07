@@ -21,6 +21,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import lombok.extern.slf4j.Slf4j;
+import org.jboss.jandex.Main;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -37,7 +38,6 @@ public class MainController {
     private Label employeeLoginFullName, employeeRoleName;
     @FXML
     private VBox groupBtn;
-
     static boolean isLoaded = false;
     private Button selectedButton = null;
 
@@ -49,16 +49,16 @@ public class MainController {
         loadAllowedModules();
     }
 
-    private void loadSessionData() {
+    public void loadSessionData() {
         EmployeeDTO currEmployee = SessionManagerService.getInstance().currEmployee();
         employeeLoginFullName.setText(currEmployee.getFirstName() + " " + currEmployee.getLastName());
         employeeRoleName.setText(RoleBUS.getInstance().getByIdLocal(currEmployee.getRoleId()).getName());
     }
 
-    private void setupEventHandlers() {
+    public void setupEventHandlers() {
         logoutBtn.setOnMouseClicked(e -> {
-            if (!UiUtils.gI().showConfirmAlert("Bạn chắc muốn đăng xuất?", "Thông báo xác nhận")) return;
-            SessionManagerService.getInstance().logout();
+            if (!UiUtils.gI().showConfirmAlert("Bạn chắc muốn thoát?", "Thông báo xác nhận")) return;
+//            SessionManagerService.getInstance().logout();
             ParallelTransition animation = UiUtils.gI().createButtonAnimation(logoutBtn);
             animation.setOnFinished(event -> logout());
             animation.play();
@@ -68,7 +68,7 @@ public class MainController {
         minimizeBtn.setOnMouseClicked(this::minimize);
     }
 
-    private void loadAllLocalData() {
+    public void loadAllLocalData() {
         if (!isLoaded) {
             EmployeeBUS.getInstance().loadLocal();
             RoleBUS.getInstance().loadLocal();
@@ -88,37 +88,8 @@ public class MainController {
     }
 
     public void logout() {
-        openLoginStage("/GUI/LoginUI.fxml");
-        Platform.runLater(() -> ((Stage) closeBtn.getScene().getWindow()).close());
-    }
-
-    public void openLoginStage(String fxmlFile) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
-            Parent root = loader.load();
-            Stage stage = new Stage();
-            UiUtils.gI().makeWindowDraggable(root, stage);
-            stage.initStyle(StageStyle.TRANSPARENT);
-            stage.setScene(new Scene(root));
-            stage.setTitle("Đăng nhập");
-
-            ScaleTransition scaleTransition = new ScaleTransition(Duration.millis(400), root);
-            scaleTransition.setFromX(0.8);
-            scaleTransition.setFromY(0.8);
-            scaleTransition.setToX(1.0);
-            scaleTransition.setToY(1.0);
-
-            FadeTransition fadeIn = new FadeTransition(Duration.millis(400), root);
-            fadeIn.setFromValue(0.0);
-            fadeIn.setToValue(1.0);
-
-            scaleTransition.play();
-            fadeIn.play();
-
-            stage.show();
-        } catch (IOException e) {
-            log.error("Lỗi mở giao diện đăng nhập", e);
-        }
+        UiUtils.gI().openStage("/GUI/NavigatePermission.fxml", "Danh sách chức năng");
+        handleClose();
     }
 
     public void loadFXML(String fxmlFile) {
@@ -250,6 +221,13 @@ public class MainController {
             case 11 -> System.out.println("Mở giao diện thống kê");
             case 12 -> System.out.println("Mở giao diện bán hàng");
             case 13 -> System.out.println("Mở giao diện nhập hàng");
+        }
+    }
+
+    private void handleClose() {
+        if (closeBtn.getScene() != null && closeBtn.getScene().getWindow() != null) {
+            Stage stage = (Stage) closeBtn.getScene().getWindow();
+            stage.close();
         }
     }
 }

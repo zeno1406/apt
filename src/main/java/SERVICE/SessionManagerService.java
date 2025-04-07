@@ -75,14 +75,27 @@ public class SessionManagerService {
         return allowedModules.size();
     }
 
-    public HashSet<Integer> getAllowedModules() {
-        return new HashSet<>(allowedModules); // Trả về bản sao để tránh thay đổi dữ liệu gốc
-    }
-
     public int employeeLoginId() {
         return loggedInEmployee.getId();
     }
     public int employeeRoleId() {
         return loggedInEmployee.getRoleId();
+    }
+
+    public boolean canManage() {
+        for (Integer permissionId : allowedPermissions) {
+            if (permissionId != 13 && permissionId != 15) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean canSelling() {
+        return hasPermission(13);
+    }
+
+    public boolean canImporting() {
+        return hasPermission(15);
     }
 }

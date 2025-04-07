@@ -27,9 +27,9 @@
          <children>
             <Pane fx:id="pSellingHeader" minHeight="-Infinity" prefHeight="50.0" prefWidth="1084.0" styleClass="pContainerHeader">
                <children>
-                  <Pane fx:id="pExitBtnContainer" layoutX="966.0" layoutY="2.0" prefHeight="50.0" prefWidth="80.0" styleClass="pExitBtnContainer">
+                  <Pane fx:id="pExitBtnContainer" layoutX="1034.0" prefHeight="50.0" prefWidth="80.0" styleClass="pExitBtnContainer">
                      <children>
-                        <Button fx:id="btnExitSelllingForm" alignment="CENTER" mnemonicParsing="false" prefHeight="50.0" prefWidth="80.0" styleClass="btnExitForm" text="ĐĂNG XUẤT" textFill="RED">
+                        <Button fx:id="btnExitSelllingForm" alignment="CENTER" mnemonicParsing="false" prefHeight="50.0" prefWidth="80.0" styleClass="btnExitForm" text="X" textFill="RED">
                            <font>
                               <Font name="System Bold" size="16.0" />
                            </font>

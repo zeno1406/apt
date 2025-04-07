@@ -57,6 +57,7 @@ public class LoginController {
         loginBtn.setOnMouseClicked(e -> handleLogin());
         txtUsername.setOnAction(e -> handleLogin());
         txtPassword.setOnAction(e -> handleLogin());
+        loginBtn.setDefaultButton(true);
     }
 
     public void close() {
@@ -81,36 +82,37 @@ public class LoginController {
                     prefs.remove("savedPassword");
                 }
 
-                // Tắt giao diện login
+                // Tắt giao diện login (mở giao diện chọn chức năng)
                 loginBtn.getScene().getWindow().hide();
-                openStage("/GUI/MainUI.fxml");
+                UiUtils.gI().openStage("/GUI/NavigatePermission.fxml", "Danh sách chức năng");
+//                openStage("/GUI/NavigatePermission.fxml");
             } else {
                 NotificationUtils.showErrorAlert("Đăng nhập thất bại!", "Thông báo");
             }
         }
     }
 
-    public void openStage(String fxmlFile) {
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(LoginController.class.getResource(fxmlFile));
-            Parent root = fxmlLoader.load(); // Gọi .load() để lấy root từ FXML
-
-
-            Stage stage = new Stage();
-            Scene scene = new Scene(root);
-
-            UiUtils.gI().makeWindowDraggable(root, stage);
-            stage.initStyle(StageStyle.TRANSPARENT);
-
-            stage.setTitle("Lego Store");
-            stage.setScene(scene);
-
-            stage.show();
-            stage.requestFocus();
-
-        } catch (IOException e) {
-            log.error("error", e);
-        }
-    }
+//    public void openStage(String fxmlFile) {
+//        try {
+//            System.out.println(fxmlFile);
+//            FXMLLoader fxmlLoader = new FXMLLoader(LoginController.class.getResource(fxmlFile));
+//            Parent root = fxmlLoader.load(); // Gọi .load() để lấy root từ FXML
+//
+//            Stage stage = new Stage();
+//            Scene scene = new Scene(root);
+//
+//            UiUtils.gI().makeWindowDraggable(root, stage);
+//            stage.initStyle(StageStyle.TRANSPARENT);
+//
+//            stage.setTitle("Lego Store");
+//            stage.setScene(scene);
+//
+//            stage.show();
+//            stage.requestFocus();
+//
+//        } catch (IOException e) {
+//            log.error("error", e);
+//        }
+//    }
 
 }
