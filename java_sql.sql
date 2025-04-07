@@ -12,7 +12,8 @@ CREATE TABLE `role` (
 
 INSERT INTO `role` (`id`, `name`, `description`, `salary_coefficient`) VALUES
 (1, 'Admin', 'Quản trị hệ thống', 3.5),
-(2, 'Nhân viên quản lý kho', null, 2.5);
+(2, 'Nhân viên quản lý kho', null, 2.5),
+(3, 'Nhân viên bán hàng', null, 2.5);
 
 CREATE TABLE `module` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -126,7 +127,7 @@ CREATE TABLE `account` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 INSERT INTO `account` (`employee_id`, `username`, `password`) VALUES
-(1, 'huyhoang119763', '$2a$12$ipuwsQs46H2VAcT1hwS/kuCpv.MXEvJ2IlcPWTyss6Gsm5hpsHWmy'),
+(1, 'huyhoang119763', '$2a$12$C/RfLKCOkXpzgs3ceg9FNu9pX5/sZm8AkHlgmfGkzMY.4ncOf7Sji'),
 (2, 'thanhlong', '$2a$12$ipuwsQs46H2VAcT1hwS/kuCpv.MXEvJ2IlcPWTyss6Gsm5hpsHWmy');
 
 CREATE TABLE `customer` (

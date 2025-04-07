@@ -93,9 +93,9 @@ public class LoginController {
 
     public void openStage(String fxmlFile) {
         try {
+            System.out.println(fxmlFile);
             FXMLLoader fxmlLoader = new FXMLLoader(LoginController.class.getResource(fxmlFile));
             Parent root = fxmlLoader.load(); // Gọi .load() để lấy root từ FXML
-
 
             Stage stage = new Stage();
             Scene scene = new Scene(root);

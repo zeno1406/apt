@@ -314,8 +314,8 @@
 
 .pExitBtnContainer,
 .btnExitForm {
-    -fx-pref-width: 120px;
-    -fx-pref-height: 38px;
+    -fx-pref-width: 60px;
+    -fx-pref-height: 42px;
     -fx-background-color: transparent;
     -fx-font: 16px System;
     -fx-font-weight: bold;
