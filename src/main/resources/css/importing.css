@@ -25,6 +25,7 @@
     -fx-border-color: black;
     -fx-pref-width: 620px;
     -fx-pref-height: 300px;
+    visibility: hidden;
 }
 
 .gpDetailEditProduct {
@@ -36,11 +37,11 @@
     -fx-background-color: snow;
 }
 
-.txtaFieldEditDescription {
-    -fx-background-color: #b1b9cc;
-    -fx-border-style: solid;
-}
-
 .gpDetailEditProduct Pane {
     -fx-border-style: solid;
 }
+
+.showProductPane {
+    -fx-pref-width: 100px;
+}
+

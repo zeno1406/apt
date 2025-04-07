@@ -8,6 +8,7 @@ import javafx.animation.*;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -43,7 +44,7 @@ public class MainController {
     static boolean isLoaded = false;
     private Button selectedButton = null;
 
-    private MainController() {}
+    public MainController() {}
     public static MainController getInstance() {
         return INSTANCE;
     }
@@ -93,7 +94,7 @@ public class MainController {
     }
 
     public void logout() {
-        openLoginStage("/GUI/LoginUI.fxml");
+        openLoginStage("/GUI/NavigatePermission.fxml");
         Platform.runLater(() -> ((Stage) closeBtn.getScene().getWindow()).close());
     }
 
@@ -280,5 +281,71 @@ public class MainController {
         } catch (IOException e) {
             log.error("error", e);
         }
+    }
+
+    // Add constraint row
+    public void addConstraintRow(GridPane gridPane, int quantity, int height) {
+        boolean row_col = true, wait = false;
+        for (int i = 0; i < quantity; i++) {
+            RowConstraints rowConstraints = new RowConstraints();
+            rowConstraints.setPrefHeight(height);
+            gridPane.getRowConstraints().add(rowConstraints);
+        }
+
+        int prevRow = 0;
+        int total = gridPane.getRowCount();
+        System.out.println(total);
+        for (int i = 0; i < total; i++) {
+            String url = "/images/product/" + "default.png";
+            Image image = new Image(Objects.requireNonNull(getClass().getResource(url)).toString());
+            System.out.print(image);
+            row_col = !row_col;
+            addProductToGrid(gridPane, wait ? prevRow : i, row_col ? 1 : 0, image, "name",  1, 12000);
+            wait = !wait;
+            prevRow = i;
+        }
+    }
+
+
+    // add container
+    public void addProductToGrid(GridPane gridPane, int row, int col, Image image, String name, int quantity, double price) {
+        // ImageView
+        ImageView imageView = new ImageView(image);
+        imageView.setFitWidth(134);
+        imageView.setFitHeight(134);
+        imageView.setPreserveRatio(true);
+        // Labels
+        Label nameLabel = new Label("Name :");
+        Label quantityLabel = new Label("Quantity :");
+        Label priceLabel = new Label("Price :");
+
+        Label nameValue = new Label(name);
+        Label quantityValue = new Label(String.valueOf(quantity));
+        Label priceValue = new Label(String.format("%.0f ₫", price));
+
+        // VBox
+        VBox infoBox = new VBox(10); // khoảng cách giữa các dòng
+        infoBox.getChildren().addAll(
+                createInfoRow(nameLabel, nameValue),
+                createInfoRow(quantityLabel, quantityValue),
+                createInfoRow(priceLabel, priceValue)
+        );
+        infoBox.setPrefHeight(134);
+
+        // HBox
+        HBox productBox = new HBox(10);
+        productBox.getChildren().addAll(imageView, infoBox);
+        productBox.setPadding(new Insets(5));
+        productBox.setStyle("-fx-background-color: #e0ffff; -fx-border-color: #ccc;");
+        productBox.setPrefHeight(134);
+
+        // Thêm vào grid
+        gridPane.add(productBox, col, row);
+    }
+
+    private HBox createInfoRow(Label label, Label value) {
+        HBox row = new HBox(5);
+        row.getChildren().addAll(label, value);
+        return row;
     }
 }

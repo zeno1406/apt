@@ -10,8 +10,6 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -29,7 +27,7 @@
                <children>
                   <Pane fx:id="pExitBtnContainer" layoutX="1034.0" prefHeight="50.0" prefWidth="80.0" styleClass="pExitBtnContainer">
                      <children>
-                        <Button fx:id="btnExitSelllingForm" alignment="CENTER" mnemonicParsing="false" prefHeight="50.0" prefWidth="80.0" styleClass="btnExitForm" text="X" textFill="RED">
+                        <Button fx:id="btnExitSellingForm" alignment="CENTER" mnemonicParsing="false" onMouseClicked="#onMouseClickedExitImportingForm" prefHeight="50.0" prefWidth="80.0" styleClass="btnExitForm" text="X" textFill="RED">
                            <font>
                               <Font name="System Bold" size="16.0" />
                            </font>
@@ -47,7 +45,7 @@
                </VBox.margin></Pane>
             <HBox fx:id="hbSellingMainContentContainer" prefHeight="650.0" prefWidth="200.0" styleClass="hbSellingMainContentContainer">
                <children>
-                  <Pane fx:id="pListProduct" minHeight="-Infinity" minWidth="-Infinity" prefHeight="842.0" prefWidth="692.0" styleClass="pDetailInvoice">
+                  <Pane fx:id="pListProduct" minHeight="-Infinity" minWidth="-Infinity" prefHeight="642.0" prefWidth="692.0" styleClass="pDetailInvoice">
                      <children>
                         <Pane fx:id="pProductSearchAndFilter" minHeight="-Infinity" prefHeight="50.0" prefWidth="700.0" styleClass="pProductSearchAndFilter">
                            <children>
@@ -65,19 +63,19 @@
                                     </Pane>
                                  </children>
                               </Pane>
-                              <Pane fx:id="pFilterProductContainer" layoutX="492.0" layoutY="-4.0" prefHeight="50.0" prefWidth="200.0">
+                              <Pane fx:id="pFilterProductContainer" layoutX="478.0" prefHeight="42.0" prefWidth="200.0">
                                  <children>
-                                    <ComboBox fx:id="cbxListProductFilter" layoutX="36.0" layoutY="10.0" prefHeight="30.0" prefWidth="150.0" promptText="Lọc Theo" styleClass="cbxListProductFilter">
+                                    <ComboBox fx:id="cbxListProductFilter" layoutX="25.0" layoutY="6.0" minHeight="-Infinity" prefHeight="30.0" prefWidth="150.0" promptText="Lọc Theo" styleClass="cbxListProductFilter" visibleRowCount="12">
                                        <padding>
-                                          <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+                                          <Insets bottom="0.25" left="0.25" right="0.25" top="0.25" />
                                        </padding></ComboBox>
                                  </children>
                               </Pane>
                            </children>
                         </Pane>
-                        <ScrollPane fx:id="spShowProductContainer" hbarPolicy="ALWAYS" layoutY="42.0" prefHeight="800.0" prefWidth="704.0" styleClass="spShowProductContainer">
+                        <ScrollPane fx:id="spShowProductContainer" hbarPolicy="NEVER" layoutY="42.0" prefHeight="800.0" prefWidth="704.0" styleClass="spShowProductContainer">
                            <content>
-                              <GridPane fx:id="gpShowProductWrapper" alignment="CENTER" hgap="8.0" prefHeight="800.0" prefWidth="692.0" styleClass="gpShowProductWrapper">
+                              <GridPane fx:id="gpShowProductWrapper" alignment="CENTER" hgap="8.0" prefWidth="692.0" styleClass="gpShowProductWrapper">
                                  <columnConstraints>
                                     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -90,79 +88,6 @@
                                     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                  </rowConstraints>
-                                 <children>
-                                    <Pane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: lightcyan;">
-                                       <children>
-                                          <HBox fx:id="hbMainSellingShowProduct" minHeight="-Infinity" prefHeight="131.0" prefWidth="342.0" styleClass="hbMainSellingShowProduct" stylesheets="@../css/sellingform.css">
-                                             <children>
-                                                <ImageView fx:id="imgSellingProduct" fitHeight="131.0" fitWidth="131.0" pickOnBounds="true" preserveRatio="true" styleClass="imgSellingProduct">
-                                                   <image>
-                                                      <Image url="@../images/logo/main-logo.jpg" />
-                                                   </image>
-                                                </ImageView>
-                                                <VBox prefHeight="115.0" prefWidth="211.0">
-                                                   <children>
-                                                      <Pane fx:id="pSellingProductNameContainer" prefHeight="200.0" prefWidth="200.0">
-                                                         <children>
-                                                            <Label fx:id="lbSellingProductName" layoutX="14.0" layoutY="17.0" text="Name :" />
-                                                         </children>
-                                                      </Pane>
-                                                      <Pane fx:id="pSellingProductQuantityContainer" prefHeight="200.0" prefWidth="200.0">
-                                                         <children>
-                                                            <Label fx:id="btnSellingProductQuantity" layoutX="14.0" layoutY="17.0" text="Quantity : " />
-                                                         </children>
-                                                      </Pane>
-                                                      <Pane fx:id="pSellingProductPriceContainer" prefHeight="200.0" prefWidth="200.0">
-                                                         <children>
-                                                            <Label fx:id="btnSellingProductPrice" layoutX="14.0" layoutY="17.0" prefHeight="17.0" prefWidth="186.0" text="Price : " />
-                                                         </children>
-                                                      </Pane>
-                                                   </children>
-                                                   <HBox.margin>
-                                                      <Insets left="4.0" />
-                                                   </HBox.margin>
-                                                </VBox>
-                                             </children>
-                                          </HBox>
-                                       </children>
-                                    </Pane>
-                                    <Pane prefHeight="134.0" prefWidth="370.0" style="-fx-background-color: lightcyan;" GridPane.columnIndex="1">
-                                       <children>
-                                          <HBox minHeight="-Infinity" prefHeight="131.0" prefWidth="342.0" stylesheets="@../css/sellingform.css">
-                                             <children>
-                                                <ImageView fitHeight="131.0" fitWidth="131.0" pickOnBounds="true" preserveRatio="true" />
-                                                <VBox prefHeight="115.0" prefWidth="211.0">
-                                                   <children>
-                                                      <Pane prefHeight="200.0" prefWidth="200.0">
-                                                         <children>
-                                                            <Label layoutX="14.0" layoutY="17.0" text="Label" />
-                                                         </children>
-                                                      </Pane>
-                                                      <Pane prefHeight="200.0" prefWidth="200.0">
-                                                         <children>
-                                                            <Label layoutX="14.0" layoutY="17.0" text="Label" />
-                                                         </children>
-                                                      </Pane>
-                                                      <Pane prefHeight="200.0" prefWidth="200.0">
-                                                         <children>
-                                                            <Label layoutX="14.0" layoutY="17.0" text="Label" />
-                                                         </children>
-                                                      </Pane>
-                                                   </children>
-                                                   <HBox.margin>
-                                                      <Insets left="4.0" />
-                                                   </HBox.margin>
-                                                </VBox>
-                                             </children>
-                                          </HBox>
-                                       </children>
-                                    </Pane>
-                                    <Pane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1" />
-                                    <Pane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="2" />
-                                    <Pane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                    <Pane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="3" />
-                                    <Pane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                                 </children>
                                  <padding>
                                     <Insets bottom="8.0" top="8.0" />
                                  </padding>
@@ -268,15 +193,15 @@
                                        <children>
                                           <Pane fx:id="pCreateDetailInvoiceButtons" prefHeight="200.0" prefWidth="384.0">
                                              <children>
-                                                <Button fx:id="btnInvoiceListProductClear" layoutX="170.0" layoutY="7.0" mnemonicParsing="false" styleClass="btnFunctionForm" text="Clear">
+                                                <Button fx:id="btnInvoiceListProductClear" layoutX="112.0" layoutY="7.0" mnemonicParsing="false" styleClass="btnFunctionForm" text="Clear">
                                                    <padding>
                                                       <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
                                                    </padding></Button>
-                                                <Button fx:id="btnInvoiceListProductRemove" layoutX="332.0" layoutY="7.0" mnemonicParsing="false" styleClass="btnFunctionForm" text="Xóa">
+                                                <Button fx:id="btnInvoiceListProductRemove" layoutX="290.0" layoutY="7.0" mnemonicParsing="false" styleClass="btnFunctionForm" text="Xóa">
                                                    <padding>
                                                       <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
                                                    </padding></Button>
-                                                <Button fx:id="btnInvoiceListProductEdit" layoutX="243.0" layoutY="7.0" mnemonicParsing="false" styleClass="btnFunctionForm" text="Chỉnh Sửa">
+                                                <Button fx:id="btnInvoiceListProductEdit" layoutX="200.0" layoutY="7.0" mnemonicParsing="false" styleClass="btnFunctionForm" text="Chỉnh Sửa">
                                                    <padding>
                                                       <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
                                                    </padding></Button>

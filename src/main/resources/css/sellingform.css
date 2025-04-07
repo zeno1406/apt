@@ -5,7 +5,7 @@ HBox, VBox {
 
 .pProductSearchAndFilter,
 .pExitBtnContainer {
-    -fx-pref-height: 42px;
+    -fx-pref-height:42px;
 }
 
 /*selling show product header*/
@@ -51,7 +51,7 @@ HBox, VBox {
 }
 
 .vbCreateInvoiceDetail {
-    -fx-pref-height: 842px;
+    -fx-pref-height: 642px;
 }
 
 /*Main SHow*/
@@ -68,7 +68,7 @@ HBox, VBox {
 
 .hbMainSellingShowProduct {
     -fx-pref-height: inherit;
-    -fx-pref-width: 342px;
+    -fx-pref-width: 200px;
 }
 
 .imgSellingProduct {

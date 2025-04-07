@@ -21,6 +21,9 @@ import org.hibernate.annotations.common.util.impl.Log;
 import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 public class NavigatePermissionController {
@@ -44,17 +47,22 @@ public class NavigatePermissionController {
         SessionManagerService temp = SessionManagerService.getInstance();
         ArrayList<ModuleDTO> list = ModuleBUS.getInstance().getAll();
         System.out.println(temp.getAllowedModules());
+        HashSet<Integer> allowModule = temp.getAllowedModules();
 
         // có perms bán hàng, nhập kho ko (4 bán hàng, 5 nhập hàng) ?
-        if (temp.getAllowedModules().contains(4))
+        if (allowModule.contains(4))
             System.out.println(list.get(4).getName());
         else
             disableFunc(4);
-        if (temp.getAllowedModules().contains(5))
+        if (allowModule.contains(5))
             System.out.println(list.get(5).getName());
         else
             disableFunc(5);
 
+        //kiểm tra xem còn module nào khác không
+        List<Integer> tempList =  allowModule.stream().filter(module -> module != 4 && module !=5).toList();
+        if (tempList.isEmpty())
+            disableFunc(0);
     }
 
     // Exit form
@@ -78,7 +86,11 @@ public class NavigatePermissionController {
 
     private void disableFunc(int moduleID) {
         if (moduleID == 4)
-            System.out.println(isDisable);
+            pItemPermissionSelling.setDisable(true);
+        if (moduleID == 5)
+            pItemPermissionImporting.setDisable(true);
+        if (moduleID == 0)
+            pItemPermissionAuth.setDisable(true);
     }
 
     // Set click Event
@@ -99,6 +111,5 @@ public class NavigatePermissionController {
         (MainController.getInstance()).openStage("/GUI/MainUI.fxml");
         btnExitNavPermissionForm.getScene().getWindow().hide();
     }
-
 
 }
