@@ -16,6 +16,7 @@ import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
@@ -166,16 +167,13 @@ public class RoleController implements IController {
 
         switch (deleteResult) {
             case 1 ->
-                // Thành công
                     {
                         NotificationUtils.showInfoAlert("Xóa chức vụ thành công.", "Thông báo");
                         resetFilters();
                     }
             case 2 ->
-                // Không hợp lệ, roleId không đúng hoặc không có quyền
                     NotificationUtils.showErrorAlert("Có lỗi khi xóa chức vụ. Vui lòng thử lại.", "Thông báo");
             case 3 ->
-                // Không thể tự xóa chức vụ của chính mình
                     NotificationUtils.showErrorAlert("Bạn không thể xóa chức vụ của chính mình.", "Thông báo");
             case 4 ->
                     NotificationUtils.showErrorAlert("Bạn không có quyền \"Xóa chức vụ\" để thực hiện thao tác này.", "Thông báo");

@@ -7,14 +7,9 @@ import UTILS.UiUtils;
 import javafx.animation.ParallelTransition;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.common.util.impl.Log;
 
@@ -30,58 +25,57 @@ public class NavigatePermissionController {
     @FXML
     private Pane pItemPermissionSelling, pItemPermissionImporting, pItemPermissionAuth;
     @FXML
-    private Button btnExitNavPermissionForm;
-    private boolean isDisable;
+    private Button closeBtn;
 
     // Init
     @FXML
     public void initialize () {
-        isDisable = false;
-        CheckPermission();
+        hideButtonWithoutPermission();
         setupEventHandlers();
     }
 
     // Validate if this employee has specific perms or not !!!
-    private void CheckPermission() {
-        // lấy tài khoản đã đăng nhập
-        SessionManagerService temp = SessionManagerService.getInstance();
-        ArrayList<ModuleDTO> list = ModuleBUS.getInstance().getAll();
-        System.out.println(temp.getAllowedModules());
-        HashSet<Integer> allowModule = temp.getAllowedModules();
-
-        // có perms bán hàng, nhập kho ko (4 bán hàng, 5 nhập hàng) ?
-        if (allowModule.contains(4))
-            System.out.println(list.get(4).getName());
-        else
-            disableFunc(4);
-        if (allowModule.contains(5))
-            System.out.println(list.get(5).getName());
-        else
-            disableFunc(5);
-
-        //kiểm tra xem còn module nào khác không
-        List<Integer> tempList =  allowModule.stream().filter(module -> module != 4 && module !=5).toList();
-        if (tempList.isEmpty())
-            disableFunc(0);
-    }
+//    private void CheckPermission() {
+//        // lấy tài khoản đã đăng nhập
+//        SessionManagerService temp = SessionManagerService.getInstance();
+//        ArrayList<ModuleDTO> list = ModuleBUS.getInstance().getAll();
+//        System.out.println(temp.getAllowedModules());
+//        HashSet<Integer> allowModule = temp.getAllowedModules();
+//
+//        // có perms bán hàng, nhập kho ko (4 bán hàng, 5 nhập hàng) ?
+//        if (allowModule.contains(4))
+//            System.out.println(list.get(4).getName());
+//        else
+//            disableFunc(4);
+//        if (allowModule.contains(5))
+//            System.out.println(list.get(5).getName());
+//        else
+//            disableFunc(5);
+//
+//        //kiểm tra xem còn module nào khác không
+//        List<Integer> tempList =  allowModule.stream().filter(module -> module != 4 && module !=5).toList();
+//        if (tempList.isEmpty())
+//            disableFunc(0);
+//    }
 
     // Exit form
     private void setupEventHandlers() {
-        btnExitNavPermissionForm.setOnMouseClicked(e -> {
-            ParallelTransition animation = UiUtils.gI().createButtonAnimation(btnExitNavPermissionForm);
+        closeBtn.setOnMouseClicked(e -> {
+            if (!UiUtils.gI().showConfirmAlert("Bạn chắc muốn đăng xuất?", "Thông báo xác nhận")) return;
+            SessionManagerService.getInstance().logout();
+            ParallelTransition animation = UiUtils.gI().createButtonAnimation(closeBtn);
             animation.setOnFinished(event -> ExitForm());
             animation.play();
         });
+        pItemPermissionSelling.setOnMouseClicked(e -> openSelling());
+        pItemPermissionImporting.setOnMouseClicked(e -> openImporting());
+        pItemPermissionAuth.setOnMouseClicked(e -> openManage());
+
     }
 
     private void ExitForm() {
-        (MainController.getInstance()).openStage("/GUI/LoginUI.fxml");
-        Platform.runLater(() -> ((Stage) btnExitNavPermissionForm.getScene().getWindow()).close());
-    }
-
-    // check and disable func
-    private boolean isDisableFunc() {
-        return false;
+        UiUtils.gI().openStage("/GUI/LoginUI.fxml", "Đăng nhập");
+        Platform.runLater(this::handleClose);
     }
 
     private void disableFunc(int moduleID) {
@@ -92,24 +86,46 @@ public class NavigatePermissionController {
         if (moduleID == 0)
             pItemPermissionAuth.setDisable(true);
     }
-
-    // Set click Event
-    @FXML
-    private void onMouseClickedPItemSelling(MouseEvent e) {
-        (MainController.getInstance()).openStage("/GUI/Selling.fxml");
-        btnExitNavPermissionForm.getScene().getWindow().hide();
+    private void openSelling() {
+        UiUtils.gI().openStage("/GUI/Selling.fxml", "Bán hàng");
+        handleClose();
     }
 
     @FXML
-    private void onMouseClickedPItemImporting(MouseEvent e) {
-        (MainController.getInstance()).openStage("/GUI/ImportProduct.fxml");
-        btnExitNavPermissionForm.getScene().getWindow().hide();
+    private void openImporting() {
+        UiUtils.gI().openStage("/GUI/ImportProduct.fxml", "Nhập hàng");
+        handleClose();
     }
 
     @FXML
-    private void onMouseClickedPItemPermissionAuth(MouseEvent e) {
-        (MainController.getInstance()).openStage("/GUI/MainUI.fxml");
-        btnExitNavPermissionForm.getScene().getWindow().hide();
+    private void openManage() {
+        UiUtils.gI().openStage("/GUI/MainUI.fxml", "Lego Store");
+        handleClose();
+    }
+
+    private void handleClose() {
+        if (closeBtn.getScene() != null && closeBtn.getScene().getWindow() != null) {
+            Stage stage = (Stage) closeBtn.getScene().getWindow();
+            stage.close();
+        }
+    }
+
+    public void hideButtonWithoutPermission() {
+        boolean canSelling = SessionManagerService.getInstance().canSelling();
+        boolean canImport = SessionManagerService.getInstance().canImporting();
+        boolean canManage = SessionManagerService.getInstance().canManage();
+
+        // Thiết lập trạng thái và độ mờ cho nút quyền bán hàng
+        pItemPermissionSelling.setDisable(!canSelling);
+        pItemPermissionSelling.setOpacity(canSelling ? 1.0 : 0.3);
+
+        // Thiết lập trạng thái và độ mờ cho nút quyền nhập hàng
+        pItemPermissionImporting.setDisable(!canImport);
+        pItemPermissionImporting.setOpacity(canImport ? 1.0 : 0.3);
+
+        // Thiết lập trạng thái và độ mờ cho nút quyền quản lý
+        pItemPermissionAuth.setDisable(!canManage);
+        pItemPermissionAuth.setOpacity(canManage ? 1.0 : 0.3);
     }
 
 }

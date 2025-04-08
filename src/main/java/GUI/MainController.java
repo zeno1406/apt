@@ -39,10 +39,9 @@ public class MainController {
     private Label employeeLoginFullName, employeeRoleName;
     @FXML
     private VBox groupBtn;
-    private static final MainController INSTANCE = new MainController();
-
     static boolean isLoaded = false;
     private Button selectedButton = null;
+    private static final MainController INSTANCE = new MainController();
 
     public MainController() {}
     public static MainController getInstance() {
@@ -57,14 +56,16 @@ public class MainController {
         loadAllowedModules();
     }
 
-    private void loadSessionData() {
+    public void loadSessionData() {
         EmployeeDTO currEmployee = SessionManagerService.getInstance().currEmployee();
         employeeLoginFullName.setText(currEmployee.getFirstName() + " " + currEmployee.getLastName());
         employeeRoleName.setText(RoleBUS.getInstance().getByIdLocal(currEmployee.getRoleId()).getName());
     }
 
-    private void setupEventHandlers() {
+    public void setupEventHandlers() {
         logoutBtn.setOnMouseClicked(e -> {
+            if (!UiUtils.gI().showConfirmAlert("Bạn chắc muốn thoát?", "Thông báo xác nhận")) return;
+//            SessionManagerService.getInstance().logout();
             ParallelTransition animation = UiUtils.gI().createButtonAnimation(logoutBtn);
             animation.setOnFinished(event -> logout());
             animation.play();
@@ -74,7 +75,7 @@ public class MainController {
         minimizeBtn.setOnMouseClicked(this::minimize);
     }
 
-    private void loadAllLocalData() {
+    public void loadAllLocalData() {
         if (!isLoaded) {
             EmployeeBUS.getInstance().loadLocal();
             RoleBUS.getInstance().loadLocal();
@@ -94,37 +95,8 @@ public class MainController {
     }
 
     public void logout() {
-        openLoginStage("/GUI/NavigatePermission.fxml");
-        Platform.runLater(() -> ((Stage) closeBtn.getScene().getWindow()).close());
-    }
-
-    public void openLoginStage(String fxmlFile) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
-            Parent root = loader.load();
-            Stage stage = new Stage();
-            UiUtils.gI().makeWindowDraggable(root, stage);
-            stage.initStyle(StageStyle.TRANSPARENT);
-            stage.setScene(new Scene(root));
-            stage.setTitle("Đăng nhập");
-
-            ScaleTransition scaleTransition = new ScaleTransition(Duration.millis(400), root);
-            scaleTransition.setFromX(0.8);
-            scaleTransition.setFromY(0.8);
-            scaleTransition.setToX(1.0);
-            scaleTransition.setToY(1.0);
-
-            FadeTransition fadeIn = new FadeTransition(Duration.millis(400), root);
-            fadeIn.setFromValue(0.0);
-            fadeIn.setToValue(1.0);
-
-            scaleTransition.play();
-            fadeIn.play();
-
-            stage.show();
-        } catch (IOException e) {
-            log.error("Lỗi mở giao diện đăng nhập", e);
-        }
+        UiUtils.gI().openStage("/GUI/NavigatePermission.fxml", "Danh sách chức năng");
+        handleClose();
     }
 
     public void loadFXML(String fxmlFile) {
@@ -259,6 +231,13 @@ public class MainController {
         }
     }
 
+    private void handleClose() {
+        if (closeBtn.getScene() != null && closeBtn.getScene().getWindow() != null) {
+            Stage stage = (Stage) closeBtn.getScene().getWindow();
+            stage.close();
+        }
+    }
+
     // Navigate to others stage
     public void openStage(String fxmlFile) {
         try {
@@ -282,7 +261,6 @@ public class MainController {
             log.error("error", e);
         }
     }
-
     // Add constraint row
     public void addConstraintRow(GridPane gridPane, int quantity, int height) {
         boolean row_col = true, wait = false;
@@ -296,7 +274,7 @@ public class MainController {
         int total = gridPane.getRowCount();
         System.out.println(total);
         for (int i = 0; i < total; i++) {
-            String url = "/images/product/" + "default.png";
+            String url = "/images/default/" + "default.png";
             Image image = new Image(Objects.requireNonNull(getClass().getResource(url)).toString());
             System.out.print(image);
             row_col = !row_col;
@@ -349,3 +327,4 @@ public class MainController {
         return row;
     }
 }
+

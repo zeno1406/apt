@@ -28,9 +28,6 @@ public class ImportProductController {
         MainController.getInstance().addConstraintRow(gpShowProductWrapper, 10, 80);
     }
 
-
-
-
     // close
     // Set click Event
     @FXML

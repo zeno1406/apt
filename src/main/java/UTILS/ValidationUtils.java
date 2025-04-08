@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 public class ValidationUtils {
     private static final ValidationUtils INSTANCE = new ValidationUtils();
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-    private static final Pattern VIETNAMESE_TEXT_PATTERN = Pattern.compile("^[\\p{L}\\d_-]+(\\s[\\p{L}\\d_-]+)*$");
+    private static final Pattern VIETNAMESE_TEXT_PATTERN = Pattern.compile("^[\\p{L}\\d_\\-./]+(\\s[\\p{L}\\d_\\-./]+)*$");
     private static final Pattern USERNAME_PATTERN = Pattern.compile("^[a-zA-Z0-9]+$");
     private static final Pattern VIETNAMESE_PHONE_PATTERN = Pattern.compile("^0\\d{9}$");
 
@@ -27,7 +27,7 @@ public class ValidationUtils {
 
     public boolean validateBigDecimal(BigDecimal value, int precision, int scale, boolean allowNegative) {
         if (value == null) return false;
-        if (!allowNegative && value.compareTo(BigDecimal.ZERO) <= 0) return false;
+        if (!allowNegative && value.compareTo(BigDecimal.ZERO) < 0) return false;
         value = value.stripTrailingZeros();
         return value.scale() <= scale && value.precision() - value.scale() <= precision - scale;
     }
@@ -47,6 +47,9 @@ public class ValidationUtils {
 
     public boolean validateVietnameseText255(String value) {
         return validateVietnameseText(value, 255);
+    }
+    public boolean validateVietnameseText65k4(String value) {
+        return validateVietnameseText(value, 65400);
     }
 
 

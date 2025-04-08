@@ -17,6 +17,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
+import java.io.File;
 import java.math.BigDecimal;
 import java.net.URL;
 
@@ -37,20 +38,8 @@ public class App extends Application {
 
 
     public static void main(String[] args) {
-        launch(args);
 //        System.out.println(PasswordUtils.getInstance().hashPassword("TLANG1234"));
-        //        URL resource = App.class.getResource("/images/icon/product.png");
-//        System.out.println("Image Resource: " + (resource != null ? resource.toExternalForm() : "Không tìm thấy ảnh!"));
-
-//        EmployeeBUS.getInstance().loadLocal();
-//        EmployeeDTO e = EmployeeBUS.getInstance().getByIdLocal(1);
-//        SessionManagerService.getInstance().setLoggedInEmployee(e);
-//        System.out.println(SessionManagerService.getInstance().getAllowedModules());
-        URL resource = App.class.getResource("/images/product/lego-minifigure/mini-01.png");
-//        System.out.println("Image Resource: " + (resource != null ? resource.toExternalForm() : "Không tìm thấy ảnh!"));
-
-//        RoleBUS.getInstance().loadLocal();
-//        RoleDAL.getInstance().update(new RoleDTO(1, "ADmin", " asd", new BigDecimal(2.3)));
+        launch(args);
     }
 }
 

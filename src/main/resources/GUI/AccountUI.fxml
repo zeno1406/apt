@@ -24,7 +24,7 @@
                                 <FontAwesomeIcon fill="#58c9c9" glyphName="SEARCH" layoutX="169.0" layoutY="32.0" size="1.8em" text="" AnchorPane.leftAnchor="169.0" AnchorPane.topAnchor="15.0" />
                                 <Line endX="79.0" endY="-3.814697265625E-6" layoutX="111.0" layoutY="38.0" startX="-100.0" stroke="#58c9c9" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="45.0" />
                                 <TextField fx:id="txtSearch" layoutX="10.0" layoutY="10.0" prefHeight="26.0" prefWidth="145.6" promptText="Nhập để tìm kiếm" styleClass="textfield" stylesheets="@../css/base.css" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="15.0" />
-                                <ComboBox fx:id="cbSearchBy" layoutX="206.39999389648438" layoutY="13.59999942779541" prefHeight="26.0" prefWidth="117.0" styleClass="combo-box" stylesheets="@../css/base.css" AnchorPane.leftAnchor="200.0" />
+                                <ComboBox fx:id="cbSearchBy" layoutX="206.39999389648438" layoutY="13.59999942779541" prefHeight="26.0" prefWidth="117.0" styleClass="combo-box" stylesheets="@../css/base.css" AnchorPane.leftAnchor="200.0" AnchorPane.topAnchor="13.59999942779541" />
                             </children>
                         </AnchorPane>
                     </children>

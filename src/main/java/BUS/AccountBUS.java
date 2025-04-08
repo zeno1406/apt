@@ -2,14 +2,11 @@ package BUS;
 
 import DAL.AccountDAL;
 import DTO.AccountDTO;
-import DTO.EmployeeDTO;
 import INTERFACE.ServiceAccessCode;
 import SERVICE.AuthorizationService;
 import UTILS.AvailableUtils;
 import UTILS.PasswordUtils;
 import UTILS.ValidationUtils;
-import com.google.protobuf.Internal;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Objects;
@@ -82,7 +79,7 @@ public class AccountBUS extends BaseBUS <AccountDTO, Integer> {
         }
 
         // Không phân biệt hoa thường
-        if (isDuplicateUsername(0, obj.getUsername())) return 5;
+        if (isDuplicateUsername(obj.getUsername())) return 5;
 
 
         obj.setUsername(obj.getUsername().toLowerCase());
@@ -96,42 +93,38 @@ public class AccountBUS extends BaseBUS <AccountDTO, Integer> {
         return 1;
     }
 
-    public boolean update(AccountDTO obj, int employee_roleId, int employeeLoginId) {
+    public int update(AccountDTO obj, int employee_roleId, int employeeLoginId) {
         // Kiểm tra tài khoản có tồn tại và thuộc về 1 employee hợp lệ + Kiểm tra dữ liệu hợp lệ
-        if (obj == null || obj.getEmployeeId() <= 0 || employee_roleId <= 0 || isInvalidAccountInput(obj)) return false;
+        if (obj == null || obj.getEmployeeId() <= 0 || employee_roleId <= 0) return 2;
 
 
         // Không có quyền 29 thì không chỉnh chính mình hay người khác
-        if (!AuthorizationService.getInstance().hasPermission(employeeLoginId, employee_roleId, 29)) return false;
+        if (!AuthorizationService.getInstance().hasPermission(employeeLoginId, employee_roleId, 29)) return 3;
+
+        if (isInvalidAccountInput(obj)) return 4;
 
         // Ngăn chặn cập nhật tài khoản gốc nếu không phải chính nó
         if (obj.getEmployeeId() == 1 && employeeLoginId != 1) {
-            System.out.println("Không thể cập nhật tài khoản gốc (employeeId = 1)!");
-            return false;
+//            System.out.println("Không thể cập nhật tài khoản gốc (employeeId = 1)!");
+            return 5;
         }
 
         // Nếu cập nhật người khác thì account đó phải thuộc về employee có role không có quyền 28
         if (employeeLoginId != obj.getEmployeeId() &&
-                !AuthorizationService.getInstance().canDeleteUpdateAccount(obj.getEmployeeId(), 29)) {
-            System.err.println("1");
-            return false;
+                !AuthorizationService.getInstance().canDeleteUpdateAccount(obj.getEmployeeId(), 29) && employeeLoginId != 1) {
+            return 6;
         }
 
         if (!AvailableUtils.getInstance().isExistAccount(obj.getEmployeeId())) {
-            System.err.println("1");
-            return false;
+            return 7;
         }
 
-        // Chỉ hash mật khẩu nếu mật khẩu mới khác mật khẩu cũ
-        String oldHashedPassword = getByIdLocal(obj.getEmployeeId()).getPassword();
-        if (!PasswordUtils.getInstance().verifyPassword(obj.getPassword(), oldHashedPassword)) {
-            obj.setPassword(PasswordUtils.getInstance().hashPassword(obj.getPassword()));
-        }
-
-        if (!AccountDAL.getInstance().update(obj)) return false;
+        if (isDuplicateAccount(obj)) return 1;
+        obj.setPassword(PasswordUtils.getInstance().hashPassword(obj.getPassword()));
+        if (!AccountDAL.getInstance().update(obj)) return 8;
 
         updateLocalCache(obj);
-        return true;
+        return 1;
     }
 
     private void updateLocalCache(AccountDTO obj) {
@@ -143,14 +136,22 @@ public class AccountBUS extends BaseBUS <AccountDTO, Integer> {
         }
     }
 
-    private boolean isDuplicateUsername(int id, String username) {
+    private boolean isDuplicateUsername(String username) {
         if (username == null) return false;
         for (AccountDTO account : arrLocal) {
-            if (!Objects.equals(account.getEmployeeId(), id) && account.getUsername().equalsIgnoreCase(username)) {
+            if (account.getUsername().equalsIgnoreCase(username)) {
                 return true;
             }
         }
         return false;
+    }
+
+    private boolean isDuplicateAccount(AccountDTO obj) {
+        AccountDTO existingAcc = getByIdLocal(obj.getEmployeeId());
+        // Kiểm tra xem tên, mô tả, và hệ số lương có trùng không
+        return existingAcc != null &&
+                Objects.equals(existingAcc.getUsername(), obj.getUsername()) &&
+                PasswordUtils.getInstance().verifyPassword(obj.getPassword(), existingAcc.getPassword());
     }
 
     public int checkLogin(String username, String password, int codeAccess) {

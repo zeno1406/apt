@@ -178,7 +178,6 @@ public class RoleBUS extends BaseBUS<RoleDTO, Integer> {
                 Objects.equals(existingRole.getSalaryCoefficient(), obj.getSalaryCoefficient());
     }
 
-
     public ArrayList<RoleDTO> filterRoles(String searchBy, String keyword) {
         ArrayList<RoleDTO> filteredList = new ArrayList<>();
 

@@ -133,6 +133,7 @@ public class AccountController implements IController {
             NotificationUtils.showErrorAlert("Bạn không thể xóa tài khoản của chính mình.", "Thông báo");
             return;
         }
+        if (!UiUtils.gI().showConfirmAlert("Bạn chắc muốn xóa tài khoản này?", "Thông báo xác nhận")) return;
 
         int deleteResult = AccountBUS.getInstance().delete(selectedAccount.getEmployeeId(),SessionManagerService.getInstance().employeeRoleId(), SessionManagerService.getInstance().employeeLoginId());
         switch (deleteResult) {
@@ -171,22 +172,22 @@ public class AccountController implements IController {
     }
 
     private void handleEdit() {
-//        if (isNotSelectedRole()) {
-//            NotificationUtils.showErrorAlert("Vui lòng chọn chức vụ", "Thông báo");
-//            return;
-//        }
-//        RoleModalController modalController = UiUtils.gI().openStageWithController(
-//                "/GUI/RoleModal.fxml",
-//                controller -> {
-//                    controller.setTypeModal(1);
-//                    controller.setRole(selectedRole);
-//                },
-//                "Sửa chức vụ"
-//        );
-//        if (modalController != null && modalController.isSaved()) {
-//            NotificationUtils.showInfoAlert("Sửa chức vụ thành công", "Thông báo");
-//            applyFilters();
-//        }
+        if (isNotSelectedAccount()) {
+            NotificationUtils.showErrorAlert("Vui lòng chọn tài khoản", "Thông báo");
+            return;
+        }
+        AccountModalController modalController = UiUtils.gI().openStageWithController(
+                "/GUI/AccountModal.fxml",
+                controller -> {
+                    controller.setTypeModal(1);
+                    controller.setAccount(selectedAccount);
+                },
+                "Sửa tài khoản"
+        );
+        if (modalController != null && modalController.isSaved()) {
+            NotificationUtils.showInfoAlert("Sửa tài khoản thành công", "Thông báo");
+            applyFilters();
+        }
     }
 
     private boolean isNotSelectedAccount() {

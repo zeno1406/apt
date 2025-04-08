@@ -19,6 +19,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 
+import java.io.File;
+import java.math.BigDecimal;
 import java.net.URL;
 import java.util.HashMap;
 
@@ -46,7 +48,11 @@ public class ProductController implements IController {
     @FXML
     private Button addBtn, editBtn, deleteBtn, refreshBtn;
     @FXML
-    private TextField txtSearch, startPrice, endPrice;
+    private TextField txtSearch;
+    @FXML
+    private TextField txtStartPrice;
+    @FXML
+    private TextField txtEndPrice;
     @FXML
     private CheckBox ckbStatusFilter;
     @FXML
@@ -57,7 +63,10 @@ public class ProductController implements IController {
     private String keyword = "";
     private int categoryId = -1;
     private int statusFilter = 1;
+    private BigDecimal startPrice = null;
+    private BigDecimal endPrice = null;
     private final HashMap<String, Integer> categoryMap = new HashMap<>();
+    private ProductDTO selectedProduct;
 
     @FXML
     public void initialize() {
@@ -73,7 +82,6 @@ public class ProductController implements IController {
 
         loadTable();
         applyFilters();
-//        testImageLoading();
     }
 
     private void loadComboBox() {
@@ -104,18 +112,41 @@ public class ProductController implements IController {
         tlb_col_name.setCellValueFactory(new PropertyValueFactory<>("name"));
         tlb_col_imageUrl.setCellValueFactory(cellData -> {
             String imageUrl = cellData.getValue().getImageUrl();
+            File imageFile = null;
+            Image image = null;
+
+            // Kiểm tra nếu có ảnh sản phẩm
             if (imageUrl != null && !imageUrl.isEmpty()) {
-                URL resource = ProductController.class.getResource(imageUrl);
-                if (resource != null) {
-                    ImageView imageView = new ImageView(new Image(resource.toExternalForm()));
-                    imageView.setFitWidth(70);
-                    imageView.setFitHeight(70);
-                    return new SimpleObjectProperty<>(imageView);
+                imageFile = new File(imageUrl);  // Đường dẫn ảnh người dùng nhập
+//                System.out.println("Đường dẫn ảnh: " + imageFile.getAbsolutePath());
+            }
+
+            if (imageFile != null && imageFile.exists()) {
+                try {
+                    image = new Image(imageFile.toURI().toString(),  200, 200, true, true);
+                } catch (Exception e) {
+//                    System.err.println("Lỗi khi tải ảnh: " + e.getMessage());
+                }
+            } else {
+                URL defaultImageUrl = getClass().getResource("/images/default/default.png");
+                if (defaultImageUrl != null) {
+                    image = new Image(defaultImageUrl.toExternalForm());
+                } else {
+//                    System.err.println("Ảnh mặc định không tìm thấy trong resources.");
                 }
             }
-            return new SimpleObjectProperty<>(null);
+
+            if (image != null) {
+                ImageView imageView = new ImageView(image);
+                imageView.setFitWidth(70);
+                imageView.setFitHeight(70);
+                return new SimpleObjectProperty<>(imageView);
+            } else {
+                return new SimpleObjectProperty<>(null);
+            }
         });
-        tlb_col_description.setCellValueFactory(new PropertyValueFactory<>("description"));
+
+        tlb_col_description.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDescription() == null ? "Không có" : cellData.getValue().getDescription()));
         tlb_col_categoryName.setCellValueFactory(cellData ->
                 new SimpleStringProperty(cateBUS.getByIdLocal(cellData.getValue().getCategoryId()).getName())
         );
@@ -126,10 +157,8 @@ public class ProductController implements IController {
         );
         UiUtils.gI().addTooltipToColumn(tlb_col_name, 10);
         UiUtils.gI().addTooltipToColumn(tlb_col_description, 10);
-
+        UiUtils.gI().addTooltipToColumn(tlb_col_categoryName, 10);
     }
-
-
 
     @Override
     public void setupListeners() {
@@ -137,12 +166,40 @@ public class ProductController implements IController {
         cbCategoryFilter.setOnAction(event -> handleCategoryFilterChange());
         ckbStatusFilter.setOnAction(event -> handleStatusFilterChange());
         txtSearch.textProperty().addListener((observable, oldValue, newValue) -> handleKeywordChange());
+        txtStartPrice.textProperty().addListener((observable, oldValue, newValue) -> handlePriceChange());
+        txtEndPrice.textProperty().addListener((observable, oldValue, newValue) -> handlePriceChange());
         refreshBtn.setOnAction(event -> {
             resetFilters();
             NotificationUtils.showInfoAlert("Làm mới thành công", "Thông báo");
         });
 
-//        addBtn.setOnAction(event -> handleAddBtn());
+        addBtn.setOnAction(e -> handleAdd());
+        editBtn.setOnAction(e -> handleEdit());
+        deleteBtn.setOnAction(e -> handleDelete());
+    }
+
+    private void handlePriceChange() {
+        try {
+            String startText = txtStartPrice.getText().trim();
+            if (!startText.isEmpty()) {
+                startPrice = new BigDecimal(startText);
+            } else {
+                startPrice = null;
+            }
+            System.out.println(startPrice);
+
+            String endText = txtEndPrice.getText().trim();
+            if (!endText.isEmpty()) {
+                endPrice = new BigDecimal(endText);
+            } else {
+                endPrice = null;
+            }
+            System.out.println(endPrice);
+
+            applyFilters();
+        } catch (NumberFormatException e) {
+//            System.out.println("Giá không hợp lệ: " + e.getMessage());
+        }
     }
 
     private void handleSearchByChange() {
@@ -172,7 +229,7 @@ public class ProductController implements IController {
     @Override
     public void applyFilters() {
         tblProduct.setItems(FXCollections.observableArrayList(
-                ProductBUS.getInstance().filterProducts(searchBy, keyword, categoryId, statusFilter)
+                ProductBUS.getInstance().filterProducts(searchBy, keyword, categoryId, statusFilter, startPrice, endPrice)
         ));
         tblProduct.getSelectionModel().clearSelection();
     }
@@ -183,12 +240,16 @@ public class ProductController implements IController {
         cbCategoryFilter.getSelectionModel().select("Tất cả");
         ckbStatusFilter.setSelected(false); // Mặc định lọc Active
         txtSearch.clear();
+        txtStartPrice.clear();
+        txtEndPrice.clear();
 
         // Cập nhật lại các biến bộ lọc
         searchBy = "Mã nhân viên";
         keyword = "";
         categoryId = -1;
         statusFilter = 1; // Chỉ Active
+        startPrice = null;
+        endPrice = null;
         applyFilters(); // Áp dụng lại bộ lọc
     }
 
@@ -201,5 +262,75 @@ public class ProductController implements IController {
         if (!canAdd) functionBtns.getChildren().remove(addBtn);
         if (!canEdit) functionBtns.getChildren().remove(editBtn);
         if (!canDelete) functionBtns.getChildren().remove(deleteBtn);
+    }
+
+    private void handleDelete() {
+        if (isNotSelectedProduct()) {
+            NotificationUtils.showErrorAlert("Vui lòng chọn sản phẩm", "Thông báo");
+            return;
+        }
+
+        if (ProductBUS.getInstance().getByIdLocal(selectedProduct.getId()).getStockQuantity() != 0) {
+            NotificationUtils.showErrorAlert("Sản sản phẩm còn hàng tồn, không thể xóa!", "Thông báo");
+            return;
+        }
+
+        if (!UiUtils.gI().showConfirmAlert("Bạn chắc muốn xóa sản phẩm này?", "Thông báo xác nhận")) return;
+
+        int deleteResult = ProductBUS.getInstance().delete(selectedProduct.getId(),SessionManagerService.getInstance().employeeRoleId(), SessionManagerService.getInstance().employeeLoginId());
+        switch (deleteResult) {
+            case 1 ->
+            {
+                NotificationUtils.showInfoAlert("Xóa sản phẩm thành công.", "Thông báo");
+                resetFilters();
+            }
+            case 2 ->
+                    NotificationUtils.showErrorAlert("Có lỗi khi xóa sản phẩm. Vui lòng thử lại.", "Thông báo");
+            case 3 ->
+                    NotificationUtils.showErrorAlert("Bạn không có quyền \"Xóa sản phẩm\" để thực hiện thao tác này.", "Thông báo");
+            case 4 ->
+                    NotificationUtils.showErrorAlert("Xóa sản phẩm thất bại. Vui lòng thử lại sau.", "Thông báo");
+            case 5 ->
+                    NotificationUtils.showErrorAlert("Sản sản phẩm còn hàng tồn, không thể xóa!", "Thông báo");
+            default ->
+                    NotificationUtils.showErrorAlert("Lỗi không xác định, vui lòng thử lại sau.", "Thông báo");
+        }
+    }
+
+    private void handleAdd() {
+        ProductModalController modalController = UiUtils.gI().openStageWithController(
+                "/GUI/ProductModal.fxml",
+                controller -> controller.setTypeModal(0),
+                "Thêm sản phẩm"
+        );
+        if (modalController != null && modalController.isSaved()) {
+            NotificationUtils.showInfoAlert("Thêm sản phẩm thành công", "Thông báo");
+            resetFilters();
+        }
+    }
+
+    private void handleEdit() {
+        if (isNotSelectedProduct()) {
+            NotificationUtils.showErrorAlert("Vui lòng chọn sản phẩm", "Thông báo");
+            return;
+        }
+        ProductModalController modalController = UiUtils.gI().openStageWithController(
+                "/GUI/ProductModal.fxml",
+                controller -> {
+                    controller.setTypeModal(1);
+                    controller.setProduct(selectedProduct);
+                },
+                "Sửa sản phẩm"
+        );
+        if (modalController != null && modalController.isSaved()) {
+            NotificationUtils.showInfoAlert("Sửa sản phẩm thành công", "Thông báo");
+            applyFilters();
+        }
+        tblProduct.refresh();
+    }
+
+    private boolean isNotSelectedProduct() {
+        selectedProduct = tblProduct.getSelectionModel().getSelectedItem();
+        return selectedProduct == null;
     }
 }

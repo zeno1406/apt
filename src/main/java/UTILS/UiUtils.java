@@ -1,5 +1,6 @@
 package UTILS;
 
+import GUI.LoginController;
 import GUI.MainController;
 import javafx.animation.FadeTransition;
 import javafx.animation.ParallelTransition;
@@ -143,11 +144,29 @@ public class UiUtils {
         return alert.showAndWait().map(buttonType -> buttonType == ButtonType.OK).orElse(false);
     }
 
-    /*
-    * UiUtils.gI().openStage("EmployeeEdit.fxml", controller -> {
-    EmployeeEditController editController = (EmployeeEditController) controller;
-    editController.setEmployee(selectedEmployee); // Truyền dữ liệu
-}, this::refreshTable, getClass());*/
+    public void openStage(String fxmlFile, String title) {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(LoginController.class.getResource(fxmlFile));
+            Parent root = fxmlLoader.load(); // Gọi .load() để lấy root từ FXML
+
+
+            Stage stage = new Stage();
+            Scene scene = new Scene(root);
+
+            UiUtils.gI().makeWindowDraggable(root, stage);
+            stage.initStyle(StageStyle.TRANSPARENT);
+
+            stage.setTitle(title);
+            stage.setScene(scene);
+
+            stage.show();
+            stage.requestFocus();
+
+        } catch (IOException e) {
+            System.err.println("error");
+            e.printStackTrace();
+        }
+    }
 
 
 }

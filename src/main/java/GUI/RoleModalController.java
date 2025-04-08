@@ -7,9 +7,11 @@ import SERVICE.SessionManagerService;
 import UTILS.NotificationUtils;
 import UTILS.ValidationUtils;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputControl;
 import javafx.stage.Stage;
 import lombok.Getter;
 
@@ -58,9 +60,18 @@ public class RoleModalController {
         txtDescription.setText(role.getDescription() == null ? "" : role.getDescription());
         txtSalaryCoefficient.setText(role.getSalaryCoefficient().toString());
         if (SessionManagerService.getInstance().employeeRoleId() != 1) {
-            txtSalaryCoefficient.setDisable(true);
-            txtSalaryCoefficient.setStyle("-fx-background-color: #999999;");
+            makeReadOnly(txtSalaryCoefficient);
         }
+    }
+
+    private void makeReadOnly(Node node) {
+        node.setDisable(false);
+        node.setMouseTransparent(true);
+        node.setFocusTraversable(false);
+        if (node instanceof TextInputControl textInput) {
+            textInput.setEditable(false);
+        }
+        node.setStyle("-fx-background-color: #999999; -fx-opacity: 0.75;");
     }
 
     private boolean isValidInput() {
@@ -155,9 +166,8 @@ public class RoleModalController {
 
     private void updateRole() {
         RoleBUS rBus = RoleBUS.getInstance();
-        RoleDTO temp = new RoleDTO(role.getId(), txtRoleName.getText().trim(), txtDescription.getText().trim() , new BigDecimal(txtSalaryCoefficient.getText().trim()));
         if (isValidInput()) {
-
+            RoleDTO temp = new RoleDTO(role.getId(), txtRoleName.getText().trim(), txtDescription.getText().trim() , new BigDecimal(txtSalaryCoefficient.getText().trim()));
             int updateResult = rBus.update(temp, SessionManagerService.getInstance().employeeRoleId(), SessionManagerService.getInstance().employeeLoginId());
             switch (updateResult) {
                 case 1 -> {
