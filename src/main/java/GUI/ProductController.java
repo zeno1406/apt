@@ -146,7 +146,7 @@ public class ProductController implements IController {
             }
         });
 
-        tlb_col_description.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDescription() == null ? "Không có" : cellData.getValue().getDescription()));
+        tlb_col_description.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDescription() == null ? "" : cellData.getValue().getDescription()));
         tlb_col_categoryName.setCellValueFactory(cellData ->
                 new SimpleStringProperty(cateBUS.getByIdLocal(cellData.getValue().getCategoryId()).getName())
         );

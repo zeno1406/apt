@@ -191,7 +191,6 @@ public class RoleModalController {
     }
 
     private void clearAndFocus(TextField textField) {
-        textField.clear();
         textField.requestFocus();
     }
 }

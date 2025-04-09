@@ -1,14 +1,100 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="$CONTROLLER_NAME$"
-            prefHeight="400.0" prefWidth="600.0" >
 
+<AnchorPane prefHeight="650.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.StatisticController">
+    <children>
+        <TabPane prefHeight="650.0" prefWidth="900.0" styleClass="textarea" stylesheets="@../css/base.css" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <tabs>
+                <Tab fx:id="tab1" closable="false" text="Th�+�ng k+� l�+�i nhuߦ�n">
+                    <content>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="582.0" prefWidth="900.0" styleClass="shadow" stylesheets="@../css/main.css">
+                            <children>
+                                <AnchorPane layoutX="14.0" layoutY="14.0" prefHeight="553.0" prefWidth="835.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+                                    <styleClass>
+                                        <String fx:value="shadow" />
+                                        <String fx:value="white-bg" />
+                                    </styleClass>
+                                    <children>
+                                        <BorderPane layoutX="166.0" layoutY="80.0" prefHeight="600.8000000000001" prefWidth="879.2" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+                                            <left>
+                                                <LineChart fx:id="chart1" prefHeight="511.0" prefWidth="638.0" BorderPane.alignment="CENTER">
+                                                    <xAxis>
+                                                        <CategoryAxis side="BOTTOM" fx:id="x1" />
+                                                    </xAxis>
+                                                    <yAxis>
+                                                        <NumberAxis fx:id="y1" side="LEFT" />
+                                                    </yAxis>
+                                                    <BorderPane.margin>
+                                                        <Insets left="5.0" />
+                                                    </BorderPane.margin>
+                                                </LineChart>
+                                            </left>
+                                            <right>
+                                                <VBox prefHeight="542.0" prefWidth="219.0" BorderPane.alignment="CENTER">
+                                                    <BorderPane.margin>
+                                                        <Insets right="5.0" />
+                                                    </BorderPane.margin>
+                                                    <children>
+                                                        <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                                                            <children>
+                                                                <VBox layoutX="60.0" layoutY="-33.0" prefHeight="130.0" prefWidth="219.0" spacing="10.0" style="-fx-border-color: black;" AnchorPane.bottomAnchor="52.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                                    <children>
+                                                                        <Label prefHeight="46.0" prefWidth="186.0" text="T�+�ng chi:">
+                                                                            <font>
+                                                                                <Font name="System Bold" size="30.0" />
+                                                                            </font>
+                                                                        </Label>
+                                                                        <Label text="300.000">
+                                                                            <font>
+                                                                                <Font size="20.0" />
+                                                                            </font>
+                                                                        </Label>
+                                                                    </children>
+                                                                    <padding>
+                                                                        <Insets left="10.0" />
+                                                                    </padding>
+                                                                </VBox>
+                                                            </children>
+                                                        </AnchorPane>
+                                                        <AnchorPane prefHeight="200.0" prefWidth="200.0" />
+                                                        <AnchorPane prefHeight="200.0" prefWidth="200.0" />
+                                                    </children>
+                                                </VBox>
+                                            </right>
+                                            <top>
+                                                <AnchorPane prefHeight="50.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+                                            </top>
+                                        </BorderPane>
+                                    </children>
+                                </AnchorPane>
+                            </children>
+                        </AnchorPane>
+                    </content>
+                </Tab>
+                <Tab closable="false" text="Th�+�ng k+� doanh thu nh+�n vi+�n">
+                    <content>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                    </content>
+                </Tab>
+                <Tab closable="false" text="Th�+�ng k+� doanh thu sߦ�n phߦ�m">
+                    <content>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                    </content>
+                </Tab>
+            </tabs>
+        </TabPane>
+    </children>
 </AnchorPane>

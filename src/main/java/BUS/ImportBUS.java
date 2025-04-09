@@ -58,26 +58,10 @@ public class ImportBUS extends BaseBUS<ImportDTO, Integer>{
     }
 
     private boolean isValidateImportInput(ImportDTO obj) {
-        if (obj.getEmployeeId() <= 0 || obj.getSupplierId() <= 0 || obj.getProfitPercent() == null) return false;
-
-        if (obj.getProfitPercent().compareTo(new BigDecimal(100)) >= 0) return false;
+        if (obj.getEmployeeId() <= 0 || obj.getSupplierId() <= 0) return false;
 
         ValidationUtils validator = ValidationUtils.getInstance();
-        return validator.validateBigDecimal(obj.getTotalPrice(), 10, 2, false)
-                && validator.validateBigDecimal(obj.getProfitPercent(), 5, 2, false);
+        return validator.validateBigDecimal(obj.getTotalPrice(), 10, 2, false);
     }
 
-    public String autoId() {
-        if (isLocalEmpty()) {
-            return "IP00001";
-        }
-
-        String lastId = String.valueOf(arrLocal.getLast().getId());
-        try {
-            int id = Integer.parseInt(lastId.substring(2)) + 1;
-            return String.format("IP%05d", id);
-        } catch (NumberFormatException e) {
-            throw new IllegalStateException("Invalid product ID format: " + lastId);
-        }
-    }
 }

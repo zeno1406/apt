@@ -11,18 +11,16 @@ public class ImportDTO {
     private LocalDateTime createDate;
     private int employeeId;
     private int supplierId;
-    private BigDecimal profitPercent;
     private BigDecimal totalPrice;
 
     public ImportDTO() {
     }
 
-    public ImportDTO(int id, LocalDateTime createDate, int employeeId, int supplierId, BigDecimal profitPercent, BigDecimal totalPrice) {
+    public ImportDTO(int id, LocalDateTime createDate, int employeeId, int supplierId, BigDecimal totalPrice) {
         this.id = id;
         this.createDate = createDate;
         this.employeeId = employeeId;
         this.supplierId = supplierId;
-        this.profitPercent = profitPercent;
         this.totalPrice = totalPrice;
     }
 
@@ -32,7 +30,6 @@ public class ImportDTO {
             this.createDate = other.createDate;
             this.employeeId = other.employeeId;
             this.supplierId = other.supplierId;
-            this.profitPercent = other.profitPercent;
             this.totalPrice = other.totalPrice;
         }
     }
@@ -67,14 +64,6 @@ public class ImportDTO {
 
     public void setSupplierId(int supplierId) {
         this.supplierId = supplierId;
-    }
-
-    public BigDecimal getProfitPercent() {
-        return profitPercent;
-    }
-
-    public void setProfitPercent(BigDecimal profitPercent) {
-        this.profitPercent = profitPercent;
     }
 
     public BigDecimal getTotalPrice() {

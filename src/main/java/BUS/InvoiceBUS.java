@@ -6,6 +6,7 @@ import INTERFACE.ServiceAccessCode;
 import SERVICE.AuthorizationService;
 import UTILS.ValidationUtils;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 
@@ -72,6 +73,69 @@ public class InvoiceBUS extends BaseBUS<InvoiceDTO, Integer>{
 
         // Nếu discountAmount > 0 nhưng không có mã giảm giá => sai
         return obj.getDiscountAmount().compareTo(BigDecimal.ZERO) <= 0 || obj.getDiscountCode() != null;
+    }
+
+    public ArrayList<InvoiceDTO> filterInvoicesAdvance(
+            String employeeId, String customerId, String discountCode,
+            LocalDate startDate, LocalDate endDate,
+            BigDecimal startTotalPrice, BigDecimal endTotalPrice
+    ) {
+        ArrayList<InvoiceDTO> filteredList = new ArrayList<>();
+
+        for (InvoiceDTO invoice : arrLocal) {
+            boolean matchesDate = true;
+            boolean matchesOther = false;
+            LocalDate invoiceDate = invoice.getCreateDate().toLocalDate();
+
+            // C+� -��+� 2 -�ߦ�u
+            if (startDate != null && endDate != null) {
+                matchesDate = !invoiceDate.isBefore(startDate) && !invoiceDate.isAfter(endDate);
+            } else if (startDate != null) {
+                matchesDate = !invoiceDate.isBefore(startDate);
+            } else if (endDate != null) {
+                matchesDate = !invoiceDate.isAfter(endDate);
+            }
+
+            // L�+�c c+�c tr���+�ng "HOߦ�C"
+            if (employeeId != null && !employeeId.isEmpty()) {
+                matchesOther |= String.valueOf(invoice.getEmployeeId()).contains(employeeId);
+            }
+
+            if (customerId != null && !customerId.isEmpty()) {
+                matchesOther |= String.valueOf(invoice.getCustomerId()).contains(customerId);
+            }
+
+            if (discountCode != null && !discountCode.isEmpty()) {
+                matchesOther |= invoice.getDiscountCode() != null &&
+                        invoice.getDiscountCode().toLowerCase().contains(discountCode.toLowerCase());
+            }
+
+            // Ki�+�m tra gi+� cߦ�
+            if (startTotalPrice != null && endTotalPrice != null) {
+                matchesOther |= invoice.getTotalPrice().compareTo(startTotalPrice) >= 0 && invoice.getTotalPrice().compareTo(endTotalPrice) <= 0;
+            } else if (startTotalPrice != null) {
+                matchesOther |= invoice.getTotalPrice().compareTo(startTotalPrice) >= 0;
+            } else if (endTotalPrice != null) {
+                matchesOther |= invoice.getTotalPrice().compareTo(endTotalPrice) <= 0;
+            }
+
+            boolean hasOtherConditions =
+                    (employeeId != null && !employeeId.isEmpty()) ||
+                            (customerId != null && !customerId.isEmpty()) ||
+                            (discountCode != null && !discountCode.isEmpty()) ||
+                            startTotalPrice != null ||
+                            endTotalPrice != null;
+
+            if (!hasOtherConditions) {
+                matchesOther = true;
+            }
+            // Ch�+� th+�m nߦ+u th�+�a cߦ� ng+�y ("v+�") v+� +�t nhߦ�t 1 trong c+�c tr���+�ng c+�n lߦ�i ("hoߦ+c")
+            if (matchesDate && matchesOther) {
+                filteredList.add(new InvoiceDTO(invoice));
+            }
+        }
+
+        return filteredList;
     }
 
 
