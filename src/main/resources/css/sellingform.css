@@ -118,7 +118,7 @@ HBox, VBox {
     -fx-background-color: #6b86a1;
 }
 
-.btnGetCusInfo {
+.btnGetCusInfo, .btnAddCustomer {
     -fx-background-color: white;
     -fx-border-color: #8fb6de;
     -fx-background-radius:4px;

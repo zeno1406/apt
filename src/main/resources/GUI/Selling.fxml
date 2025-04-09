@@ -148,6 +148,7 @@
                                                       <Cursor fx:constant="HAND" />
                                                    </cursor>
                                                 </Button>
+                                                <Button fx:id="btnAddCustomer" alignment="CENTER" layoutX="138.0" layoutY="7.0" mnemonicParsing="false" styleClass="btnAddCustomer" text="+" />
                                              </children>
                                           </Pane>
                                           <Pane fx:id="pFieldInvoiceEMPName" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="2">
