@@ -228,9 +228,7 @@ public class MainController {
             case 8 -> loadFXML("/GUI/DiscountUI.fxml");
             case 9 -> loadFXML("/GUI/RoleUI.fxml");
             case 10 -> loadFXML("/GUI/AccountUI.fxml");
-            case 11 -> System.out.println("Mở giao diện thống kê");
-            case 12 -> System.out.println("Mở giao diện bán hàng");
-            case 13 -> System.out.println("Mở giao diện nhập hàng");
+            case 11 -> loadFXML("/GUI/StatisticUI.fxml");
         }
     }
 

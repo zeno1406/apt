@@ -1,22 +1,24 @@
-package GUI;
 
-import BUS.DetailDiscountBUS;
-import BUS.DiscountBUS;
-import DTO.DetailDiscountDTO;
-import DTO.DiscountDTO;
-import INTERFACE.IController;
-import SERVICE.SessionManagerService;
-import UTILS.UiUtils;
-import UTILS.ValidationUtils;
-import javafx.application.Platform;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.FXCollections;
-import javafx.fxml.FXML;
-import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.HBox;
+    package GUI;
 
-import java.math.BigDecimal;
+    import BUS.DetailDiscountBUS;
+    import BUS.DiscountBUS;
+    import DTO.DetailDiscountDTO;
+    import DTO.DiscountDTO;
+    import INTERFACE.IController;
+    import SERVICE.SessionManagerService;
+    import UTILS.NotificationUtils;
+    import UTILS.UiUtils;
+    import UTILS.ValidationUtils;
+    import javafx.application.Platform;
+    import javafx.beans.property.SimpleStringProperty;
+    import javafx.collections.FXCollections;
+    import javafx.fxml.FXML;
+    import javafx.scene.control.*;
+    import javafx.scene.control.cell.PropertyValueFactory;
+    import javafx.scene.layout.HBox;
+
+    import java.math.BigDecimal;
 
 public class DiscountController implements IController {
     @FXML
@@ -43,10 +45,9 @@ public class DiscountController implements IController {
     private HBox functionBtns;
     @FXML
     private Button addBtn, editBtn, deleteBtn, refreshBtn, advanceSearchBtn;
-
-
     @FXML
     private TextField txtSearch;
+    private String keyword = "";
     private DiscountDTO selectedDiscount;
 
     @FXML
@@ -64,7 +65,7 @@ public class DiscountController implements IController {
         setupListeners();
 
         loadTable();
-        applyFilters();
+//        applyFilters();
     }
     @Override
     public void loadTable() {
@@ -72,7 +73,7 @@ public class DiscountController implements IController {
         tlb_col_code.setCellValueFactory(new PropertyValueFactory<>("code"));
         tlb_col_name.setCellValueFactory(new PropertyValueFactory<>("name"));
         tlb_col_type.setCellValueFactory(cellData ->
-                formatCell(cellData.getValue().getType() == 0 ? "Phần trăm" : "Giảm cứng"));
+                formatCell(cellData.getValue().getType() == 0 ? "Phߦ�n tr-�m" : "Giߦ�m c�+�ng"));
         tlb_col_startDate.setCellValueFactory(cellData ->
                 formatCell(validationUtils.formatDateTime(cellData.getValue().getStartDate())));
         tlb_col_endDate.setCellValueFactory(cellData ->
@@ -81,12 +82,12 @@ public class DiscountController implements IController {
         tblDiscount.setItems(FXCollections.observableArrayList(DiscountBUS.getInstance().getAllLocal()));
     }
 
-    public void loadSubTable(String discountCode, int type) {
-        if (discountCode == null || discountCode.isEmpty() || (type != 0 && type != 1)) return;
+    public void loadSubTable(String discountCode) {
+        if (discountCode == null || discountCode.isEmpty()) return;
         ValidationUtils validationUtils = ValidationUtils.getInstance();
         this.code.setText(selectedDiscount.getCode());
         this.name.setText(selectedDiscount.getName());
-        this.type.setText(selectedDiscount.getType() == 0 ? "Phần trăm" : "Giảm cứng");
+        this.type.setText(selectedDiscount.getType() == 0 ? "Phߦ�n tr-�m" : "Giߦ�m c�+�ng");
         this.startDate.setText(validationUtils.formatDateTime(selectedDiscount.getStartDate()));
         this.endDate.setText(validationUtils.formatDateTime(selectedDiscount.getEndDate()));
 
@@ -94,17 +95,17 @@ public class DiscountController implements IController {
                 formatCell(validationUtils.formatCurrency(cellData.getValue().getTotalPriceInvoice())));
         tlb_col_discountAmount.setCellValueFactory(cellData -> {
             BigDecimal discountValue = cellData.getValue().getDiscountAmount();
-            if (isSelectedDiscount() && type == 0) {
-                // Type 0: Giảm theo phần trăm (%)
+            if (isSelectedDiscount() && selectedDiscount.getType() == 0) {
+                // Type 0: Giߦ�m theo phߦ�n tr-�m (%)
                 return formatCell(validationUtils.formatCurrency(discountValue) + " %");
             } else {
-                // Type 1: Giảm trực tiếp bằng số tiền
+                // Type 1: Giߦ�m tr�+�c tiߦ+p bߦ�ng s�+� ti�+�n
                 return formatCell(validationUtils.formatCurrency(discountValue));
             }
         });
         UiUtils.gI().addTooltipToColumn(tlb_col_discountAmount, 10);
         tblDetailDiscount.setItems(FXCollections.observableArrayList(DetailDiscountBUS.getInstance().getAllDetailDiscountByDiscountIdLocal(discountCode)));
-
+        tblDetailDiscount.getSelectionModel().clearSelection();
     }
 
     private SimpleStringProperty formatCell(String value) {
@@ -114,23 +115,68 @@ public class DiscountController implements IController {
     @Override
     public void setupListeners() {
         tblDiscount.setOnMouseClicked(event -> {
-            selectedDiscount = tblDiscount.getSelectionModel().getSelectedItem(); // Cập nhật selectedDiscount
+            selectedDiscount = tblDiscount.getSelectionModel().getSelectedItem(); // Cߦ�p nhߦ�t selectedDiscount
             if (isSelectedDiscount()) {
-                loadSubTable(selectedDiscount.getCode(), selectedDiscount.getType());
+                loadSubTable(selectedDiscount.getCode());
             } else {
                 tblDetailDiscount.getItems().clear();
             }
         });
+        txtSearch.textProperty().addListener((observable, oldValue, newValue) -> handleKeywordChange());
+        refreshBtn.setOnAction(event -> {
+            resetFilters();
+            NotificationUtils.showInfoAlert("L+�m m�+�i th+�nh c+�ng", "Th+�ng b+�o");
+        });
+        advanceSearchBtn.setOnAction(e -> handleAdvanceSearch());
+    }
+
+    private void clearSubTable() {
+        this.code.setText("");
+        this.name.setText("");
+        this.type.setText("");
+        this.startDate.setText("");
+        this.endDate.setText("");
+        tblDetailDiscount.setItems(FXCollections.observableArrayList());
+        tblDetailDiscount.getSelectionModel().clearSelection();
+    }
+
+    private void handleKeywordChange() {
+        keyword = txtSearch.getText().trim();
+        applyFilters();
     }
 
     @Override
     public void applyFilters() {
+        DiscountBUS disBUS = DiscountBUS.getInstance();
+        clearSubTable();
+        if (keyword.isEmpty()) {
+            // Nߦ+u keyword r�+�ng, lߦ�y tߦ�t cߦ� h+�a -��n
+            tblDiscount.setItems(FXCollections.observableArrayList(disBUS.getAllLocal()));
+        } else {
+            tblDiscount.setItems(FXCollections.observableArrayList(disBUS.searchByCodeLocal(keyword)));
 
+        }
+        tblDiscount.getSelectionModel().clearSelection();
     }
 
     @Override
     public void resetFilters() {
+        txtSearch.clear();
+        clearSubTable();
+        applyFilters();
+    }
 
+    private void handleAdvanceSearch() {
+        DiscountAdvanceSearchModalController modalController = UiUtils.gI().openStageWithController(
+                "/GUI/DiscountAdvanceSearchModal.fxml",
+                null,
+                "T+�m kiߦ+m n+�ng cao"
+        );
+        if (modalController != null && modalController.isSaved()) {
+            tblDiscount.setItems(FXCollections.observableArrayList(modalController.getFilteredDiscounts()));
+            tblDiscount.getSelectionModel().clearSelection();
+            clearSubTable();
+        }
     }
 
     @Override

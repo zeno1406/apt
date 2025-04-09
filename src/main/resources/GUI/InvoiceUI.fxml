@@ -28,42 +28,27 @@
                         <String fx:value="shadow" />
                     </styleClass>
                     <children>
-                        <TableView fx:id="tblDiscount" layoutX="10.0" layoutY="48.0" prefHeight="512.0" prefWidth="555.0" AnchorPane.bottomAnchor="74.0" AnchorPane.leftAnchor="11.199999999999932" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="48.0">
+                        <TableView fx:id="tblInvoice" layoutX="10.0" layoutY="48.0" prefHeight="512.0" prefWidth="555.0" AnchorPane.bottomAnchor="74.0" AnchorPane.leftAnchor="11.199999999999932" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="48.0">
                             <columns>
-                                <TableColumn fx:id="tlb_col_code" prefWidth="57.599976778030396" text="Mã HĐ" />
-                                <TableColumn fx:id="tlb_col_name" prefWidth="84.80001449584961" text="Ngày tạo" />
-                                <TableColumn fx:id="tlb_col_type" prefWidth="74.4000244140625" text="Mã NV" />
-                                <TableColumn fx:id="tlb_col_startDate" prefWidth="77.59996032714844" text="Mã KM" />
-                                <TableColumn fx:id="tlb_col_endDate" prefWidth="120.79998779296875" text="Giảm giá" />
-                        <TableColumn fx:id="tlb_col_endDate1" prefWidth="136.80000610351556" text="Tổng tiền" />
+                                <TableColumn fx:id="tlb_col_id" prefWidth="57.599976778030396" text="M+� H-�" />
+                                <TableColumn fx:id="tlb_col_createDate" prefWidth="94.39999008178711" text="Ng+�y tߦ�o" />
+                                <TableColumn fx:id="tlb_col_employeeId" minWidth="1.5999755859375" prefWidth="55.199951171875" text="M+� NV" />
+                                <TableColumn fx:id="tlb_col_customerId" prefWidth="54.40000915527344" text="M+� KH" />
+                                <TableColumn fx:id="tlb_col_discountCode" prefWidth="72.800048828125" text="M+� KM" />
+                                <TableColumn fx:id="tlb_col_discountAmount" prefWidth="104.79998779296875" text="Giߦ�m gi+�" />
+                                <TableColumn fx:id="tlb_col_totalPrice" prefWidth="116.00003051757812" text="Th+�nh ti�+�n" />
                             </columns>
                         </TableView>
-                        <FontAwesomeIcon fill="#58c9c9" glyphName="SEARCH" layoutX="172.0" layoutY="34.0" size="1.8em" text="" AnchorPane.leftAnchor="169.0" AnchorPane.topAnchor="15.0" />
-                        <TextField fx:id="txtSearch" layoutX="14.0" layoutY="14.0" prefHeight="26.0" prefWidth="145.6" promptText="Nhập để tìm kiếm" styleClass="textfield" stylesheets="@../css/base.css" AnchorPane.topAnchor="15.0" />
+                        <FontAwesomeIcon fill="#58c9c9" glyphName="SEARCH" layoutX="172.0" layoutY="34.0" size="1.8em" text="n��" AnchorPane.leftAnchor="169.0" AnchorPane.topAnchor="15.0" />
+                        <TextField fx:id="txtSearch" layoutX="14.0" layoutY="14.0" prefHeight="26.0" prefWidth="145.6" promptText="Nhߦ�p -��+� t+�m kiߦ+m" styleClass="textfield" stylesheets="@../css/base.css" AnchorPane.topAnchor="15.0" />
                         <Line endX="79.80000305175781" layoutX="115.0" layoutY="42.0" startX="-100.0" stroke="#58c9c9" AnchorPane.topAnchor="45.0" />
                         <AnchorPane layoutX="1.0" layoutY="573.0" prefHeight="50.0" prefWidth="574.4">
                             <children>
                                 <HBox fx:id="functionBtns" alignment="CENTER_RIGHT" layoutX="157.0" layoutY="2.0" prefHeight="50.0" prefWidth="348.0" spacing="10.0" AnchorPane.bottomAnchor="-2.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="2.0">
                                     <children>
-                                        <Button fx:id="addBtn" mnemonicParsing="false" prefHeight="40.0" prefWidth="95.0" styleClass="action-btn" stylesheets="@../css/base.css" text="Thêm">
+                                        <Button fx:id="exportPdf" mnemonicParsing="false" prefHeight="40.0" prefWidth="115.0" styleClass="action-btn" stylesheets="@../css/base.css" text="Xuߦ�t PDF">
                                             <graphic>
-                                                <FontAwesomeIcon glyphName="PLUS_SQUARE" size="1.2em" styleClass="action-icon" />
-                                            </graphic>
-                                            <font>
-                                                <Font size="14.0" />
-                                            </font>
-                                        </Button>
-                                        <Button fx:id="editBtn" mnemonicParsing="false" prefHeight="40.0" prefWidth="95.0" styleClass="action-btn" stylesheets="@../css/base.css" text="Sửa">
-                                            <graphic>
-                                                <FontAwesomeIcon glyphName="PENCIL" size="1.2em" styleClass="action-icon" />
-                                            </graphic>
-                                            <font>
-                                                <Font size="14.0" />
-                                            </font>
-                                        </Button>
-                                        <Button fx:id="deleteBtn" mnemonicParsing="false" prefHeight="40.0" prefWidth="95.0" styleClass="action-btn" stylesheets="@../css/base.css" text="Xóa">
-                                            <graphic>
-                                                <FontAwesomeIcon glyphName="TRASH" size="1.2em" styleClass="action-icon" />
+                                                <FontAwesomeIcon glyphName="FILE_TEXT" size="1.2em" styleClass="action-icon" />
                                             </graphic>
                                             <font>
                                                 <Font size="14.0" />
@@ -102,7 +87,7 @@
                             <children>
                                 <HBox alignment="CENTER_LEFT" prefHeight="28.0" prefWidth="222.0" spacing="10.0">
                                     <children>
-                                        <Label prefWidth="140.0" text="Mã hóa đơn" textFill="#30bac4">
+                                        <Label prefWidth="140.0" text="M+� h+�a -��n" textFill="#30bac4">
                                             <font>
                                                 <Font name="Arial Bold" size="16.0" />
                                             </font>
@@ -112,7 +97,7 @@
                                                 <Font name="Arial" size="14.0" />
                                             </font>
                                         </Label>
-                                        <Label fx:id="code">
+                                        <Label fx:id="id">
                                             <font>
                                                 <Font name="Arial" size="14.0" />
                                             </font>
@@ -121,7 +106,7 @@
                                 </HBox>
                                 <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="10.0" prefHeight="30.0" prefWidth="180.0" spacing="10.0">
                                     <children>
-                                        <Label prefWidth="140.0" text="Ngày tạo" textFill="#30bac4">
+                                        <Label prefWidth="140.0" text="Ng+�y tߦ�o" textFill="#30bac4">
                                             <font>
                                                 <Font name="Arial Bold" size="16.0" />
                                             </font>
@@ -131,7 +116,7 @@
                                                 <Font name="Arial" size="14.0" />
                                             </font>
                                         </Label>
-                                        <Label fx:id="name">
+                                        <Label fx:id="createDate">
                                             <font>
                                                 <Font name="Arial" size="14.0" />
                                             </font>
@@ -140,7 +125,7 @@
                                 </HBox>
                                 <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="40.0" prefHeight="30.0" prefWidth="180.0" spacing="10.0">
                                     <children>
-                                        <Label prefWidth="140.0" text="Mã nhân viên" textFill="#30bac4">
+                                        <Label prefWidth="140.0" text="M+� nh+�n vi+�n" textFill="#30bac4">
                                             <font>
                                                 <Font name="Arial Bold" size="16.0" />
                                             </font>
@@ -150,7 +135,7 @@
                                                 <Font name="Arial" size="14.0" />
                                             </font>
                                         </Label>
-                                        <Label fx:id="type">
+                                        <Label fx:id="employeeId">
                                             <font>
                                                 <Font name="Arial" size="14.0" />
                                             </font>
@@ -159,7 +144,7 @@
                                 </HBox>
                                 <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="71.0" prefHeight="30.0" prefWidth="180.0" spacing="10.0">
                                     <children>
-                                        <Label prefWidth="140.0" text="Mã khách hàng" textFill="#30bac4">
+                                        <Label prefWidth="140.0" text="M+� kh+�ch h+�ng" textFill="#30bac4">
                                             <font>
                                                 <Font name="Arial Bold" size="16.0" />
                                             </font>
@@ -169,7 +154,7 @@
                                                 <Font name="Arial" size="14.0" />
                                             </font>
                                         </Label>
-                                        <Label fx:id="startDate">
+                                        <Label fx:id="customerId">
                                             <font>
                                                 <Font name="Arial" size="14.0" />
                                             </font>
@@ -178,7 +163,7 @@
                                 </HBox>
                                 <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="101.0" prefHeight="30.0" prefWidth="180.0" spacing="10.0">
                                     <children>
-                                        <Label prefWidth="140.0" text="Mã khuyến mãi" textFill="#30bac4">
+                                        <Label prefWidth="140.0" text="M+� khuyߦ+n m+�i" textFill="#30bac4">
                                             <font>
                                                 <Font name="Arial Bold" size="16.0" />
                                             </font>
@@ -188,64 +173,64 @@
                                                 <Font name="Arial" size="14.0" />
                                             </font>
                                         </Label>
-                                        <Label fx:id="endDate">
+                                        <Label fx:id="discountCode">
                                             <font>
                                                 <Font name="Arial" size="14.0" />
                                             </font>
                                         </Label>
                                     </children>
                                 </HBox>
-                        <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="142.0" prefHeight="30.0" prefWidth="180.0" spacing="10.0">
-                           <children>
-                              <Label prefWidth="140.0" text="Giảm giá" textFill="#30bac4">
-                                 <font>
-                                    <Font name="Arial Bold" size="16.0" />
-                                 </font>
-                              </Label>
-                              <Label text=":" textFill="#30bac4">
-                                 <font>
-                                    <Font name="Arial" size="14.0" />
-                                 </font>
-                              </Label>
-                              <Label fx:id="endDate1">
-                                 <font>
-                                    <Font name="Arial" size="14.0" />
-                                 </font>
-                              </Label>
-                           </children>
-                        </HBox>
-                        <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="148.0" prefHeight="30.0" prefWidth="180.0" spacing="10.0">
-                           <children>
-                              <Label prefWidth="140.0" text="Tổng tiền" textFill="#30bac4">
-                                 <font>
-                                    <Font name="Arial Bold" size="16.0" />
-                                 </font>
-                              </Label>
-                              <Label text=":" textFill="#30bac4">
-                                 <font>
-                                    <Font name="Arial" size="14.0" />
-                                 </font>
-                              </Label>
-                              <Label fx:id="endDate11">
-                                 <font>
-                                    <Font name="Arial" size="14.0" />
-                                 </font>
-                              </Label>
-                           </children>
-                        </HBox>
+                                <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="142.0" prefHeight="30.0" prefWidth="180.0" spacing="10.0">
+                                    <children>
+                                        <Label prefWidth="140.0" text="Giߦ�m gi+�" textFill="#30bac4">
+                                            <font>
+                                                <Font name="Arial Bold" size="16.0" />
+                                            </font>
+                                        </Label>
+                                        <Label text=":" textFill="#30bac4">
+                                            <font>
+                                                <Font name="Arial" size="14.0" />
+                                            </font>
+                                        </Label>
+                                        <Label fx:id="discountAmount">
+                                            <font>
+                                                <Font name="Arial" size="14.0" />
+                                            </font>
+                                        </Label>
+                                    </children>
+                                </HBox>
+                                <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="148.0" prefHeight="30.0" prefWidth="180.0" spacing="10.0">
+                                    <children>
+                                        <Label prefWidth="140.0" text="T�+�ng ti�+�n" textFill="#30bac4">
+                                            <font>
+                                                <Font name="Arial Bold" size="16.0" />
+                                            </font>
+                                        </Label>
+                                        <Label text=":" textFill="#30bac4">
+                                            <font>
+                                                <Font name="Arial" size="14.0" />
+                                            </font>
+                                        </Label>
+                                        <Label fx:id="totalPrice">
+                                            <font>
+                                                <Font name="Arial" size="14.0" />
+                                            </font>
+                                        </Label>
+                                    </children>
+                                </HBox>
                             </children>
                         </VBox>
-                        <TableView fx:id="tblDetailDiscount" layoutX="9.0" layoutY="186.0" prefHeight="325.0" prefWidth="262.0" AnchorPane.bottomAnchor="70.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="8.0">
+                        <TableView fx:id="tblDetailInvoice" layoutX="9.0" layoutY="186.0" prefHeight="325.0" prefWidth="262.0" AnchorPane.bottomAnchor="70.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="8.0">
                             <columns>
-                                <TableColumn fx:id="tlb_col_totalPriceInvoice" prefWidth="52.79998779296875" text="Mã SP" />
-                                <TableColumn fx:id="tlb_col_discountAmount" prefWidth="70.39990234375" text="Số lượng" />
-                        <TableColumn fx:id="tlb_col_discountAmount1" prefWidth="76.0" text="Đơn giá" />
-                        <TableColumn fx:id="tlb_col_discountAmount11" prefWidth="70.4000244140625" text="T.Tiền" />
+                                <TableColumn fx:id="tlb_col_productId" prefWidth="52.79998779296875" text="M+� SP" />
+                                <TableColumn fx:id="tlb_col_quantity" prefWidth="70.39990234375" text="S�+� l���+�ng" />
+                                <TableColumn fx:id="tlb_col_price" prefWidth="76.0" text="-ɦ�n gi+�" />
+                                <TableColumn fx:id="tlb_col_totalPriceP" prefWidth="70.4000244140625" text="T.Ti�+�n" />
                             </columns>
                         </TableView>
-                        <Button fx:id="refreshBtn" layoutX="39.0" layoutY="561.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="200.0" styleClass="action-btn" text="Đặt lại" AnchorPane.bottomAnchor="14.200000000000045" />
+                        <Button fx:id="refreshBtn" layoutX="39.0" layoutY="561.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="200.0" styleClass="action-btn" text="-�ߦ+t lߦ�i" AnchorPane.bottomAnchor="14.200000000000045" />
                         <Line endX="76.00003814697266" endY="4.57763671875E-5" layoutX="-64.0" layoutY="553.0" startX="330.5000305175781" startY="4.57763671875E-5" stroke="#58c9c9" AnchorPane.bottomAnchor="61.0" />
-                        <Label layoutX="67.0" layoutY="14.0" text="Chi tiết hóa đơn" textFill="#30bac4" AnchorPane.leftAnchor="67.0" AnchorPane.rightAnchor="67.0" AnchorPane.topAnchor="14.0">
+                        <Label layoutX="67.0" layoutY="14.0" text="Chi tiߦ+t h+�a -��n" textFill="#30bac4" AnchorPane.leftAnchor="67.0" AnchorPane.rightAnchor="67.0" AnchorPane.topAnchor="14.0">
                             <font>
                                 <Font name="Arial Bold Italic" size="20.0" />
                             </font>

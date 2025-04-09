@@ -70,7 +70,7 @@ public class ImportProductController {
     }
 
     private void changeLabelContent() {
-        lbFieldImportID.setText(ImportBUS.getInstance().autoId());
+        lbFieldImportID.setText(String.valueOf(ImportBUS.getInstance().getAllLocal().size()+1));
         lbFieldImportDate.setText(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")));
         lbFieldImportEMPID.setText(String.valueOf(SessionManagerService.getInstance().currEmployee().getId()));
         lbFieldImportEMPName.setText(SessionManagerService.getInstance().currEmployee().getFullName());

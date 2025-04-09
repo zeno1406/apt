@@ -1,7 +1,9 @@
+
 package UTILS;
 
 import java.math.BigDecimal;
 import java.text.NumberFormat;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import java.util.regex.Pattern;
@@ -10,6 +12,7 @@ import java.time.LocalDateTime;
 public class ValidationUtils {
     private static final ValidationUtils INSTANCE = new ValidationUtils();
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+    private static final DateTimeFormatter DATE_TIME_WITH_HOUR_FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
     private static final Pattern VIETNAMESE_TEXT_PATTERN = Pattern.compile("^[\\p{L}\\d_\\-./]+(\\s[\\p{L}\\d_\\-./]+)*$");
     private static final Pattern USERNAME_PATTERN = Pattern.compile("^[a-zA-Z0-9]+$");
     private static final Pattern VIETNAMESE_PHONE_PATTERN = Pattern.compile("^0\\d{9}$");
@@ -28,6 +31,13 @@ public class ValidationUtils {
     public boolean validateBigDecimal(BigDecimal value, int precision, int scale, boolean allowNegative) {
         if (value == null) return false;
         if (!allowNegative && value.compareTo(BigDecimal.ZERO) < 0) return false;
+        value = value.stripTrailingZeros();
+        return value.scale() <= scale && value.precision() - value.scale() <= precision - scale;
+    }
+
+    public boolean validateSalary(BigDecimal value, int precision, int scale, boolean allowNegative) {
+        if (value == null) return false;
+        if (!allowNegative && value.compareTo(BigDecimal.ZERO) <= 0) return false;
         value = value.stripTrailingZeros();
         return value.scale() <= scale && value.precision() - value.scale() <= precision - scale;
     }
@@ -57,7 +67,7 @@ public class ValidationUtils {
         if (password == null) return false;
         return password.length() >= minLength
                 && password.length() <= maxLength
-                && !password.contains(" "); // Chỉ cần không chứa khoảng trắng, còn lại cho phép tất cả.
+                && !password.contains(" "); // Ch�+� cߦ�n kh+�ng ch�+�a khoߦ�ng trߦ�ng, c+�n lߦ�i cho ph+�p tߦ�t cߦ�.
     }
 
     public boolean validateUsername(String username, int minLength, int maxLength) {
@@ -80,6 +90,22 @@ public class ValidationUtils {
 
     public String formatDateTime(LocalDateTime dateTime) {
         return dateTime != null ? dateTime.format(DATE_TIME_FORMATTER) : "";
+    }
+
+    public String formatDateTimeWithHour(LocalDateTime dateTime) {
+        return dateTime != null ? dateTime.format(DATE_TIME_WITH_HOUR_FORMATTER) : "";
+    }
+
+    public boolean validateDateOfBirth(LocalDate dateOfBirth) {
+        if (dateOfBirth == null) return false; // Ng+�y sinh kh+�ng -榦�+�c l+� null
+        LocalDate today = LocalDate.now();
+        return dateOfBirth.isBefore(today); // Ng+�y sinh phߦ�i tr���+�c ng+�y h+�m nay
+    }
+
+    public boolean validateDateOfBirth(LocalDateTime dateOfBirth) {
+        if (dateOfBirth == null) return false; // Ng+�y sinh kh+�ng -榦�+�c l+� null
+        LocalDate today = LocalDate.now();
+        return dateOfBirth.toLocalDate().isBefore(today); // Ng+�y sinh phߦ�i tr���+�c ng+�y h+�m nay
     }
 
 }
