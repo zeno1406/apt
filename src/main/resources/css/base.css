@@ -397,3 +397,8 @@
 .action-btn-sub:hover .action-icon-sub {
     -fx-fill: white;
 }
+
+.child-container-root {
+    -fx-pref-width: 500px;
+    -fx-pref-height: 700px;
+}

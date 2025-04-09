@@ -56,9 +56,10 @@ HBox, VBox {
 
 /*Main SHow*/
 .spShowProductContainer {
-    -fx-pref-width: 704px;
+    -fx-pref-width: 692px;
     -fx-background-color: transparent;
     -fx-pref-height: inherit;
+    -fx-border-color: transparent;
 }
 
 .gpShowProductWrapper {
@@ -115,4 +116,26 @@ HBox, VBox {
 
 .btnSubmitIInvoice:hover {
     -fx-background-color: #6b86a1;
+}
+
+.btnGetCusInfo {
+    -fx-background-color: white;
+    -fx-border-color: #8fb6de;
+    -fx-background-radius:4px;
+    -fx-border-radius: 4px;
+    -fx-pref-width: 25px;
+    -fx-pref-height: 25px;
+}
+
+.acSellingCustomerContainer {
+    -fx-border-color: black;
+}
+
+.txtSearchCustomer {
+    -fx-background-color: #e3eeff;
+    -fx-pref-height: 28px;
+}
+
+.txt-child-form {
+    -fx-background-color: #e3eeff;
 }

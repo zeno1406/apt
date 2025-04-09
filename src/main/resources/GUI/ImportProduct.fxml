@@ -71,9 +71,9 @@
                               <Insets bottom="8.0" />
                            </padding>
                         </Pane>
-                        <ScrollPane fx:id="spShowProductContainer" fitToWidth="true" hbarPolicy="NEVER" layoutY="42.0" prefHeight="800.0" prefWidth="692.0">
+                        <ScrollPane fx:id="spShowProductContainer" fitToWidth="true" hbarPolicy="NEVER" layoutY="42.0" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="692.0" styleClass="spShowProductContainer">
                            <content>
-                              <GridPane fx:id="gpShowProductWrapper" alignment="CENTER" hgap="8.0" maxWidth="-Infinity" prefHeight="43.0" prefWidth="692.0" styleClass="gpShowProductWrapper" vgap="8.0">
+                              <GridPane fx:id="gpShowProductWrapper" alignment="CENTER" hgap="8.0" prefHeight="43.0" prefWidth="692.0" styleClass="gpShowProductWrapper" vgap="8.0">
                                  <columnConstraints>
                                     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -120,25 +120,25 @@
                                           <Pane fx:id="pFiledImportID" prefHeight="200.0" prefWidth="200.0">
                                              <children>
                                                 <Label layoutX="14.0" layoutY="14.0" styleClass="ocean-color" text="Mã HĐ:" />
-                                                <TextField fx:id="txtFieldImportID" layoutX="59.0" layoutY="12.0" prefHeight="20.0" prefWidth="109.0" styleClass="txtFieldTempSellingInvoice" stylesheets="@../css/sellingform.css" />
+                                                <Label fx:id="lbFieldImportID" layoutX="59.0" layoutY="13.0" text="Label" />
                                              </children>
                                           </Pane>
                                           <Pane fx:id="pFiledImportDate" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1">
                                              <children>
                                                 <Label layoutX="14.0" layoutY="14.0" styleClass="ocean-color" text="Ngày:" />
-                                                <TextField fx:id="txtFieldImportDate" layoutX="63.0" layoutY="12.0" prefHeight="20.0" prefWidth="109.0" styleClass="txtFieldTempSellingInvoice" />
+                                                <Label fx:id="lbFieldImportDate" layoutX="65.0" layoutY="14.0" text="Label" />
                                              </children>
                                           </Pane>
                                           <Pane fx:id="pFieldImportEMPID" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
                                              <children>
                                                 <Label layoutX="14.0" layoutY="13.0" styleClass="ocean-color" text="Mã NV:" />
-                                                <TextField fx:id="txtFieldImportEMPID" layoutX="59.0" layoutY="11.0" prefHeight="20.0" prefWidth="109.0" styleClass="txtFieldTempSellingInvoice" />
+                                                <Label fx:id="lbFieldImportEMPID" layoutX="59.0" layoutY="12.0" text="Label" />
                                              </children>
                                           </Pane>
                                           <Pane fx:id="pFieldImportEMPName" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                              <children>
                                                 <Label layoutX="14.0" layoutY="13.0" styleClass="ocean-color" text="Tên NV:" />
-                                                <TextField fx:id="txtFieldImportEMPName" layoutX="63.0" layoutY="11.0" prefHeight="20.0" prefWidth="109.0" styleClass="txtFieldTempSellingInvoice" />
+                                                <Label fx:id="lbFieldImportEMPName" layoutX="65.0" layoutY="14.0" text="Label" />
                                              </children>
                                           </Pane>
                                        </children>
@@ -218,7 +218,7 @@
                                           </Pane>
                                           <Pane fx:id="pSubmitInvoiceBtnContainer" minHeight="-Infinity" prefHeight="45.0" prefWidth="200.0" styleClass="pSubmitImportBtnContainer">
                                              <children>
-                                                <Button fx:id="btnSubmitImport" alignment="CENTER" layoutX="111.0" layoutY="2.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="162.0" styleClass="btnSubmitIInvoice" text="Xuất Hóa Đơn">
+                                                <Button fx:id="btnSubmitImport" alignment="CENTER" layoutX="111.0" layoutY="2.0" minHeight="-Infinity" mnemonicParsing="false" prefHeight="42.0" prefWidth="162.0" styleClass="btnSubmitIInvoice" text="Xuất Hóa Đơn">
                                                    <padding>
                                                       <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
                                                    </padding>
@@ -272,7 +272,7 @@
                                     <String fx:value="ocean-color" />
                                     <String fx:value="font-bold" />
                                  </styleClass></Label>
-                              <TextField fx:id="txtFieldProoductImage" layoutX="87.0" layoutY="23.0" styleClass="background-silver" />
+                              <TextField fx:id="txtFieldProductImage" layoutX="87.0" layoutY="23.0" styleClass="background-silver" />
                            </children>
                         </Pane>
                         <Pane fx:id="pFieldEditName" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1">

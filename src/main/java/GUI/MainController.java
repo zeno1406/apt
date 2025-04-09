@@ -2,6 +2,7 @@ package GUI;
 
 import BUS.*;
 import DTO.EmployeeDTO;
+import DTO.ProductDTO;
 import SERVICE.SessionManagerService;
 import UTILS.UiUtils;
 import javafx.animation.*;
@@ -26,6 +27,7 @@ import org.jboss.jandex.Main;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.net.URL;
 import java.util.*;
 
@@ -239,46 +241,47 @@ public class MainController {
     }
 
     // Navigate to others stage
-    public void openStage(String fxmlFile) {
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(LoginController.class.getResource(fxmlFile));
-            Parent root = fxmlLoader.load(); // Gọi .load() để lấy root từ FXML
-
-
-            Stage stage = new Stage();
-            Scene scene = new Scene(root);
-
-            UiUtils.gI().makeWindowDraggable(root, stage);
-            stage.initStyle(StageStyle.TRANSPARENT);
-
-            stage.setTitle("Lego Store");
-            stage.setScene(scene);
-
-            stage.show();
-            stage.requestFocus();
-
-        } catch (IOException e) {
-            log.error("error", e);
-        }
-    }
+//    public void openStage(String fxmlFile) {
+//        try {
+//            FXMLLoader fxmlLoader = new FXMLLoader(LoginController.class.getResource(fxmlFile));
+//            Parent root = fxmlLoader.load(); // Gọi .load() để lấy root từ FXML
+//
+//
+//            Stage stage = new Stage();
+//            Scene scene = new Scene(root);
+//
+//            UiUtils.gI().makeWindowDraggable(root, stage);
+//            stage.initStyle(StageStyle.TRANSPARENT);
+//
+//            stage.setTitle("Lego Store");
+//            stage.setScene(scene);
+//
+//            stage.show();
+//            stage.requestFocus();
+//
+//        } catch (IOException e) {
+//            log.error("error", e);
+//        }
+//    }
     // Add constraint row
-    public void addConstraintRow(GridPane gridPane, int quantity, int height) {
+    public void addConstraintRow(GridPane gridPane, ArrayList<ProductDTO> products, int height) {
         boolean row_col = true, wait = false;
-        for (int i = 0; i < quantity; i++) {
+        int quantity = products.size();
+        for (int i = 0; i < quantity / 2 ; i++) {
             RowConstraints rowConstraints = new RowConstraints();
             rowConstraints.setPrefHeight(height);
             gridPane.getRowConstraints().add(rowConstraints);
         }
 
         int prevRow = 0;
-        int total = gridPane.getRowCount();
+        int total = gridPane.getRowCount() * 2;
         System.out.println(total);
         for (int i = 0; i < total; i++) {
             String url = "/images/default/" + "default.png";
             Image image = new Image(Objects.requireNonNull(getClass().getResource(url)).toString());
             System.out.print(image);
             row_col = !row_col;
-            addProductToGrid(gridPane, wait ? prevRow : i, row_col ? 1 : 0, image, "name",  1, 12000);
+            addProductToGrid(gridPane, wait ? prevRow : i, row_col ? 1 : 0, image, products.get(i).getName(),  products.get(i).getStockQuantity(), products.get(i).getSellingPrice());
             wait = !wait;
             prevRow = i;
         }
@@ -286,7 +289,7 @@ public class MainController {
 
 
     // add container
-    public void addProductToGrid(GridPane gridPane, int row, int col, Image image, String name, int quantity, double price) {
+    public void addProductToGrid(GridPane gridPane, int row, int col, Image image, String name, int quantity, BigDecimal price) {
         // ImageView
         ImageView imageView = new ImageView(image);
         imageView.setFitWidth(134);
@@ -325,6 +328,16 @@ public class MainController {
         HBox row = new HBox(5);
         row.getChildren().addAll(label, value);
         return row;
+    }
+
+    public ArrayList<ProductDTO> listLocalProducts() {
+        ArrayList<ProductDTO> list = ProductBUS.getInstance().getAllLocal();
+        if (list.isEmpty()) {
+            ProductBUS.getInstance().getAll();
+            ProductBUS.getInstance().loadLocal();
+            list = ProductBUS.getInstance().getAllLocal();
+        }
+        return list;
     }
 }
 
