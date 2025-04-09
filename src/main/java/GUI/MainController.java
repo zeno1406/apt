@@ -15,6 +15,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -338,6 +339,10 @@ public class MainController {
             list = ProductBUS.getInstance().getAllLocal();
         }
         return list;
+    }
+
+    public void addEventClickForProduct(TableView<String> tableView) {
+
     }
 }
 

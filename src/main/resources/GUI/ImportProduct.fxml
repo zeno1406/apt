@@ -73,7 +73,7 @@
                         </Pane>
                         <ScrollPane fx:id="spShowProductContainer" fitToWidth="true" hbarPolicy="NEVER" layoutY="42.0" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="692.0" styleClass="spShowProductContainer">
                            <content>
-                              <GridPane fx:id="gpShowProductWrapper" alignment="CENTER" hgap="8.0" prefHeight="43.0" prefWidth="692.0" styleClass="gpShowProductWrapper" vgap="8.0">
+                              <GridPane fx:id="gpShowProductWrapper" alignment="CENTER" hgap="8.0" prefHeight="43.0" prefWidth="692.0" styleClass="gpShowProductWrapper">
                                  <columnConstraints>
                                     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -115,6 +115,7 @@
                                        <rowConstraints>
                                           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                        </rowConstraints>
                                        <children>
                                           <Pane fx:id="pFiledImportID" prefHeight="200.0" prefWidth="200.0">
@@ -135,10 +136,10 @@
                                                 <Label fx:id="lbFieldImportEMPID" layoutX="59.0" layoutY="12.0" text="Label" />
                                              </children>
                                           </Pane>
-                                          <Pane fx:id="pFieldImportEMPName" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                          <Pane fx:id="pFieldImportEMPName" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="2">
                                              <children>
                                                 <Label layoutX="14.0" layoutY="13.0" styleClass="ocean-color" text="Tên NV:" />
-                                                <Label fx:id="lbFieldImportEMPName" layoutX="65.0" layoutY="14.0" text="Label" />
+                                                <Label fx:id="lbFieldImportEMPName" layoutX="59.0" layoutY="13.0" text="Label" />
                                              </children>
                                           </Pane>
                                        </children>
@@ -150,7 +151,7 @@
                               </Pane>
                               <Pane fx:id="pShowDetailImportProductContainer" prefHeight="340.0" prefWidth="200.0">
                                  <children>
-                                    <TableView fx:id="tbvDetailInvoiceProduct" layoutX="4.0" prefHeight="340.0" prefWidth="376.0" styleClass="tbvDetailProduct">
+                                    <TableView fx:id="tbvDetailImportProduct" layoutX="4.0" prefHeight="340.0" prefWidth="376.0" styleClass="tbvDetailProduct">
                                        <columns>
                                           <TableColumn fx:id="tbListInvoiceProductIndex" prefWidth="36.0" text="STT" />
                                           <TableColumn fx:id="tbListInvoiceProductName" prefWidth="148.0" text="Tên Sản Phẩm" />

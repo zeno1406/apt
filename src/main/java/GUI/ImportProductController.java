@@ -46,6 +46,7 @@ public class ImportProductController {
         MainController temp = MainController.getInstance();
         temp.addConstraintRow(gpShowProductWrapper, temp.listLocalProducts(), 80);
         changeLabelContent();
+        setOnMouseClicked();
     }
 
     // close
@@ -73,5 +74,10 @@ public class ImportProductController {
         lbFieldImportDate.setText(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")));
         lbFieldImportEMPID.setText(String.valueOf(SessionManagerService.getInstance().currEmployee().getId()));
         lbFieldImportEMPName.setText(SessionManagerService.getInstance().currEmployee().getFullName());
+    }
+
+    private void setOnMouseClicked() {
+        System.out.println((long) gpShowProductWrapper.getChildren().size());
+
     }
 }
