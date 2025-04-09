@@ -9,7 +9,7 @@
 
 .main-pane-container {
     -fx-pref-width: 1100px;
-    -fx-pref-height: 700px;
+    -fx-pref-height: 800px;
     -fx-background-color: white;
 
 }
@@ -18,10 +18,12 @@
     -fx-text-fill: #00b0d4;
 }
 
-.background-silver {
-    -fx-background-color: #c0c0c0;
+.font-bold {
+    -fx-font-weight: bold;
+}
 
-    -fx-border-style: solid;
+.background-silver {
+    -fx-background-color: #fcfdfc;
 }
 
 .textfield {
@@ -337,7 +339,7 @@
 .acContainerRoot,
 .vbContainerRoot {
     -fx-pref-width: 1100px;
-    -fx-pref-height: 900px;
+    -fx-pref-height: 700px;
     -fx-background-color: white;
 }
 
@@ -348,13 +350,13 @@
 
 .hbMainContentContainer {
     -fx-pref-width: inherit;
-    -fx-pref-height: 850px;
+    -fx-pref-height: 642px;
 }
 
 .tbvDetailProduct,
 .pShowDetailProductContainer {
     -fx-background-color: #c0d9ee;
-    -fx-pref-height: 492px;
+    -fx-pref-height: 292px;
 }
 
 .btnFunctionForm {
@@ -364,6 +366,8 @@
     -fx-font-weight: bold;
     -fx-background-radius: 6px;
     -fx-cursor: hand;
+    -fx-pref-width: 80px;
+    -fx-alignment: center;
 }
 
 .btnFunctionForm:hover {
@@ -392,4 +396,9 @@
 
 .action-btn-sub:hover .action-icon-sub {
     -fx-fill: white;
+}
+
+.child-container-root {
+    -fx-pref-width: 500px;
+    -fx-pref-height: 700px;
 }

@@ -163,7 +163,8 @@ public class UiUtils {
             stage.requestFocus();
 
         } catch (IOException e) {
-            System.err.println("error" + e.getMessage());
+            System.err.println("error");
+            e.printStackTrace();
         }
     }
 

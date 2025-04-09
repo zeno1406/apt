@@ -2,17 +2,20 @@ package GUI;
 
 import BUS.*;
 import DTO.EmployeeDTO;
+import DTO.ProductDTO;
 import SERVICE.SessionManagerService;
 import UTILS.UiUtils;
 import javafx.animation.*;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -25,6 +28,7 @@ import org.jboss.jandex.Main;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.net.URL;
 import java.util.*;
 
@@ -40,6 +44,12 @@ public class MainController {
     private VBox groupBtn;
     static boolean isLoaded = false;
     private Button selectedButton = null;
+    private static final MainController INSTANCE = new MainController();
+
+    public MainController() {}
+    public static MainController getInstance() {
+        return INSTANCE;
+    }
 
     @FXML
     public void initialize() {
@@ -230,4 +240,109 @@ public class MainController {
             stage.close();
         }
     }
+
+    // Navigate to others stage
+//    public void openStage(String fxmlFile) {
+//        try {
+//            FXMLLoader fxmlLoader = new FXMLLoader(LoginController.class.getResource(fxmlFile));
+//            Parent root = fxmlLoader.load(); // Gọi .load() để lấy root từ FXML
+//
+//
+//            Stage stage = new Stage();
+//            Scene scene = new Scene(root);
+//
+//            UiUtils.gI().makeWindowDraggable(root, stage);
+//            stage.initStyle(StageStyle.TRANSPARENT);
+//
+//            stage.setTitle("Lego Store");
+//            stage.setScene(scene);
+//
+//            stage.show();
+//            stage.requestFocus();
+//
+//        } catch (IOException e) {
+//            log.error("error", e);
+//        }
+//    }
+    // Add constraint row
+    public void addConstraintRow(GridPane gridPane, ArrayList<ProductDTO> products, int height) {
+        boolean row_col = true, wait = false;
+        int quantity = products.size();
+        for (int i = 0; i < quantity / 2 ; i++) {
+            RowConstraints rowConstraints = new RowConstraints();
+            rowConstraints.setPrefHeight(height);
+            gridPane.getRowConstraints().add(rowConstraints);
+        }
+
+        int prevRow = 0;
+        int total = gridPane.getRowCount() * 2;
+        System.out.println(total);
+        for (int i = 0; i < total; i++) {
+            String url = "/images/default/" + "default.png";
+            Image image = new Image(Objects.requireNonNull(getClass().getResource(url)).toString());
+            System.out.print(image);
+            row_col = !row_col;
+            addProductToGrid(gridPane, wait ? prevRow : i, row_col ? 1 : 0, image, products.get(i).getName(),  products.get(i).getStockQuantity(), products.get(i).getSellingPrice());
+            wait = !wait;
+            prevRow = i;
+        }
+    }
+
+
+    // add container
+    public void addProductToGrid(GridPane gridPane, int row, int col, Image image, String name, int quantity, BigDecimal price) {
+        // ImageView
+        ImageView imageView = new ImageView(image);
+        imageView.setFitWidth(134);
+        imageView.setFitHeight(134);
+        imageView.setPreserveRatio(true);
+        // Labels
+        Label nameLabel = new Label("Name :");
+        Label quantityLabel = new Label("Quantity :");
+        Label priceLabel = new Label("Price :");
+
+        Label nameValue = new Label(name);
+        Label quantityValue = new Label(String.valueOf(quantity));
+        Label priceValue = new Label(String.format("%.0f ₫", price));
+
+        // VBox
+        VBox infoBox = new VBox(10); // khoảng cách giữa các dòng
+        infoBox.getChildren().addAll(
+                createInfoRow(nameLabel, nameValue),
+                createInfoRow(quantityLabel, quantityValue),
+                createInfoRow(priceLabel, priceValue)
+        );
+        infoBox.setPrefHeight(134);
+
+        // HBox
+        HBox productBox = new HBox(10);
+        productBox.getChildren().addAll(imageView, infoBox);
+        productBox.setPadding(new Insets(5));
+        productBox.setStyle("-fx-background-color: #e0ffff; -fx-border-color: #ccc;");
+        productBox.setPrefHeight(134);
+
+        // Thêm vào grid
+        gridPane.add(productBox, col, row);
+    }
+
+    private HBox createInfoRow(Label label, Label value) {
+        HBox row = new HBox(5);
+        row.getChildren().addAll(label, value);
+        return row;
+    }
+
+    public ArrayList<ProductDTO> listLocalProducts() {
+        ArrayList<ProductDTO> list = ProductBUS.getInstance().getAllLocal();
+        if (list.isEmpty()) {
+            ProductBUS.getInstance().getAll();
+            ProductBUS.getInstance().loadLocal();
+            list = ProductBUS.getInstance().getAllLocal();
+        }
+        return list;
+    }
+
+    public void addEventClickForProduct(TableView<String> tableView) {
+
+    }
 }
+

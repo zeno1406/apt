@@ -67,5 +67,17 @@ public class ImportBUS extends BaseBUS<ImportDTO, Integer>{
                 && validator.validateBigDecimal(obj.getProfitPercent(), 5, 2, false);
     }
 
+    public String autoId() {
+        if (isLocalEmpty()) {
+            return "IP00001";
+        }
 
+        String lastId = String.valueOf(arrLocal.getLast().getId());
+        try {
+            int id = Integer.parseInt(lastId.substring(2)) + 1;
+            return String.format("IP%05d", id);
+        } catch (NumberFormatException e) {
+            throw new IllegalStateException("Invalid product ID format: " + lastId);
+        }
+    }
 }
