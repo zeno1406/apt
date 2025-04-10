@@ -176,47 +176,4 @@ public class ExcelService {
         }
         return list;
     }
-
-//    VALIDATE ON EMPLOYEE BUS
-    private ArrayList<EmployeeDTO> returnListEmployee(Sheet sheet, ArrayList<EmployeeDTO> list) {
-        for(Row row : sheet) {
-            if(row.getRowNum() == 0)
-                continue;
-            if (list == null)
-                return new ArrayList<>();
-            if (!list.isEmpty())
-                list.clear();
-
-            // check input
-            ValidationUtils validate = ValidationUtils.getInstance();
-            int id = validate.canParseToInt(row.getCell(0).getStringCellValue());
-            int roleID = validate.canParseToInt(row.getCell(5).getStringCellValue());
-            int status = validate.canParseToInt(row.getCell(6).getStringCellValue());
-            if (id == -1 || roleID == -1 || status == -1 ) {
-                System.out.println("error id or status!");
-                return new ArrayList<>();
-            }
-            BigDecimal salary = validate.canParseToBigDecimal(row.getCell(3).getStringCellValue());
-            if (salary.equals(BigDecimal.valueOf(-1))) {
-                System.out.println("error salary");
-                return new ArrayList<>();
-            }
-            LocalDateTime dateOfBirth = validate.canParseToLocalDateTime(row.getCell(4).getStringCellValue());
-            if (dateOfBirth == null) {
-                System.out.println("error date of birth");
-                return new ArrayList<>();
-            }
-            String firstName = row.getCell(1).getStringCellValue();
-            firstName = validate.validateVietnameseText255(firstName) ? firstName : null;
-            String lastName = row.getCell(2).getStringCellValue();
-            lastName = validate.validateVietnameseText255(lastName) ? lastName : null;
-            if (firstName == null || lastName == null) {
-                System.out.println("error string length");
-                return new ArrayList<>();
-            }
-            list.add(new EmployeeDTO(id, firstName, lastName, salary, dateOfBirth, roleID, status != 0));
-        }
-
-        return list;
-    }
 }
