@@ -139,9 +139,7 @@ public class ExcelService {
         ProductBUS validate = ProductBUS.getInstance();
         validate.getAllLocal();
         // check valid product
-        if(validate.isValidProductInput(product) && !validate.isDuplicateProduct(product))
-            return true;
-        return false;
+        return validate.isValidProductInput(product) && !validate.isDuplicateProduct(product);
     }
 
 //    VALIDATE ON PRODUCT BUS
