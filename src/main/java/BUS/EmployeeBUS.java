@@ -140,6 +140,7 @@ public class EmployeeBUS extends BaseBUS <EmployeeDTO, Integer> {
         }
     }
 
+//  VALIDATE HERE!!!
     private boolean isValidEmployeeInput(EmployeeDTO obj) {
         if (obj.getFirstName() == null || obj.getLastName() == null || obj.getSalary() == null) {
             return false;

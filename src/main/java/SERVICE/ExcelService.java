@@ -13,6 +13,10 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.awt.*;
 import java.io.*;
+import java.math.BigDecimal;
+import java.time.DateTimeException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,7 +52,7 @@ public class ExcelService {
             try {
                 Desktop.getDesktop().open(file);
             } catch (IOException e) {
-                System.err.println("Kh+�ng th�+� m�+� file: " + e.getMessage());
+                System.err.println("Không thể mở file: " + e.getMessage());
             }
         }
     }
@@ -93,5 +97,128 @@ public class ExcelService {
             dataRow.createCell(3).setCellValue(product.getSellingPrice().toString());
         }
         return sheet;
+    }
+
+//    IMPORT EXCEL
+    private void ImportSheet(String importData) throws IOException {
+        String fileName = importData.toLowerCase() + ".xlsx";
+        File file = new File(fileName);
+        if (!file.exists()) return;
+        //file input
+        try (FileInputStream fis = new FileInputStream(file);
+             Workbook workbook = new XSSFWorkbook(fis)) {
+            //create sheets
+            Sheet sheet = workbook.getSheetAt(0);
+            //switch case employees or products
+            if (importData.equalsIgnoreCase("product"))
+                importToProducts(sheet);
+
+        } catch (Exception e) {
+            throw new RuntimeException("Lỗi khi import file Excel: " + e.getMessage(), e);
+        }
+    }
+//    import to ImportData
+    private void importToProducts(Sheet sheet) {
+        ArrayList<ProductDTO> list = returnListProduct(sheet, new ArrayList<>());
+        //check empty
+        if (list.isEmpty()) {
+            System.out.println("Error size of list");
+            return;
+        }
+
+        //check local
+        for (ProductDTO product : list)
+                // validate before insert
+            if (validateForProduct(product))
+                ProductBUS.getInstance().insert(product, SessionManagerService.getInstance().employeeRoleId(), SessionManagerService.getInstance().employeeLoginId());
+        return;
+    }
+
+//    validate after get list import products
+    private boolean validateForProduct(ProductDTO product) {
+        ProductBUS validate = ProductBUS.getInstance();
+        validate.getAllLocal();
+        // check valid product
+        if(validate.isValidProductInput(product) && !validate.isDuplicateProduct(product))
+            return true;
+        return false;
+    }
+
+//    VALIDATE ON PRODUCT BUS
+    private ArrayList<ProductDTO> returnListProduct(Sheet sheet, ArrayList<ProductDTO> list) {
+        for (Row row : sheet) {
+            if (row.getRowNum() == 0)
+                continue;
+            if (list == null)
+                return new ArrayList<>();
+            if (!list.isEmpty())
+                list.clear();
+
+            // get instance of product bus
+            ValidationUtils validate = ValidationUtils.getInstance();
+            String id = row.getCell(0).getStringCellValue();
+            String name = row.getCell(1).getStringCellValue();
+            String description = row.getCell(5) != null ? row.getCell(5).getStringCellValue() : null;
+            String imageUrl = row.getCell(6) != null ? row.getCell(6).getStringCellValue() : null;
+            BigDecimal sellingPrice = validate.canParseToBigDecimal(row.getCell(3).getStringCellValue());
+            int stockQuantity = validate.canParseToInt(row.getCell(2).getStringCellValue());
+            int statusInt = validate.canParseToInt(row.getCell(4).getStringCellValue());
+            int categoryId = validate.canParseToInt(row.getCell(7).getStringCellValue());
+
+            if (stockQuantity == -1 || statusInt == -1 || categoryId == -1) {
+                System.out.println("Lỗi định dạng số ở stock, status hoặc category.");
+                return new ArrayList<>();
+            }
+            if (sellingPrice.equals(BigDecimal.valueOf(-1))) {
+                System.out.println("Lỗi giá bán.");
+                return new ArrayList<>();
+            }
+            ProductDTO product = new ProductDTO(id, name, stockQuantity, sellingPrice,statusInt != 0, description, imageUrl, categoryId);
+            list.add(product);
+        }
+        return list;
+    }
+
+//    VALIDATE ON EMPLOYEE BUS
+    private ArrayList<EmployeeDTO> returnListEmployee(Sheet sheet, ArrayList<EmployeeDTO> list) {
+        for(Row row : sheet) {
+            if(row.getRowNum() == 0)
+                continue;
+            if (list == null)
+                return new ArrayList<>();
+            if (!list.isEmpty())
+                list.clear();
+
+            // check input
+            ValidationUtils validate = ValidationUtils.getInstance();
+            int id = validate.canParseToInt(row.getCell(0).getStringCellValue());
+            int roleID = validate.canParseToInt(row.getCell(5).getStringCellValue());
+            int status = validate.canParseToInt(row.getCell(6).getStringCellValue());
+            if (id == -1 || roleID == -1 || status == -1 ) {
+                System.out.println("error id or status!");
+                return new ArrayList<>();
+            }
+            BigDecimal salary = validate.canParseToBigDecimal(row.getCell(3).getStringCellValue());
+            if (salary.equals(BigDecimal.valueOf(-1))) {
+                System.out.println("error salary");
+                return new ArrayList<>();
+            }
+            LocalDateTime dateOfBirth = validate.canParseToLocalDateTime(row.getCell(4).getStringCellValue());
+            if (dateOfBirth == null) {
+                System.out.println("error date of birth");
+                return new ArrayList<>();
+            }
+            String firstName = row.getCell(1).getStringCellValue();
+            firstName = validate.validateVietnameseText255(firstName) ? firstName : null;
+            String lastName = row.getCell(2).getStringCellValue();
+            lastName = validate.validateVietnameseText255(lastName) ? lastName : null;
+            if (firstName == null || lastName == null) {
+                System.out.println("error string length");
+                return new ArrayList<>();
+            }
+            list.add(new EmployeeDTO(id, firstName, lastName, salary, dateOfBirth, roleID, status != 0));
+        }
+
+        return list;
     }
 }

@@ -3,6 +3,7 @@ package UTILS;
 
 import java.math.BigDecimal;
 import java.text.NumberFormat;
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
@@ -108,4 +109,34 @@ public class ValidationUtils {
         return dateOfBirth.toLocalDate().isBefore(today); // Ng+�y sinh phߦ�i tr���+�c ng+�y h+�m nay
     }
 
+//    validate and return for quick get data or return -1 for get error
+    public int canParseToInt(String input) {
+        try
+        {
+            return Integer.parseInt(input);
+        } catch (Exception ex) {
+            return -1;
+        }
+    }
+
+    public BigDecimal canParseToBigDecimal(String input) {
+        try
+        {
+            return BigDecimal.valueOf(Long.parseLong(input));
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            return BigDecimal.valueOf(-1);
+        }
+    }
+
+    public LocalDateTime canParseToLocalDateTime(String value) {
+        try {
+            // Nếu chuỗi giống định dạng "yyyy-MM-dd HH:mm:ss"
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            return LocalDateTime.parse(value, formatter);
+        } catch (DateTimeException e) {
+            System.err.println("Lỗi định dạng thời gian: " + e.getMessage());
+            return null;
+        }
+    }
 }
