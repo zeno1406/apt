@@ -25,7 +25,7 @@
     -fx-border-color: black;
     -fx-pref-width: 620px;
     -fx-pref-height: 300px;
-    visibility: hidden;
+    /*visibility: hidden;*/
 }
 
 .gpDetailEditProduct {

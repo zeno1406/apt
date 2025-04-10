@@ -27,7 +27,7 @@ public class SellingController {
     @FXML
     public void initialize()
     {
-        MainController temp = MainController.getInstance();
+        EventForImportAndSell temp = EventForImportAndSell.getInstance();
         temp.addConstraintRow(gpShowProductWrapper, temp.listLocalProducts(), 80);
     }
 

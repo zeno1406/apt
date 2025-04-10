@@ -16,6 +16,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+import javafx.stage.Stage;
 import org.jboss.jandex.Main;
 
 import java.time.LocalDateTime;
@@ -26,9 +27,7 @@ import java.util.Objects;
 
 public class ImportProductController {
     @FXML
-    private Button btnExitDetailEdit, btnExitImportingForm, btnImportListProductEdit, btnSearchProduct, btnImportListProductClear, btnImportListProductAdd, btnImportListProductRemove, btnSubmitImport;
-    @FXML
-    private HBox hbMoreEditImportProduct;
+    private Button btnExitImportingForm, btnImportListProductEdit, btnSearchProduct, btnImportListProductClear, btnImportListProductAdd, btnImportListProductRemove, btnSubmitImport;
     @FXML
     private Label lbSellingProductName, lbFieldImportID, lbFieldImportDate, lbFieldImportEMPID, lbFieldImportEMPName;
     @FXML
@@ -43,30 +42,27 @@ public class ImportProductController {
     @FXML
     public void initialize()
     {
-        MainController temp = MainController.getInstance();
+        EventForImportAndSell temp = EventForImportAndSell.getInstance();
         temp.addConstraintRow(gpShowProductWrapper, temp.listLocalProducts(), 80);
         changeLabelContent();
         setOnMouseClicked();
     }
 
-    // close
     // Set click Event
-    @FXML
-    private void onMouseClickedExitDetailEdit(MouseEvent e) {
-            hbMoreEditImportProduct.setDisable(true);
-            hbMoreEditImportProduct.setVisible(false);
+    private void setOnMouseClicked() {
+        System.out.println((long) gpShowProductWrapper.getChildren().size());
+        btnExitImportingForm.setOnMouseClicked(event -> onMouseClickedExitImportingForm());
+        btnImportListProductEdit.setOnMouseClicked(event -> onMouseClickedImportListProductEdit());
     }
 
-    @FXML
-    private void onMouseClickedExitImportingForm(MouseEvent e) {
+    // close
+    private void onMouseClickedExitImportingForm() {
         (UiUtils.gI()).openStage("/GUI/NavigatePermission.fxml", "danh sách chức năng");
         btnExitImportingForm.getScene().getWindow().hide();
     }
 
-    @FXML
-    private void onMouseClickedImportListProductEdit(MouseEvent e) {
-        hbMoreEditImportProduct.setDisable(false);
-        hbMoreEditImportProduct.setVisible(true);
+    private void onMouseClickedImportListProductEdit() {
+        (UiUtils.gI()).openStage("/GUI/ImportProductModal.fxml", "sửa chi tiết", (Stage) btnImportListProductEdit.getScene().getWindow());
     }
 
     private void changeLabelContent() {
@@ -74,10 +70,5 @@ public class ImportProductController {
         lbFieldImportDate.setText(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")));
         lbFieldImportEMPID.setText(String.valueOf(SessionManagerService.getInstance().currEmployee().getId()));
         lbFieldImportEMPName.setText(SessionManagerService.getInstance().currEmployee().getFullName());
-    }
-
-    private void setOnMouseClicked() {
-        System.out.println((long) gpShowProductWrapper.getChildren().size());
-
     }
 }

@@ -168,5 +168,33 @@ public class UiUtils {
         }
     }
 
+//    for show double form
+    public void openStage(String fxmlFile, String title, Stage owner) {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(LoginController.class.getResource(fxmlFile));
+            Parent root = fxmlLoader.load();
+
+            Stage stage = new Stage();
+            Scene scene = new Scene(root);
+
+            UiUtils.gI().makeWindowDraggable(root, stage);
+            stage.initStyle(StageStyle.TRANSPARENT);
+
+            stage.setTitle(title);
+            stage.setScene(scene);
+
+            // Thêm dòng này để khóa form cha
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.initOwner(owner); // Gán form cha
+
+            stage.showAndWait(); // Đợi đến khi form con đóng mới tiếp tục
+
+        } catch (IOException e) {
+            System.err.println("error");
+            e.printStackTrace();
+        }
+    }
+
+
 
 }
