@@ -46,7 +46,7 @@ public class EmployeeBUS extends BaseBUS <EmployeeDTO, Integer> {
 
         // Ng-�n chߦ+n x+�a th+�ng tin nh+�n vi+�n g�+�c (id = 1) -��+� bߦ�o v�+� h�+� th�+�ng
         if (id == 1) {
-            System.out.println("Kh+�ng th�+� x+�a nh+�n vi+�n g�+�c (employeeId = 1)!");
+//            System.out.println("Kh+�ng th�+� x+�a nh+�n vi+�n g�+�c (employeeId = 1)!");
             return 8;
         }
 
