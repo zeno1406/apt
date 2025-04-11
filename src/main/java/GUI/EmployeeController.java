@@ -58,7 +58,7 @@ public class EmployeeController implements IController {
     private ComboBox<String> cbRoleFilter;
 
     // Biߦ+n l��u b�+� l�+�c -��+� tr+�nh truy xuߦ�t UI nhi�+�u lߦ�n
-    private String searchBy = "M+� nh+�n vi+�n";
+    private String searchBy = "Mã nhân viên";
     private String keyword = "";
     private int roleId = -1;
     private int statusFilter = 1;
@@ -104,20 +104,20 @@ public class EmployeeController implements IController {
                 formatCell(validationUtils.formatCurrency(calculateFinalSalary(cellData.getValue(), roleBUS))));
 
         tlb_col_status.setCellValueFactory(cellData ->
-                formatCell(cellData.getValue().isStatus() ? "Hoߦ�t -��+�ng" : "Ng��ng hoߦ�t -��+�ng"));
+                formatCell(cellData.getValue().isStatus() ? "Hoạt động" : "Ngưng hoạt động"));
 
         UiUtils.gI().addTooltipToColumn(tlb_col_roleName, 10);
         UiUtils.gI().addTooltipToColumn(tlb_col_status, 10);
     }
 
     private void loadComboBox() {
-        cbSearchBy.getItems().addAll("M+� nh+�n vi+�n", "H�+� -��+�m", "T+�n");
+        cbSearchBy.getItems().addAll("Mã nhân viên", "Họ đệm", "Tên");
 
         RoleBUS roleBUS = RoleBUS.getInstance();
         roleMap.clear();
 
-        cbRoleFilter.getItems().add("Tߦ�t cߦ�");
-        roleMap.put("Tߦ�t cߦ�", -1);
+        cbRoleFilter.getItems().add("Tất cả");
+        roleMap.put("Tất cả", -1);
 
         for (RoleDTO role : roleBUS.getAllLocal()) {
             cbRoleFilter.getItems().add(role.getName());
@@ -137,7 +137,7 @@ public class EmployeeController implements IController {
         txtSearch.textProperty().addListener((observable, oldValue, newValue) -> handleKeywordChange());
         refreshBtn.setOnAction(event -> {
             resetFilters();
-            NotificationUtils.showInfoAlert("L+�m m�+�i th+�nh c+�ng", "Th+�ng b+�o");
+            NotificationUtils.showInfoAlert("Làm mới thành công", "Thông báo");
         });
 
         addBtn.setOnAction(event -> handleAddBtn());
@@ -189,12 +189,12 @@ public class EmployeeController implements IController {
     @Override
     public void resetFilters() {
         cbSearchBy.getSelectionModel().selectFirst(); // Ch�+�n gi+� tr�+� -�ߦ�u ti+�n
-        cbRoleFilter.getSelectionModel().select("Tߦ�t cߦ�");
+        cbRoleFilter.getSelectionModel().select("Tất cả");
         ckbStatusFilter.setSelected(false); // Mߦ+c -��+�nh l�+�c Active
         txtSearch.clear();
 
         // Cߦ�p nhߦ�t lߦ�i c+�c biߦ+n b�+� l�+�c
-        searchBy = "M+� nh+�n vi+�n";
+        searchBy = "Mã nhân viên";
         keyword = "";
         roleId = -1;
         statusFilter = 1; // Ch�+� Active

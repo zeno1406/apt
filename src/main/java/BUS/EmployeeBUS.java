@@ -46,7 +46,7 @@ public class EmployeeBUS extends BaseBUS <EmployeeDTO, Integer> {
 
         // Ng-�n chߦ+n x+�a th+�ng tin nh+�n vi+�n g�+�c (id = 1) -��+� bߦ�o v�+� h�+� th�+�ng
         if (id == 1) {
-            System.out.println("Kh+�ng th�+� x+�a nh+�n vi+�n g�+�c (employeeId = 1)!");
+//            System.out.println("Kh+�ng th�+� x+�a nh+�n vi+�n g�+�c (employeeId = 1)!");
             return 8;
         }
 
@@ -206,9 +206,9 @@ public class EmployeeBUS extends BaseBUS <EmployeeDTO, Integer> {
 
             if (!keyword.isEmpty()) {
                 switch (searchBy) {
-                    case "M+� nh+�n vi+�n" -> matchesSearch = employeeId.contains(keyword);
-                    case "H�+� -��+�m" -> matchesSearch = firstName.contains(keyword);
-                    case "T+�n" -> matchesSearch = lastName.contains(keyword);
+                    case "Mã nhân viên" -> matchesSearch = employeeId.contains(keyword);
+                    case "Họ đệm" -> matchesSearch = firstName.contains(keyword);
+                    case "Tên" -> matchesSearch = lastName.contains(keyword);
                 }
             }
 

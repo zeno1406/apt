@@ -6,14 +6,16 @@ import BUS.ProductBUS;
 import BUS.RoleBUS;
 import DTO.EmployeeDTO;
 import DTO.ProductDTO;
+import DTO.RoleDTO;
+import UTILS.NotificationUtils;
+import UTILS.UiUtils;
 import UTILS.ValidationUtils;
-import impl.org.controlsfx.tableview2.RowHeader;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.awt.*;
 import java.io.*;
-import java.util.ArrayList;
+import java.nio.channels.FileChannel;
 import java.util.List;
 
 public class ExcelService {
@@ -32,23 +34,44 @@ public class ExcelService {
         else if (exportData.equalsIgnoreCase("product"))
             sheet = sheetOfProduct(sheet, ProductBUS.getInstance().getAllLocal());
 
-        // Tߦ�o t+�n file
+        // Auto-size all columns
+        int numberOfColumns = sheet.getRow(0).getPhysicalNumberOfCells();
+        for (int i = 0; i < numberOfColumns; i++) {
+            sheet.autoSizeColumn(i);
+        }
+
         String fileName = exportData.toLowerCase() + ".xlsx";
         File file = new File(fileName);
 
-        // Ghi v+� -�+�ng file Excel
+        // Kiểm tra nếu file đang mở
+        if (file.exists()) {
+            try (RandomAccessFile raf = new RandomAccessFile(file, "rw");
+                 FileChannel channel = raf.getChannel()) {
+                try {
+                    channel.lock(); // thử lock file
+                } catch (IOException e) {
+                    System.err.println("File đang được mở. Vui lòng đóng file trước khi xuất.");
+                    workbook.close();
+                    return;
+                }
+            } catch (IOException e) {
+                NotificationUtils.showErrorAlert("Không thể truy cập file: " + e.getMessage(), "Thông báo");
+                workbook.close();
+                return;
+            }
+        }
+
         try (FileOutputStream fos = new FileOutputStream(file)) {
             workbook.write(fos);
         } finally {
-            workbook.close(); // -�ߦ�m bߦ�o workbook lu+�n -榦�+�c -�+�ng
+            workbook.close();
         }
 
-        // M�+� file sau khi -�+� -�+�ng ho+�n to+�n
         if (file.exists()) {
             try {
                 Desktop.getDesktop().open(file);
             } catch (IOException e) {
-                System.err.println("Kh+�ng th�+� m�+� file: " + e.getMessage());
+                System.err.println("Không thể mở file: " + e.getMessage());
             }
         }
     }
@@ -59,23 +82,28 @@ public class ExcelService {
         rowHeader.createCell(0).setCellValue("ID");
         rowHeader.createCell(1).setCellValue("First Name");
         rowHeader.createCell(2).setCellValue("Last Name");
-        rowHeader.createCell(3).setCellValue("Salary");
-        rowHeader.createCell(4).setCellValue("Date Of Birth");
-        rowHeader.createCell(5).setCellValue("Role ID");
-
+        rowHeader.createCell(3).setCellValue("Date Of Birth");
+        rowHeader.createCell(4).setCellValue("Role Name");
+        rowHeader.createCell(5).setCellValue("Salary");
+        rowHeader.createCell(6).setCellValue("Final Salary");
+        rowHeader.createCell(7).setCellValue("Status");
+        RoleBUS rolBus = RoleBUS.getInstance();
+        ValidationUtils validate = ValidationUtils.getInstance();
         for (EmployeeDTO employee : employeeDTOList) {
             Row dataRow = sheet.createRow(rowIndex++);
+            RoleDTO role = rolBus.getByIdLocal(employee.getRoleId());
             dataRow.createCell(0).setCellValue(employee.getId());
             dataRow.createCell(1).setCellValue(employee.getFirstName());
             dataRow.createCell(2).setCellValue(employee.getLastName());
-            dataRow.createCell(3).setCellValue(employee.getSalary().toString());
-            dataRow.createCell(4).setCellValue(ValidationUtils.getInstance().formatDateTime(employee.getDateOfBirth()));
-            dataRow.createCell(5).setCellValue(employee.getRoleId());
+            dataRow.createCell(3).setCellValue(ValidationUtils.getInstance().formatDateTime(employee.getDateOfBirth()));
+            dataRow.createCell(4).setCellValue(role != null ? role.getName() : "");
+            dataRow.createCell(5).setCellValue(validate.formatCurrency(employee.getSalary()));
+            dataRow.createCell(6).setCellValue(role != null ? validate.formatCurrency(employee.getSalary().multiply(role.getSalaryCoefficient())) : validate.formatCurrency(employee.getSalary()));
+            dataRow.createCell(7).setCellValue(employee.isStatus() ? "Hoạt động" : "Ngưng hoat động");
         }
 
         return sheet;
     }
-
 
     private Sheet sheetOfProduct(Sheet sheet, List<ProductDTO> productDTOList) {
         int rowIndex = 0;
