@@ -1,4 +1,4 @@
-create schema java_sql;
+       create schema java_sql;
 use java_sql;
 drop database java_sql;
 

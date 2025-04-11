@@ -124,6 +124,7 @@ public class ProductBUS  extends BaseBUS <ProductDTO, String>{
         return 1;
     }
 
+//    VALIDATE IS HERE!!!
     private boolean isDuplicateProductName(String id, String name) {
         if (name == null) return false;
         for (ProductDTO product : arrLocal) {
@@ -134,7 +135,7 @@ public class ProductBUS  extends BaseBUS <ProductDTO, String>{
         return false;
     }
 
-    private boolean isValidProductInput(ProductDTO obj) {
+    public boolean isValidProductInput(ProductDTO obj) {
         if (obj.getName() == null) return false;
 
         obj.setDescription(obj.getDescription() != null && obj.getDescription().trim().isEmpty() ? null : obj.getDescription());
@@ -181,7 +182,7 @@ public class ProductBUS  extends BaseBUS <ProductDTO, String>{
                 && validator.validateBigDecimal(obj.getSellingPrice(), 10, 2, false);  // Kiểm tra giá bán
     }
 
-    private boolean isDuplicateProduct(ProductDTO obj) {
+    public boolean isDuplicateProduct(ProductDTO obj) {
         ProductDTO existingPro = getByIdLocal(obj.getId());
 
         // Kiểm tra xem tên, mô tả, và hệ số lương có trùng không

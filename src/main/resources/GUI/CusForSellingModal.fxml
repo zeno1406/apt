@@ -37,6 +37,15 @@
                         <Font name="System Bold" size="24.0" />
                      </font>
                   </Label>
+                  <Pane fx:id="pBtnExitGetCustomer" layoutX="440.0" prefHeight="50.0" prefWidth="80.0" styleClass="pExitBtnContainer">
+                     <children>
+                        <Button fx:id="btnExitGetCustomer" alignment="CENTER" mnemonicParsing="false" prefHeight="45.0" prefWidth="80.0" styleClass="btnExitForm" text="X" textFill="RED">
+                           <font>
+                              <Font name="System Bold" size="16.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </Pane>
                </children>
             </Pane>
             <Pane prefHeight="42.0" prefWidth="500.0">
@@ -53,12 +62,12 @@
                <content>
                   <Pane prefHeight="466.0" prefWidth="500.0">
                      <children>
-                        <TableView layoutX="14.0" layoutY="14.0" prefHeight="439.0" prefWidth="472.0">
+                        <TableView fx:id="tbvInfoCusLIst" layoutX="14.0" layoutY="14.0" prefHeight="439.0" prefWidth="472.0">
                           <columns>
                             <TableColumn fx:id="tbcCusID" editable="false" prefWidth="75.0" resizable="false" text="ID" />
                             <TableColumn fx:id="tbcCusFirstName" editable="false" prefWidth="120.0" text="First Name" />
                               <TableColumn fx:id="tbcCusLastName" editable="false" prefWidth="130.0" resizable="false" text="Last Name" />
-                              <TableColumn editable="false" prefWidth="145.0" resizable="false" text="Phone" />
+                              <TableColumn fx:id="tbcCusPhone" editable="false" prefWidth="145.0" resizable="false" text="Phone" />
                           </columns>
                         </TableView>
                      </children>

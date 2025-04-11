@@ -1,24 +1,29 @@
-package GUI;
 
-import BUS.EmployeeBUS;
-import BUS.RoleBUS;
-import DTO.EmployeeDTO;
-import DTO.RoleDTO;
-import INTERFACE.IController;
-import SERVICE.SessionManagerService;
-import UTILS.NotificationUtils;
-import UTILS.UiUtils;
-import UTILS.ValidationUtils;
-import javafx.application.Platform;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.FXCollections;
-import javafx.fxml.FXML;
-import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.HBox;
+    package GUI;
 
-import java.math.BigDecimal;
-import java.util.HashMap;
+    import BUS.EmployeeBUS;
+    import BUS.RoleBUS;
+    import DTO.EmployeeDTO;
+    import DTO.RoleDTO;
+    import INTERFACE.IController;
+    import SERVICE.ExcelService;
+    import SERVICE.PrintService;
+    import SERVICE.RolePermissionService;
+    import SERVICE.SessionManagerService;
+    import UTILS.NotificationUtils;
+    import UTILS.UiUtils;
+    import UTILS.ValidationUtils;
+    import javafx.application.Platform;
+    import javafx.beans.property.SimpleStringProperty;
+    import javafx.collections.FXCollections;
+    import javafx.fxml.FXML;
+    import javafx.scene.control.*;
+    import javafx.scene.control.cell.PropertyValueFactory;
+    import javafx.scene.layout.HBox;
+
+    import java.io.IOException;
+    import java.math.BigDecimal;
+    import java.util.HashMap;
 
 public class EmployeeController implements IController {
     @FXML
@@ -42,7 +47,7 @@ public class EmployeeController implements IController {
     @FXML
     private HBox functionBtns;
     @FXML
-    private Button addBtn, editBtn, deleteBtn, refreshBtn;
+    private Button addBtn, editBtn, deleteBtn, refreshBtn, exportExcel;
     @FXML
     private TextField txtSearch;
     @FXML
@@ -52,12 +57,13 @@ public class EmployeeController implements IController {
     @FXML
     private ComboBox<String> cbRoleFilter;
 
-    // Biến lưu bộ lọc để tránh truy xuất UI nhiều lần
-    private String searchBy = "Mã nhân viên";
+    // Biߦ+n l��u b�+� l�+�c -��+� tr+�nh truy xuߦ�t UI nhi�+�u lߦ�n
+    private String searchBy = "M+� nh+�n vi+�n";
     private String keyword = "";
     private int roleId = -1;
     private int statusFilter = 1;
     private final HashMap<String, Integer> roleMap = new HashMap<>();
+    private EmployeeDTO selectedEmployee;
 
     @FXML
     public void initialize() {
@@ -88,7 +94,7 @@ public class EmployeeController implements IController {
 
         tlb_col_roleName.setCellValueFactory(cellData -> {
             var role = roleBUS.getByIdLocal(cellData.getValue().getRoleId());
-            return new SimpleStringProperty(role != null && role.getName() != null ? role.getName() : "Không có");
+            return new SimpleStringProperty(role != null && role.getName() != null ? role.getName() : "");
         });
 
         tlb_col_salary.setCellValueFactory(cellData ->
@@ -98,22 +104,20 @@ public class EmployeeController implements IController {
                 formatCell(validationUtils.formatCurrency(calculateFinalSalary(cellData.getValue(), roleBUS))));
 
         tlb_col_status.setCellValueFactory(cellData ->
-                formatCell(cellData.getValue().isStatus() ? "Hoạt động" : "Ngưng hoạt động"));
+                formatCell(cellData.getValue().isStatus() ? "Hoߦ�t -��+�ng" : "Ng��ng hoߦ�t -��+�ng"));
 
         UiUtils.gI().addTooltipToColumn(tlb_col_roleName, 10);
         UiUtils.gI().addTooltipToColumn(tlb_col_status, 10);
     }
 
-
-
     private void loadComboBox() {
-        cbSearchBy.getItems().addAll("Mã nhân viên", "Họ đệm", "Tên");
+        cbSearchBy.getItems().addAll("M+� nh+�n vi+�n", "H�+� -��+�m", "T+�n");
 
         RoleBUS roleBUS = RoleBUS.getInstance();
         roleMap.clear();
 
-        cbRoleFilter.getItems().add("Tất cả");
-        roleMap.put("Tất cả", -1);
+        cbRoleFilter.getItems().add("Tߦ�t cߦ�");
+        roleMap.put("Tߦ�t cߦ�", -1);
 
         for (RoleDTO role : roleBUS.getAllLocal()) {
             cbRoleFilter.getItems().add(role.getName());
@@ -133,12 +137,19 @@ public class EmployeeController implements IController {
         txtSearch.textProperty().addListener((observable, oldValue, newValue) -> handleKeywordChange());
         refreshBtn.setOnAction(event -> {
             resetFilters();
-            NotificationUtils.showInfoAlert("Làm mới thành công", "Thông báo");
+            NotificationUtils.showInfoAlert("L+�m m�+�i th+�nh c+�ng", "Th+�ng b+�o");
         });
 
         addBtn.setOnAction(event -> handleAddBtn());
         deleteBtn.setOnAction(e -> handleDeleteBtn());
         editBtn.setOnAction(e -> handleEditBtn());
+        exportExcel.setOnAction(e -> {
+            try {
+                handleExportExcel();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
     }
 
     private void handleStatusFilterChange() {
@@ -177,17 +188,17 @@ public class EmployeeController implements IController {
 
     @Override
     public void resetFilters() {
-        cbSearchBy.getSelectionModel().selectFirst(); // Chọn giá trị đầu tiên
-        cbRoleFilter.getSelectionModel().select("Tất cả");
-        ckbStatusFilter.setSelected(false); // Mặc định lọc Active
+        cbSearchBy.getSelectionModel().selectFirst(); // Ch�+�n gi+� tr�+� -�ߦ�u ti+�n
+        cbRoleFilter.getSelectionModel().select("Tߦ�t cߦ�");
+        ckbStatusFilter.setSelected(false); // Mߦ+c -��+�nh l�+�c Active
         txtSearch.clear();
 
-        // Cập nhật lại các biến bộ lọc
-        searchBy = "Mã nhân viên";
+        // Cߦ�p nhߦ�t lߦ�i c+�c biߦ+n b�+� l�+�c
+        searchBy = "M+� nh+�n vi+�n";
         keyword = "";
         roleId = -1;
-        statusFilter = 1; // Chỉ Active
-        applyFilters(); // Áp dụng lại bộ lọc
+        statusFilter = 1; // Ch�+� Active
+        applyFilters(); // +�p d�+�ng lߦ�i b�+� l�+�c
     }
 
     private SimpleStringProperty formatCell(String value) {
@@ -198,12 +209,11 @@ public class EmployeeController implements IController {
         RoleDTO role = roleBUS.getByIdLocal(employee.getRoleId());
 
         if (role == null || role.getSalaryCoefficient() == null) {
-            return employee.getSalary(); // Trả về lương gốc nếu role hoặc coefficient null
+            return employee.getSalary();
         }
 
-        return employee.getSalary().multiply(BigDecimal.ONE.add(role.getSalaryCoefficient()));
+        return employee.getSalary().multiply(role.getSalaryCoefficient());
     }
-
 
     @Override
     public void hideButtonWithoutPermission() {
@@ -217,14 +227,99 @@ public class EmployeeController implements IController {
     }
 
     public void handleAddBtn() {
-
+        EmployeeModalController modalController = UiUtils.gI().openStageWithController(
+                "/GUI/EmployeeModal.fxml",
+                controller -> controller.setTypeModal(0),
+                "Th+�m nh+�n vi+�n"
+        );
+        if (modalController != null && modalController.isSaved()) {
+            NotificationUtils.showInfoAlert("Th+�m nh+�n vi+�n th+�nh c+�ng", "Th+�ng b+�o");
+            resetFilters();
+        }
     }
 
     public void handleDeleteBtn() {
+        if (isNotSelectedEmployee()) {
+            NotificationUtils.showErrorAlert("Vui l+�ng ch�+�n nh+�n vi+�n", "Th+�ng b+�o");
+            return;
+        }
+        if (selectedEmployee.getId() == SessionManagerService.getInstance().employeeLoginId()) {
+            NotificationUtils.showErrorAlert("Bߦ�n kh+�ng th�+� x+�a th+�ng tin c�+�a ch+�nh m+�nh.", "Th+�ng b+�o");
+            return;
+        }
+        if(selectedEmployee.getId() == 1)
+        {
+            NotificationUtils.showErrorAlert("Kh+�ng th�+� x+�a nh+�n vi+�n g�+�c.", "Th+�ng b+�o");
+            return;
+        }
 
+//        int numEmployeeHasRole = EmployeeBUS.getInstance().numEmployeeHasRoleId(selectedRole.getId());
+//        if (numEmployeeHasRole != 0) {
+//            String ask = "Hi�+�n c+� " + numEmployeeHasRole + " nh+�n vi+�n s�+� h�+�u ch�+�c v�+� n+�y!";
+//            if (!UiUtils.gI().showConfirmAlert("Bߦ�n chߦ�c mu�+�n x+�a ch�+�c v�+� n+�y? " + ask, "Th+�ng b+�o x+�c nhߦ�n")) return;
+//        }
+
+        int deleteResult = EmployeeBUS.getInstance().delete(selectedEmployee.getId(),SessionManagerService.getInstance().employeeRoleId(), SessionManagerService.getInstance().employeeLoginId());
+
+        switch (deleteResult) {
+            case 1 ->
+            {
+                NotificationUtils.showInfoAlert("X+�a nh+�n vi+�n th+�nh c+�ng.", "Th+�ng b+�o");
+                resetFilters();
+            }
+            case 2 ->
+                    NotificationUtils.showErrorAlert("C+� l�+�i khi x+�a nh+�n vi+�n. Vui l+�ng th�+� lߦ�i.", "Th+�ng b+�o");
+            case 3 ->
+                    NotificationUtils.showErrorAlert("Bߦ�n kh+�ng th�+� x+�a th+�ng tin c�+�a ch+�nh m+�nh.", "Th+�ng b+�o");
+            case 4 ->
+                    NotificationUtils.showErrorAlert("Bߦ�n kh+�ng c+� quy�+�n \"X+�a nh+�n vi+�n\" -��+� th�+�c hi�+�n thao t+�c n+�y.", "Th+�ng b+�o");
+            case 5 ->
+                    NotificationUtils.showErrorAlert("Bߦ�n kh+�ng th�+� x+�a nh+�n vi+�n ngang quy�+�n", "Th+�ng b+�o");
+            case 6 ->
+                    NotificationUtils.showErrorAlert("X+�a nh+�n vi+�n thߦ�t bߦ�i. Vui l+�ng th�+� lߦ�i sau.", "Th+�ng b+�o");
+            case 7 ->
+                    NotificationUtils.showErrorAlert("Nh+�n vi+�n kh+�ng h�+�p l�+� hoߦ+c -�+� b�+� x+�a.", "Th+�ng b+�o");
+            case 8 ->
+                    NotificationUtils.showErrorAlert("Kh+�ng th�+� x+�a nh+�n vi+�n g�+�c.", "Th+�ng b+�o");
+            default ->
+                    NotificationUtils.showErrorAlert("L�+�i kh+�ng x+�c -��+�nh, vui l+�ng th�+� lߦ�i sau.", "Th+�ng b+�o");
+        }
     }
 
     public void handleEditBtn() {
+        if (isNotSelectedEmployee()) {
+            NotificationUtils.showErrorAlert("Vui l+�ng ch�+�n nh+�n vi+�n", "Th+�ng b+�o");
+            return;
+        }
+        if(selectedEmployee.getId() == 1 && SessionManagerService.getInstance().employeeLoginId() != 1)
+        {
+            NotificationUtils.showErrorAlert("Kh+�ng th�+� s�+�a nh+�n vi+�n g�+�c.", "Th+�ng b+�o");
+            return;
+        }
+        EmployeeModalController modalController = UiUtils.gI().openStageWithController(
+                "/GUI/EmployeeModal.fxml",
+                controller -> {
+                    controller.setTypeModal(1);
+                    controller.setEmployee(selectedEmployee);
+                },
+                "S�+�a nh+�n vi+�n"
+        );
+        if (modalController != null && modalController.isSaved()) {
+            NotificationUtils.showInfoAlert("S�+�a nh+�n vi+�n th+�nh c+�ng", "Th+�ng b+�o");
+            applyFilters();
+        }
+    }
 
+    private void handleExportExcel() throws IOException {
+        try {
+            ExcelService.getInstance().exportToFileExcel("employee");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private boolean isNotSelectedEmployee() {
+        selectedEmployee = tblEmployee.getSelectionModel().getSelectedItem();
+        return selectedEmployee == null;
     }
 }

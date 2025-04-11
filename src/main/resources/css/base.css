@@ -336,6 +336,16 @@
     -fx-cursor: hand;
 }
 
+.pBtnSubmitDetailEdit,
+.btnSubmitDetailEdit {
+    -fx-pref-width: 90px;
+    -fx-pref-height: 42px;
+    -fx-background-color: transparent;
+    -fx-font: 16px System;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+}
+
 .acContainerRoot,
 .vbContainerRoot {
     -fx-pref-width: 1100px;
