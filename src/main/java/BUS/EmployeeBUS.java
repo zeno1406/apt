@@ -218,9 +218,4 @@ public class EmployeeBUS extends BaseBUS <EmployeeDTO, Integer> {
         return num;
     }
 
-    private boolean exportToExcel(String filePath) throws IOException {
-        ExcelService.getInstance().exportToFileExcel(filePath, "employee");
-        return true;
-    }
-
 }
