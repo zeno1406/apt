@@ -45,3 +45,11 @@
     -fx-pref-width: 100px;
 }
 
+.btnGetCusInfo, .btnAddSupplier {
+    -fx-background-color: white;
+    -fx-border-color: #8fb6de;
+    -fx-background-radius:4px;
+    -fx-border-radius: 4px;
+    -fx-pref-width: 25px;
+    -fx-pref-height: 25px;
+}

@@ -142,6 +142,20 @@
                                                 <Label fx:id="lbFieldImportEMPName" layoutX="59.0" layoutY="13.0" text="Label" />
                                              </children>
                                           </Pane>
+                                          <Pane fx:id="pFieldImportSupplierID" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                             <children>
+                                                <Label layoutX="14.0" layoutY="8.0" styleClass="ocean-color" text="Mã NCC: " />
+                                                <Label layoutX="65.0" layoutY="8.0" text="Label" />
+                                                <Button fx:id="btnGetSupInfo" alignment="TOP_CENTER" contentDisplay="CENTER" layoutX="104.0" layoutY="3.0" mnemonicParsing="false" styleClass="btnGetCusInfo" text="..." />
+                                                <Button fx:id="btnAddSupplier" alignment="CENTER" layoutX="135.0" layoutY="2.0" mnemonicParsing="false" styleClass="btnAddSupplier" text="+" />
+                                             </children>
+                                          </Pane>
+                                          <Pane fx:id="pFieldImportSupplierName" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                             <children>
+                                                <Label layoutX="14.0" layoutY="8.0" styleClass="ocean-color" text="Tên NCC: " />
+                                                <Label layoutX="65.0" layoutY="8.0" text="Label" />
+                                             </children>
+                                          </Pane>
                                        </children>
                                        <padding>
                                           <Insets left="8.0" right="8.0" />
