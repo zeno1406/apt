@@ -85,9 +85,11 @@ public class ProductBUS  extends BaseBUS <ProductDTO, String>{
         if (isDuplicateProductName("", obj.getName())) {
             return 5;
         }
-
+        ValidationUtils validate = ValidationUtils.getInstance();
         // Xuống dc đây là đúng hết rồi
         obj.setId(autoId()); // Tạo ID mới
+        obj.setName(validate.normalizeWhiteSpace(obj.getName()));
+        obj.setDescription(validate.normalizeWhiteSpace(obj.getDescription()));
         obj.setStockQuantity(0);
         obj.setSellingPrice(new BigDecimal(0));
         if (!ProductDAL.getInstance().insert(obj)) return 6;
@@ -111,7 +113,9 @@ public class ProductBUS  extends BaseBUS <ProductDTO, String>{
         }
 
         if (isDuplicateProduct(obj)) return 1;
-
+        ValidationUtils validate = ValidationUtils.getInstance();
+        obj.setName(validate.normalizeWhiteSpace(obj.getName()));
+        obj.setDescription(validate.normalizeWhiteSpace(obj.getDescription()));
         if (!ProductDAL.getInstance().update(obj)) return 6;
 
         // Cập nhật arrLocal nếu database cập nhật thành công
@@ -127,6 +131,8 @@ public class ProductBUS  extends BaseBUS <ProductDTO, String>{
 //    VALIDATE IS HERE!!!
     private boolean isDuplicateProductName(String id, String name) {
         if (name == null) return false;
+        ValidationUtils validate = ValidationUtils.getInstance();
+        name = validate.normalizeWhiteSpace(name);
         for (ProductDTO product : arrLocal) {
             if (!Objects.equals(product.getId(), id) && product.getName().equalsIgnoreCase(name)) {
                 return true;
@@ -154,7 +160,7 @@ public class ProductBUS  extends BaseBUS <ProductDTO, String>{
 
     private boolean isValidProductUpdate(ProductDTO obj) {
         if (obj == null || obj.getName() == null || obj.getSellingPrice() == null) {
-            System.out.println("1");
+//            System.out.println("1");
             return false;
         }
 
@@ -184,15 +190,16 @@ public class ProductBUS  extends BaseBUS <ProductDTO, String>{
 
     public boolean isDuplicateProduct(ProductDTO obj) {
         ProductDTO existingPro = getByIdLocal(obj.getId());
+        ValidationUtils validate = ValidationUtils.getInstance();
 
         // Kiểm tra xem tên, mô tả, và hệ số lương có trùng không
         return existingPro != null &&
-                Objects.equals(existingPro.getName(), obj.getName()) &&
+                Objects.equals(existingPro.getName(), validate.normalizeWhiteSpace(obj.getName())) &&
                 Objects.equals(existingPro.getCategoryId(), obj.getCategoryId()) &&
                 Objects.equals(existingPro.getStockQuantity(), obj.getStockQuantity()) &&
                 Objects.equals(existingPro.getSellingPrice(), obj.getSellingPrice()) &&
                 Objects.equals(existingPro.isStatus(), obj.isStatus()) &&
-                Objects.equals(existingPro.getDescription(), obj.getDescription()) &&
+                Objects.equals(existingPro.getDescription(), validate.normalizeWhiteSpace(obj.getDescription())) &&
                 Objects.equals(existingPro.getImageUrl(), obj.getImageUrl());
     }
 

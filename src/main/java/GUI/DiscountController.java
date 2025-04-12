@@ -73,7 +73,7 @@ public class DiscountController implements IController {
         tlb_col_code.setCellValueFactory(new PropertyValueFactory<>("code"));
         tlb_col_name.setCellValueFactory(new PropertyValueFactory<>("name"));
         tlb_col_type.setCellValueFactory(cellData ->
-                formatCell(cellData.getValue().getType() == 0 ? "Phߦ�n tr-�m" : "Giߦ�m c�+�ng"));
+                formatCell(cellData.getValue().getType() == 0 ? "Phần trăm" : "Giảm cứng"));
         tlb_col_startDate.setCellValueFactory(cellData ->
                 formatCell(validationUtils.formatDateTime(cellData.getValue().getStartDate())));
         tlb_col_endDate.setCellValueFactory(cellData ->
@@ -87,7 +87,7 @@ public class DiscountController implements IController {
         ValidationUtils validationUtils = ValidationUtils.getInstance();
         this.code.setText(selectedDiscount.getCode());
         this.name.setText(selectedDiscount.getName());
-        this.type.setText(selectedDiscount.getType() == 0 ? "Phߦ�n tr-�m" : "Giߦ�m c�+�ng");
+        this.type.setText(selectedDiscount.getType() == 0 ? "Phần trăm" : "Giảm cứng");
         this.startDate.setText(validationUtils.formatDateTime(selectedDiscount.getStartDate()));
         this.endDate.setText(validationUtils.formatDateTime(selectedDiscount.getEndDate()));
 
@@ -125,9 +125,12 @@ public class DiscountController implements IController {
         txtSearch.textProperty().addListener((observable, oldValue, newValue) -> handleKeywordChange());
         refreshBtn.setOnAction(event -> {
             resetFilters();
-            NotificationUtils.showInfoAlert("L+�m m�+�i th+�nh c+�ng", "Th+�ng b+�o");
+            NotificationUtils.showInfoAlert("Làm mới thành công.", "Thông báo");
         });
         advanceSearchBtn.setOnAction(e -> handleAdvanceSearch());
+        addBtn.setOnAction(event -> handleAddBtn());
+        deleteBtn.setOnAction(e -> handleDeleteBtn());
+        editBtn.setOnAction(e -> handleEditBtn());
     }
 
     private void clearSubTable() {
@@ -170,13 +173,51 @@ public class DiscountController implements IController {
         DiscountAdvanceSearchModalController modalController = UiUtils.gI().openStageWithController(
                 "/GUI/DiscountAdvanceSearchModal.fxml",
                 null,
-                "T+�m kiߦ+m n+�ng cao"
+                "Tiềm kiếm nâng cao"
         );
         if (modalController != null && modalController.isSaved()) {
             tblDiscount.setItems(FXCollections.observableArrayList(modalController.getFilteredDiscounts()));
             tblDiscount.getSelectionModel().clearSelection();
             clearSubTable();
         }
+    }
+
+    private void handleAddBtn() {
+        DiscountModalController modalController = UiUtils.gI().openStageWithController(
+                "/GUI/DiscountModal.fxml",
+                null,
+                "Thêm khuyến mãi"
+        );
+        if (modalController != null && modalController.isSaved()) {
+            NotificationUtils.showInfoAlert("Thêm khuyến mãi thành công.", "Thông báo");
+            resetFilters();
+        }
+    }
+
+    private void handleEditBtn() {
+//        DiscountAdvanceSearchModalController modalController = UiUtils.gI().openStageWithController(
+//                "/GUI/DiscountAdvanceSearchModal.fxml",
+//                null,
+//                "Tiềm kiếm nâng cao"
+//        );
+//        if (modalController != null && modalController.isSaved()) {
+//            tblDiscount.setItems(FXCollections.observableArrayList(modalController.getFilteredDiscounts()));
+//            tblDiscount.getSelectionModel().clearSelection();
+//            clearSubTable();
+//        }
+    }
+
+    private void handleDeleteBtn() {
+//        DiscountAdvanceSearchModalController modalController = UiUtils.gI().openStageWithController(
+//                "/GUI/DiscountAdvanceSearchModal.fxml",
+//                null,
+//                "Tiềm kiếm nâng cao"
+//        );
+//        if (modalController != null && modalController.isSaved()) {
+//            tblDiscount.setItems(FXCollections.observableArrayList(modalController.getFilteredDiscounts()));
+//            tblDiscount.getSelectionModel().clearSelection();
+//            clearSubTable();
+//        }
     }
 
     @Override

@@ -67,23 +67,23 @@ public class InvoiceAdvanceSearchModalController {
         if (employeeId.isEmpty() && customerId.isEmpty() && discountCode.isEmpty()
                 && startCreateDate == null && endCreateDate == null &&
                 startTotalPrice == null && endTotalPrice == null) {
-            NotificationUtils.showErrorAlert("Vui l+�ng nhߦ�p +�t nhߦ�t m�+�t -�i�+�u ki�+�n -��+� l�+�c.", "Th+�ng b+�o");
+            NotificationUtils.showErrorAlert("Vui lòng nhập ít nhất một điều kiện lọc.", "Thông báo");
             return;
         }
 
         if (startCreateDate != null && endCreateDate != null && startCreateDate.isAfter(endCreateDate)) {
-            NotificationUtils.showErrorAlert("Ng+�y bߦ�t -�ߦ�u kh+�ng -榦�+�c l�+�n h��n ng+�y kߦ+t th+�c.", "Th+�ng b+�o");
+            NotificationUtils.showErrorAlert("Ngày tạo không được lớn hơn ngày kết thúc.", "Thông báo");
             return;
         }
 
         filteredInvoices = InvoiceBUS.getInstance().filterInvoicesAdvance(employeeId, customerId, discountCode, startCreateDate, endCreateDate, startTotalPrice, endTotalPrice);
         int numResult = filteredInvoices.size();
         if (numResult != 0) {
-            NotificationUtils.showErrorAlert("T+�m thߦ�y " + numResult + " kߦ+t quߦ� ph+� h�+�p.", "Th+�ng b+�o");
+            NotificationUtils.showErrorAlert("Tìm thấy " + numResult + " kết quả phù hợp.", "Thông báo");
             this.isSaved = true;
             handleClose();
         } else {
-            NotificationUtils.showErrorAlert("Kh+�ng t+�m thߦ�y kߦ+t quߦ� ph+� h�+�p.", "Th+�ng b+�o");
+            NotificationUtils.showErrorAlert("Không tìm thấy kết quả phù hợp.", "Thông báo");
         }
     }
 

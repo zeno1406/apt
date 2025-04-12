@@ -5,6 +5,7 @@ import BUS.EmployeeBUS;
 import BUS.RoleBUS;
 import DTO.EmployeeDTO;
 import DTO.RoleDTO;
+import INTERFACE.IController;
 import SERVICE.SessionManagerService;
 import UTILS.NotificationUtils;
 import UTILS.UiUtils;
@@ -60,7 +61,7 @@ public class EmployeeModalController {
     }
 
     private void loadComboBox() {
-        cbSelectStatus.getItems().addAll("Hoߦ�t -��+�ng", "Ng��ng hoߦ�t -��+�ng");
+        cbSelectStatus.getItems().addAll("Hoạt động", "Ngưng hoạt động");
 
         RoleBUS roleBUS = RoleBUS.getInstance();
         roleMap.clear();
@@ -91,11 +92,11 @@ public class EmployeeModalController {
         if (type != 0 && type != 1) handleClose();
         typeModal = type;
         if (typeModal == 0) {
-            modalName.setText("Th+�m nh+�n vi+�n");
+            modalName.setText("Thêm nhân viên");
             txtEmployeeId.setText(String.valueOf(EmployeeBUS.getInstance().getAllLocal().size() + 1));
         } else {
             if (employee == null) handleClose();
-            modalName.setText("S�+�a nh+�n vi+�n");
+            modalName.setText("Sửa nhân viên");
         }
     }
 
@@ -115,9 +116,11 @@ public class EmployeeModalController {
         RoleDTO selectedRole = RoleBUS.getInstance().getByIdLocal(employee.getRoleId());
         if (selectedRole != null) {
             cbSelectRole.getSelectionModel().select(selectedRole.getName());
+        } else {
+            cbSelectRole.getSelectionModel().clearSelection();
         }
         txtSalary.setText(employee.getSalary().toString());
-        cbSelectStatus.getSelectionModel().select(employee.isStatus() ? "Hoߦ�t -��+�ng" : "Ng��ng hoߦ�t -��+�ng");
+        cbSelectStatus.getSelectionModel().select(employee.isStatus() ? "Hoạt động" : "Ngừng hoạt động");
 
         int employeeLoginId = SessionManagerService.getInstance().employeeRoleId();
         int employeeRoleId = SessionManagerService.getInstance().employeeRoleId();
@@ -138,48 +141,48 @@ public class EmployeeModalController {
         String firstName = txtFirstName.getText().trim();
         String lastName = txtLastName.getText().trim();
         String salary = txtSalary.getText().trim();
-        // Ch�+� cߦ�n m�+�t lߦ�n g�+�i
+
         ValidationUtils validator = ValidationUtils.getInstance();
 
         if (firstName.isEmpty()) {
-            NotificationUtils.showErrorAlert("H�+� -��+�m nh+�n vi+�n kh+�ng -榦�+�c -��+� tr�+�ng.", "Th+�ng b+�o");
+            NotificationUtils.showErrorAlert("Họ đệm nhân viên không được để trống.", "Thông báo");
             clearAndFocus(txtFirstName);
             isValid = false;
         } else if (!validator.validateVietnameseText100(firstName)) {
-            NotificationUtils.showErrorAlert("H�+� -��+�m nh+�n vi+�n kh+�ng h�+�p l�+� (T�+�i -�a 100 k++ t�+�, ch�+� ch�+� v+� s�+�, \"_\", \"-\", \"/\").", "Th+�ng b+�o");
+            NotificationUtils.showErrorAlert("Họ đệm nhân viên không hợp lệ (Tối đa 100 ký tự, chỉ chữ và số, \"_\", \"-\", \"/\").", "Thông báo");
             clearAndFocus(txtFirstName);
             isValid = false;
         }
 
         if (isValid && lastName.isEmpty()) {
-            NotificationUtils.showErrorAlert("T+�n nh+�n vi+�n kh+�ng -榦�+�c -��+� tr�+�ng.", "Th+�ng b+�o");
+            NotificationUtils.showErrorAlert("Tên nhân viên không được để trống ", "Thông báo");
             clearAndFocus(txtLastName);
             isValid = false;
         } else if (isValid && !validator.validateVietnameseText100(lastName)) {
-            NotificationUtils.showErrorAlert("T+�n nh+�n vi+�n kh+�ng h�+�p l�+� (T�+�i -�a 100 k++ t�+�, ch�+� ch�+� v+� s�+�, \"_\", \"-\", \"/\").", "Th+�ng b+�o");
+            NotificationUtils.showErrorAlert("Tên nhân viên không hợp lệ (Tối đa 100 ký tự, chỉ chữ và số, \"_\", \"-\", \"/\").", "Thông báo");
             clearAndFocus(txtLastName);
             isValid = false;
         }
 
         if (isValid && cbSelectRole.getValue() == null) {
-            NotificationUtils.showErrorAlert("Ch�+�c v�+� kh+�ng -榦�+�c -��+� tr�+�ng.", "Th+�ng b+�o");
+            NotificationUtils.showErrorAlert("Chức vụ không được để trống.", "Thông báo");
             isValid = false;
         }
 
         if (isValid && salary.isEmpty()) {
-            NotificationUtils.showErrorAlert("L����ng c�� bߦ�n kh+�ng -榦�+�c -��+� tr�+�ng.", "Th+�ng b+�o");
+            NotificationUtils.showErrorAlert("Lương cơ bản không được để trống.", "Thông báo");
             clearAndFocus(txtSalary);
             isValid = false;
         } else if (isValid) {
             try {
                 BigDecimal salaryS = new BigDecimal(salary);
                 if (!validator.validateSalary(salaryS, 10, 2, false)) {
-                    NotificationUtils.showErrorAlert("L����ng c�� bߦ�n kh+�ng h�+�p l�+� (t�+�i -�a 10 ch�+� s�+�, 2 s�+� thߦ�p ph+�n, kh+�ng +�m hoߦ+c bߦ�ng 0).", "Th+�ng b+�o");
+                    NotificationUtils.showErrorAlert("Lương cơ bản không hợp lế (Tối đa 10 chữ số, 2 số thập phân, không âm hoặc bằng 0).", "Thông báo");
                     clearAndFocus(txtSalary);
                     isValid = false;
                 }
             } catch (NumberFormatException e) {
-                NotificationUtils.showErrorAlert("L����ng c�� bߦ�n phߦ�i l+� s�+�.", "Th+�ng b+�o");
+                NotificationUtils.showErrorAlert("Lương cơ bản phải là số.", "Thông báo");
                 clearAndFocus(txtSalary);
                 isValid = false;
             }
@@ -191,7 +194,7 @@ public class EmployeeModalController {
             if (date != null) {
                 LocalDate today = LocalDate.now();
                 if (date.isAfter(today)) {
-                    NotificationUtils.showErrorAlert("Ng+�y sinh kh+�ng -榦�+�c l+� ng+�y trong t����ng lai.", "Th+�ng b+�o");
+                    NotificationUtils.showErrorAlert("Ngày sinh không được là ngày trong tương lai.", "Thông báo");
                     isValid = false;
                 }
             }
@@ -215,18 +218,18 @@ public class EmployeeModalController {
             EmployeeDTO temp = new EmployeeDTO(Integer.parseInt(txtEmployeeId.getText().trim()), txtFirstName.getText().trim(),
                     txtLastName.getText().trim(), new BigDecimal(txtSalary.getText().trim()),
                     dateOfBirth.getValue() != null ? dateOfBirth.getValue().atStartOfDay() : null,
-                    getSelectedRole(), cbSelectStatus.getValue().equals("Hoߦ�t -��+�ng"));
+                    getSelectedRole(), cbSelectStatus.getValue().equals("Hoạt động"));
             int insertResult = emBus.insert(temp, SessionManagerService.getInstance().employeeRoleId(), SessionManagerService.getInstance().employeeLoginId());
             switch (insertResult) {
                 case 1 -> {
                     isSaved = true;
                     handleClose();
                 }
-                case 2 -> NotificationUtils.showErrorAlert("C+� l�+�i khi th+�m nh+�n vi+�n. Vui l+�ng th�+� lߦ�i.", "Th+�ng b+�o");
+                case 2 -> NotificationUtils.showErrorAlert("Có lỗi khi thêm nhân viên. Vui lòng thử lại.", "Thông báo");
                 case 3 ->
-                        NotificationUtils.showErrorAlert("Bߦ�n kh+�ng c+� quy�+�n \"Th+�m nh+�n vi+�n\" -��+� th�+�c hi�+�n thao t+�c n+�y.", "Th+�ng b+�o");
-                case 4 -> NotificationUtils.showErrorAlert("Th+�m nh+�n vi+�n thߦ�t bߦ�i. Vui l+�ng th�+� lߦ�i sau.", "Th+�ng b+�o");
-                default -> NotificationUtils.showErrorAlert("L�+�i kh+�ng x+�c -��+�nh, vui l+�ng th�+� lߦ�i sau.", "Th+�ng b+�o");
+                        NotificationUtils.showErrorAlert("Bạn không có quyền \"Thêm nhân viên\" để thực hiện thao tác này.", "Thông báo");
+                case 4 -> NotificationUtils.showErrorAlert("Thêm nhân viên thất bại. Vui lòng thử lại.", "Thông báo");
+                default -> NotificationUtils.showErrorAlert("Lỗi không xác định. Vui lòng thử lại.", "Thông báo");
             }
         }
     }
@@ -237,23 +240,23 @@ public class EmployeeModalController {
             EmployeeDTO temp = new EmployeeDTO(employee.getId(), txtFirstName.getText().trim(),
                     txtLastName.getText().trim(), new BigDecimal(txtSalary.getText().trim()),
                     dateOfBirth.getValue() != null ? dateOfBirth.getValue().atStartOfDay() : null,
-                    getSelectedRole(), cbSelectStatus.getValue().equals("Hoߦ�t -��+�ng"));
+                    getSelectedRole(), cbSelectStatus.getValue().equals("Hoạt động"));
             int updateResult = emBus.update(temp, SessionManagerService.getInstance().employeeRoleId(), SessionManagerService.getInstance().employeeLoginId());
             switch (updateResult) {
                 case 1 -> {
                     isSaved = true;
                     handleClose();
                 }
-                case 2 -> NotificationUtils.showErrorAlert("C+� l�+�i khi cߦ�p nhߦ�t nh+�n vi+�n. Vui l+�ng th�+� lߦ�i.", "Th+�ng b+�o");
+                case 2 -> NotificationUtils.showErrorAlert("Có lỗi khi cập nhật nhân viên. Vui lòng thử lại.", "Thông báo");
                 case 3 ->
-                        NotificationUtils.showErrorAlert("Bߦ�n kh+�ng c+� quy�+�n \"Cߦ�p nhߦ�t nh+�n vi+�n\" -��+� th�+�c hi�+�n thao t+�c n+�y.", "Th+�ng b+�o");
-                case 4 -> NotificationUtils.showErrorAlert("D�+� li�+�u -�ߦ�u v+�o kh+�ng h�+�p l�+�", "Th+�ng b+�o");
+                        NotificationUtils.showErrorAlert("Bạn không có quyền \"Cập nhật nhân viên\" để thực hiện thao tác này.", "Thông báo");
+                case 4 -> NotificationUtils.showErrorAlert("Dữ liệu không hợp lệ.", "Thông báo");
                 case 5 -> {
-                    NotificationUtils.showErrorAlert("Kh+�ng th�+� cߦ�p nhߦ�t nh+�n vi+�n g�+�c.", "Th+�ng b+�o");
+                    NotificationUtils.showErrorAlert("Không thể cập nhật nhân viên gốc.", "Thông báo");
                 }
-                case 6 -> NotificationUtils.showErrorAlert("Bߦ�n kh+�ng th�+� cߦ�p nhߦ�t nh+�n vi+�n ngang quy�+�n.", "Th+�ng b+�o");
-                case 7 -> NotificationUtils.showErrorAlert("Cߦ�p nhߦ�t nh+�n vi+�n thߦ�t bߦ�i. Vui l+�ng th�+� lߦ�i sau.", "Th+�ng b+�o");
-                default -> NotificationUtils.showErrorAlert("L�+�i kh+�ng x+�c -��+�nh, vui l+�ng th�+� lߦ�i sau.", "Th+�ng b+�o");
+                case 6 -> NotificationUtils.showErrorAlert("Bạn không thể cập nhật nhân viên ngang quyền.", "Thông báo");
+                case 7 -> NotificationUtils.showErrorAlert("Cập nhật nhân viên thất bại. Vui lòng thử lại sau.", "Thông báo");
+                default -> NotificationUtils.showErrorAlert("Lỗi không xác định. Vui lòng thử lại.", "Thông báo");
             }
         }
     }
@@ -289,10 +292,10 @@ public class EmployeeModalController {
         RoleModalController modalController = UiUtils.gI().openStageWithController(
                 "/GUI/RoleModal.fxml",
                 controller -> controller.setTypeModal(0),
-                "Th+�m ch�+�c v�+�"
+                "Thêm chức vụ"
         );
         if (modalController != null && modalController.isSaved()) {
-            NotificationUtils.showInfoAlert("Th+�m ch�+�c v�+� th+�nh c+�ng", "Th+�ng b+�o");
+            NotificationUtils.showInfoAlert("Thêm chức vụ thành công.", "Thông báo");
             loadComboBox();
         }
     }

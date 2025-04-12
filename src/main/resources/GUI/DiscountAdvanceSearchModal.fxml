@@ -18,7 +18,7 @@
             <top>
                 <AnchorPane prefHeight="60.0" prefWidth="550.0" BorderPane.alignment="CENTER">
                     <children>
-                        <Label fx:id="modalName" alignment="CENTER" layoutX="247.0" layoutY="18.0" prefHeight="23.0" prefWidth="202.0" text="T+�m kiߦ+m n+�ng cao" textFill="#30bac4">
+                        <Label fx:id="modalName" alignment="CENTER" layoutX="247.0" layoutY="18.0" prefHeight="23.0" prefWidth="202.0" text="Tìm kiếm nâng cao" textFill="#30bac4">
                             <font>
                                 <Font name="Arial Bold" size="20.0" />
                             </font>
@@ -35,7 +35,7 @@
                                     <children>
                                         <HBox alignment="CENTER" prefHeight="61.0" prefWidth="350.0" spacing="10.0">
                                             <children>
-                                                <Label prefHeight="22.0" prefWidth="150.0" text="T+�n khuyߦ+n m+�i" textFill="#30bac4">
+                                                <Label prefHeight="22.0" prefWidth="150.0" text="Tên khuyến mãi" textFill="#30bac4">
                                                     <font>
                                                         <Font name="Arial Bold" size="18.0" />
                                                     </font>
@@ -45,7 +45,7 @@
                                                         <Font size="20.0" />
                                                     </font>
                                                 </Label>
-                                                <TextField fx:id="txtDiscountName" maxHeight="31.2" minHeight="31.2" prefHeight="31.2" prefWidth="140.0" promptText="T+�n khuyߦ+n m+�i" styleClass="textfield-1">
+                                                <TextField fx:id="txtDiscountName" maxHeight="31.2" minHeight="31.2" prefHeight="31.2" prefWidth="140.0" promptText="Tên khuyến mãi" styleClass="textfield-1">
                                                     <font>
                                                         <Font size="16.0" />
                                                     </font>
@@ -54,7 +54,7 @@
                                         </HBox>
                                         <HBox alignment="CENTER" prefHeight="61.0" prefWidth="350.0" spacing="10.0">
                                             <children>
-                                                <Label prefHeight="22.0" prefWidth="150.0" text="Ki�+�u khuyߦ+n m+�i" textFill="#30bac4">
+                                                <Label prefHeight="22.0" prefWidth="150.0" text="Kiểu khuyến mãi" textFill="#30bac4">
                                                     <font>
                                                         <Font name="Arial Bold" size="18.0" />
                                                     </font>
@@ -71,7 +71,7 @@
                                 </HBox>
                                 <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="10.0" spacing="10.0">
                                     <children>
-                                        <Label prefHeight="22.0" prefWidth="150.0" text="Th�+�i gian" textFill="#30bac4">
+                                        <Label prefHeight="22.0" prefWidth="150.0" text="Thời gian" textFill="#30bac4">
                                             <font>
                                                 <Font name="Arial Bold" size="18.0" />
                                             </font>
@@ -83,13 +83,13 @@
                                         </Label>
                                         <HBox alignment="CENTER" prefHeight="62.0" prefWidth="250.0">
                                             <children>
-                                                <DatePicker fx:id="dpStartDate" prefHeight="31.2" prefWidth="140.0" />
+                                                <DatePicker fx:id="dpStartDate" prefHeight="31.2" prefWidth="140.0" styleClass="date-picker" />
                                                 <Label alignment="CENTER" contentDisplay="TOP" text="-" textFill="#30bac4">
                                                     <font>
                                                         <Font size="40.0" />
                                                     </font>
                                                 </Label>
-                                                <DatePicker fx:id="dpEndDate" layoutX="13.0" layoutY="28.0" prefHeight="31.0" prefWidth="140.0" />
+                                                <DatePicker fx:id="dpEndDate" layoutX="13.0" layoutY="28.0" prefHeight="31.0" prefWidth="140.0" styleClass="date-picker" />
                                             </children>
                                         </HBox>
                                     </children>
@@ -107,8 +107,8 @@
                     <children>
                         <HBox alignment="CENTER" layoutX="80.0" prefHeight="60.0" prefWidth="286.0" spacing="60.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="80.0" AnchorPane.rightAnchor="80.80000000000001" AnchorPane.topAnchor="0.0">
                             <children>
-                                <Button fx:id="closeBtn" mnemonicParsing="false" prefHeight="26.0" prefWidth="140.0" styleClass="action-btn" stylesheets="@../css/base.css" text="Tho+�t" />
-                                <Button fx:id="saveBtn" mnemonicParsing="false" prefHeight="26.0" prefWidth="140.0" styleClass="action-btn" stylesheets="@../css/base.css" text="L��u" />
+                                <Button fx:id="closeBtn" mnemonicParsing="false" prefHeight="26.0" prefWidth="140.0" styleClass="action-btn" stylesheets="@../css/base.css" text="Thoát" />
+                                <Button fx:id="saveBtn" mnemonicParsing="false" prefHeight="26.0" prefWidth="140.0" styleClass="action-btn" stylesheets="@../css/base.css" text="Lưu" />
                             </children>
                         </HBox>
                     </children>
