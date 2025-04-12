@@ -12,6 +12,13 @@ public class ModuleDTO {
         this.name = name;
     }
 
+    public ModuleDTO(ModuleDTO other) {
+        if (other != null) {
+            this.id = other.id;
+            this.name = other.name;
+        }
+    }
+
     public int getId() {
         return id;
     }

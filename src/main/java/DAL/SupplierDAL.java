@@ -1,4 +1,5 @@
 package DAL;
+import DTO.ModuleDTO;
 import DTO.SupplierDTO;
 
 import java.sql.*;
@@ -6,36 +7,11 @@ import java.sql.*;
 public class SupplierDAL extends BaseDAL<SupplierDTO, Integer> {
     public static final SupplierDAL INSTANCE = new SupplierDAL();
     private SupplierDAL() {
-        super(ConnectAplication.getInstance().getConnectionFactory(), "supplier", "id");
+        super(ConnectApplication.getInstance().getConnectionFactory(), "supplier", "id");
     }
 
     public static SupplierDAL getInstance() {
         return INSTANCE;
-    }
-
-    @Override
-    public boolean insert(SupplierDTO obj) {
-        final String query = "INSERT INTO " + table + " (name, phone, address, status) VALUES (?, ?, ?, ?)";
-        try (Connection connection = connectionFactory.newConnection();
-             PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
-
-            setInsertParameters(statement, obj);
-            int affectedRows = statement.executeUpdate();
-
-            if (affectedRows == 0) {
-                return false;
-            }
-
-            try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
-                if (generatedKeys.next()) {
-                    obj.setId(generatedKeys.getInt(1));
-                }
-            }
-            return true;
-        } catch (SQLException e) {
-            System.err.println("Error inserting module: " + e.getMessage());
-            return false;
-        }
     }
 
     @Override
@@ -50,8 +26,13 @@ public class SupplierDAL extends BaseDAL<SupplierDTO, Integer> {
     }
 
     @Override
-    protected String getUpdateQuery() {
-        return "SET name = ?, phone = ?, address = ?, status = ? WHERE id = ?";
+    protected boolean shouldUseGeneratedKeys() {
+        return true;
+    }
+
+    @Override
+    protected void setGeneratedKey(SupplierDTO obj, ResultSet generatedKeys) throws SQLException {
+        obj.setId(generatedKeys.getInt(1));
     }
 
     @Override
@@ -63,11 +44,21 @@ public class SupplierDAL extends BaseDAL<SupplierDTO, Integer> {
     }
 
     @Override
+    protected String getUpdateQuery() {
+        return "SET name = ?, phone = ?, address = ?, status = ? WHERE id = ?";
+    }
+
+    @Override
     protected void setUpdateParameters(PreparedStatement statement, SupplierDTO obj) throws SQLException {
         statement.setString(1, obj.getName());
         statement.setString(2, obj.getPhone());
         statement.setString(3, obj.getAddress());
         statement.setBoolean(4, obj.isStatus());
         statement.setInt(5, obj.getId());
+    }
+
+    @Override
+    protected boolean hasSoftDelete() {
+        return true;
     }
 }

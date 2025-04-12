@@ -1,20 +1,34 @@
 package DTO;
 
-import java.math.BigDecimal;
-import java.util.Date;
+import lombok.ToString;
 
-public class EmployeeDTO extends PersonDTO {
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+@ToString(callSuper = true)
+public class EmployeeDTO extends BaseInformationDTO {
     private String firstName;
     private String lastName;
     private BigDecimal salary;
     private int roleId;
 
-    public EmployeeDTO(int id, String firstName, String lastName, BigDecimal salary, String imageUrl, Date dateOfBirth, int roleId, boolean status) {
-        super(id, imageUrl, dateOfBirth, status);
+    public EmployeeDTO() {
+
+    }
+
+    public EmployeeDTO(int id, String firstName, String lastName, BigDecimal salary, LocalDateTime dateOfBirth, int roleId, boolean status) {
+        super(id, dateOfBirth, status);
         this.firstName = firstName;
         this.lastName = lastName;
         this.salary = salary;
         this.roleId = roleId;
+    }
+
+    public EmployeeDTO(EmployeeDTO other) {
+        super(other); // Gọi constructor clone của PersonDTO nếu có
+        this.firstName = other.firstName;
+        this.lastName = other.lastName;
+        this.salary = other.salary != null ? new BigDecimal(other.salary.toString()) : null;
+        this.roleId = other.roleId;
     }
 
     public String getFirstName() { return firstName; }
@@ -28,5 +42,9 @@ public class EmployeeDTO extends PersonDTO {
 
     public int getRoleId() { return roleId; }
     public void setRoleId(int roleId) { this.roleId = roleId; }
+
+    public String getFullName() {
+        return this.firstName + " " + this.lastName;
+    }
 }
 

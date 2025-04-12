@@ -17,6 +17,12 @@ public class DetailDiscountDTO {
         this.discountAmount = discountAmount;
     }
 
+    public DetailDiscountDTO(DetailDiscountDTO detailDiscountDTO) {
+        this.discountCode = detailDiscountDTO.discountCode;
+        this.totalPriceInvoice = detailDiscountDTO.totalPriceInvoice;
+        this.discountAmount = detailDiscountDTO.discountAmount;
+    }
+
     // Getters and Setters
     public String getDiscountCode() {
         return discountCode;

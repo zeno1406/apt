@@ -2,43 +2,18 @@ package DAL;
 
 import DTO.InvoiceDTO;
 
+import java.math.BigDecimal;
 import java.sql.*;
 
 public class InvoiceDAL extends BaseDAL<InvoiceDTO, Integer> {
     public static final InvoiceDAL INSTANCE = new InvoiceDAL();
 
     private InvoiceDAL() {
-        super(ConnectAplication.getInstance().getConnectionFactory(), "invoice", "id");
+        super(ConnectApplication.getInstance().getConnectionFactory(), "invoice", "id");
     }
 
     public static InvoiceDAL getInstance() {
         return INSTANCE;
-    }
-
-    @Override
-    public boolean insert(InvoiceDTO obj) {
-        final String query = "INSERT INTO " + table +
-                " (create_date, employee_id, customer_id, discount_code, total_price) VALUES (?, ?, ?, ?, ?)";
-        try (Connection connection = connectionFactory.newConnection();
-             PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
-
-            setInsertParameters(statement, obj);
-            int affectedRows = statement.executeUpdate();
-
-            if (affectedRows == 0) {
-                return false;
-            }
-
-            try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
-                if (generatedKeys.next()) {
-                    obj.setId(generatedKeys.getInt(1));
-                }
-            }
-            return true;
-        } catch (SQLException e) {
-            System.err.println("Error inserting invoice: " + e.getMessage());
-            return false;
-        }
     }
 
     @Override
@@ -51,13 +26,24 @@ public class InvoiceDAL extends BaseDAL<InvoiceDTO, Integer> {
                 resultSet.getInt("employee_id"),
                 resultSet.getInt("customer_id"),
                 resultSet.getString("discount_code"),
+                resultSet.getBigDecimal("discount_amount") != null ? resultSet.getBigDecimal("discount_amount") : BigDecimal.ZERO,
                 resultSet.getBigDecimal("total_price")
         );
     }
 
     @Override
-    public boolean update(InvoiceDTO obj) {
-        throw new UnsupportedOperationException("Update operation not supported.");
+    protected boolean shouldUseGeneratedKeys() {
+        return true; // ID là AUTO_INCREMENT
+    }
+
+    @Override
+    protected void setGeneratedKey(InvoiceDTO obj, ResultSet generatedKeys) throws SQLException {
+        obj.setId(generatedKeys.getInt(1));
+    }
+
+    @Override
+    protected String getInsertQuery() {
+        return "(create_date, employee_id, customer_id, discount_code, discount_amount, total_price) VALUES (?, ?, ?, ?, ?, ?)";
     }
 
     @Override
@@ -73,6 +59,15 @@ public class InvoiceDAL extends BaseDAL<InvoiceDTO, Integer> {
             statement.setNull(4, Types.VARCHAR);
         }
 
-        statement.setBigDecimal(5, obj.getTotalPrice());
+        // Luôn đặt giá trị cho discountAmount
+        statement.setBigDecimal(5, obj.getDiscountAmount() != null ? obj.getDiscountAmount() : BigDecimal.ZERO);
+
+        statement.setBigDecimal(6, obj.getTotalPrice());
     }
+
+    @Override
+    protected String getUpdateQuery() {
+        throw new UnsupportedOperationException("Cannot update permission records.");
+    }
+
 }

@@ -1,7 +1,9 @@
 package DTO;
 
-import java.math.BigDecimal;
+import lombok.ToString;
 
+import java.math.BigDecimal;
+@ToString
 public class RoleDTO {
     private int id;
     private String name;
@@ -17,6 +19,14 @@ public class RoleDTO {
         this.description = description;
         this.salaryCoefficient = salaryCoefficient;
     }
+
+    public RoleDTO(RoleDTO other) {
+        this.id = other.id;
+        this.name = other.name;
+        this.description = other.description;
+        this.salaryCoefficient = other.salaryCoefficient;
+    }
+
 
     public int getId() {
         return id;

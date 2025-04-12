@@ -1,0 +1,8 @@
+package INTERFACE;
+
+public interface ServiceAccessCode {
+    int ROLE_PERMISSION_SERVICE = 1001;
+    int INVOICE_DETAILINVOICE_SERVICE = 1002;
+    int IMPORT_DETAILIMPORT_SERVICE = 1003;
+    int LOGIN_SERVICE = 1004;
+}

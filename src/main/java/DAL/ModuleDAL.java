@@ -3,39 +3,15 @@ package DAL;
 import DTO.ModuleDTO;
 import java.sql.*;
 
-public class ModuleDAL extends BaseDAL <ModuleDTO, Integer> {
+public class ModuleDAL extends BaseDAL<ModuleDTO, Integer> {
     public static final ModuleDAL INSTANCE = new ModuleDAL();
+
     private ModuleDAL() {
-        super(ConnectAplication.getInstance().getConnectionFactory(), "module", "id");
+        super(ConnectApplication.getInstance().getConnectionFactory(), "module", "id");
     }
 
     public static ModuleDAL getInstance() {
         return INSTANCE;
-    }
-
-    @Override
-    public boolean insert(ModuleDTO obj) {
-        final String query = "INSERT INTO " + table + " (name) VALUES (?)";
-        try (Connection connection = connectionFactory.newConnection();
-             PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
-
-            setInsertParameters(statement, obj);
-            int affectedRows = statement.executeUpdate();
-
-            if (affectedRows == 0) {
-                return false;
-            }
-
-            try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
-                if (generatedKeys.next()) {
-                    obj.setId(generatedKeys.getInt(1));
-                }
-            }
-            return true;
-        } catch (SQLException e) {
-            System.err.println("Error inserting module: " + e.getMessage());
-            return false;
-        }
     }
 
     @Override
@@ -47,13 +23,28 @@ public class ModuleDAL extends BaseDAL <ModuleDTO, Integer> {
     }
 
     @Override
-    protected String getUpdateQuery() {
-        return "SET name = ? WHERE id = ?";
+    protected boolean shouldUseGeneratedKeys() {
+        return true; // ID là AUTO_INCREMENT
+    }
+
+    @Override
+    protected void setGeneratedKey(ModuleDTO obj, ResultSet generatedKeys) throws SQLException {
+        obj.setId(generatedKeys.getInt(1));
+    }
+
+    @Override
+    protected String getInsertQuery() {
+        return "(name) VALUES (?)";
     }
 
     @Override
     protected void setInsertParameters(PreparedStatement statement, ModuleDTO obj) throws SQLException {
         statement.setString(1, obj.getName());
+    }
+
+    @Override
+    protected String getUpdateQuery() {
+        return "SET name = ? WHERE id = ?";
     }
 
     @Override

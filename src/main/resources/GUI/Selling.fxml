@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="acSellingRoot" minHeight="-Infinity" prefHeight="0.0" prefWidth="1110.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.SellingController">
+   <children>
+      <VBox fx:id="vbSellingContainer" prefHeight="200.0" prefWidth="100.0" stylesheets="@../css/sellingform.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <Pane fx:id="pSellingHeader" minHeight="-Infinity" prefHeight="50.0" prefWidth="1084.0" styleClass="pContainerHeader">
+               <children>
+                  <Pane fx:id="pExitBtnContainer" layoutX="1034.0" prefHeight="50.0" prefWidth="80.0" styleClass="pExitBtnContainer">
+                     <children>
+                        <Button fx:id="btnExitSellingForm" alignment="CENTER" mnemonicParsing="false" onMouseClicked="#onMouseClickedExitImportingForm" prefHeight="50.0" prefWidth="80.0" styleClass="btnExitForm" text="X" textFill="RED">
+                           <font>
+                              <Font name="System Bold" size="16.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </Pane>
+                  <Label fx:id="lbSellingFormzName" layoutX="479.0" layoutY="1.0" styleClass="ocean-color" text="BÁN HÀNG">
+                     <font>
+                        <Font name="System Bold" size="28.0" />
+                     </font>
+                  </Label>
+               </children>
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin></Pane>
+            <HBox fx:id="hbSellingMainContentContainer" prefHeight="650.0" prefWidth="200.0" styleClass="hbSellingMainContentContainer">
+               <children>
+                  <Pane fx:id="pListProduct" minHeight="-Infinity" minWidth="-Infinity" prefHeight="642.0" prefWidth="692.0" styleClass="pDetailInvoice">
+                     <children>
+                        <Pane fx:id="pProductSearchAndFilter" minHeight="-Infinity" prefHeight="50.0" prefWidth="700.0" styleClass="pProductSearchAndFilter">
+                           <children>
+                              <Pane fx:id="pProductSearch" layoutY="-4.0" prefHeight="50.0" prefWidth="400.0">
+                                 <children>
+                                    <TextField fx:id="txtSellingProductNameSearch" layoutX="14.0" layoutY="10.0" prefHeight="30.0" prefWidth="250.0" styleClass="txtSellingProductNameSearch" />
+                                    <Pane fx:id="pSearchProductBtnContainer" layoutX="279.0" layoutY="10.0" prefHeight="30.0" prefWidth="80.0">
+                                       <children>
+                                          <Button fx:id="btnSearchProduct" alignment="CENTER" layoutY="-1.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="80.0" styleClass="btnSearchProduct" text="Tìm Kiếm">
+                                             <padding>
+                                                <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+                                             </padding>
+                                          </Button>
+                                       </children>
+                                    </Pane>
+                                 </children>
+                              </Pane>
+                              <Pane fx:id="pFilterProductContainer" layoutX="478.0" prefHeight="42.0" prefWidth="200.0">
+                                 <children>
+                                    <ComboBox fx:id="cbxListProductFilter" layoutX="25.0" layoutY="6.0" minHeight="-Infinity" prefHeight="30.0" prefWidth="150.0" promptText="Lọc Theo" styleClass="cbxListProductFilter" visibleRowCount="12">
+                                       <padding>
+                                          <Insets bottom="0.25" left="0.25" right="0.25" top="0.25" />
+                                       </padding></ComboBox>
+                                 </children>
+                              </Pane>
+                           </children>
+                        </Pane>
+                        <ScrollPane fx:id="spShowProductContainer" hbarPolicy="NEVER" layoutY="42.0" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="692.0" styleClass="spShowProductContainer">
+                           <content>
+                              <GridPane fx:id="gpShowProductWrapper" alignment="CENTER" hgap="8.0" prefHeight="43.0" prefWidth="692.0" styleClass="gpShowProductWrapper">
+                                 <columnConstraints>
+                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                 </columnConstraints>
+                                 <padding>
+                                    <Insets bottom="6.0" />
+                                 </padding>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                              </GridPane>
+                           </content>
+                        </ScrollPane>
+                     </children>
+                     <HBox.margin>
+                        <Insets right="8.0" />
+                     </HBox.margin>
+                  </Pane>
+                  <Pane fx:id="pDetailInvoice" minWidth="-Infinity" prefHeight="200.0" prefWidth="384.0" styleClass="pDetailInvoice" stylesheets="@../css/sellingform.css">
+                     <children>
+                        <VBox fx:id="vbCreateInvoiceDetail" prefHeight="650.0" prefWidth="384.0" style="-fx-alignment: center;" styleClass="vbCreateInvoiceDetail">
+                           <children>
+                              <Pane prefHeight="40.0" prefWidth="384.0">
+                                 <children>
+                                    <Label fx:id="lbHeaderCreateInvoiceDetail" layoutX="88.0" prefHeight="40.0" styleClass="ocean-color" text="Chi Tiết Đơn Hàng">
+                                       <font>
+                                          <Font name="System Bold" size="24.0" />
+                                       </font>
+                                    </Label>
+                                 </children>
+                              </Pane>
+                              <Pane fx:id="pInvoiceDetailFields" prefHeight="120.0" prefWidth="384.0">
+                                 <children>
+                                    <GridPane hgap="8.0" layoutY="7.0" prefHeight="100.0" prefWidth="384.0">
+                                      <columnConstraints>
+                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="195.0" minWidth="10.0" prefWidth="194.0" />
+                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="207.0" minWidth="10.0" prefWidth="206.0" />
+                                      </columnConstraints>
+                                      <rowConstraints>
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                      </rowConstraints>
+                                       <children>
+                                          <Pane fx:id="pFiledInvoiceID" prefHeight="200.0" prefWidth="200.0">
+                                             <children>
+                                                <Label layoutX="14.0" layoutY="14.0" styleClass="ocean-color" text="Mã HĐ:" />
+                                                <Label fx:id="lbFieldInvoiceID" layoutX="59.0" layoutY="13.0" text="Label" />
+                                             </children>
+                                          </Pane>
+                                          <Pane fx:id="pFiledInvoiceDate" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1">
+                                             <children>
+                                                <Label layoutX="14.0" layoutY="14.0" styleClass="ocean-color" text="Ngày:" />
+                                                <Label fx:id="lbFieldInvoiceDate" layoutX="65.0" layoutY="14.0" text="Label" />
+                                             </children>
+                                          </Pane>
+                                          <Pane fx:id="pFieldInvoiceEMPID" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
+                                             <children>
+                                                <Label layoutX="14.0" layoutY="13.0" styleClass="ocean-color" text="Mã NV:" />
+                                                <Label fx:id="lbFieldInvoiceEMPID" layoutX="59.0" layoutY="12.0" text="Label" />
+                                             </children>
+                                          </Pane>
+                                          <Pane fx:id="pFieldInvoiceCUSID" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                             <children>
+                                                <Label layoutX="14.0" layoutY="13.0" styleClass="ocean-color" text="Mã KH:" />
+                                                <Label fx:id="lbFieldInvoiceCUSID" layoutX="65.0" layoutY="12.0" text="Label" />
+                                                <Button fx:id="btnGetCusInfo" alignment="TOP_CENTER" contentDisplay="CENTER" layoutX="104.0" layoutY="7.0" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" styleClass="btnGetCusInfo" text="..." textAlignment="JUSTIFY" wrapText="true">
+                                                   <cursor>
+                                                      <Cursor fx:constant="HAND" />
+                                                   </cursor>
+                                                </Button>
+                                                <Button fx:id="btnAddCustomer" alignment="CENTER" layoutX="138.0" layoutY="7.0" mnemonicParsing="false" styleClass="btnAddCustomer" text="+" />
+                                             </children>
+                                          </Pane>
+                                          <Pane fx:id="pFieldInvoiceEMPName" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="2">
+                                             <children>
+                                                <Label layoutX="14.0" layoutY="13.0" styleClass="ocean-color" text="Tên NV:" />
+                                                <Label fx:id="lbFieldInvoiceEMPName" layoutX="59.0" layoutY="13.0" text="Label" />
+                                             </children>
+                                          </Pane>
+                                          <Pane fx:id="pFieldInvoiceCUSName" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                             <children>
+                                                <Label layoutX="14.0" layoutY="13.0" styleClass="ocean-color" text="Tên KH:" />
+                                                <Label fx:id="lbFieldInvoiceCUSName" layoutX="65.0" layoutY="11.0" text="Label" />
+                                             </children>
+                                          </Pane>
+                                       </children>
+                                       <padding>
+                                          <Insets left="8.0" right="8.0" />
+                                       </padding>
+                                    </GridPane>
+                                 </children>
+                              </Pane>
+                              <Pane fx:id="pShowDetailInvoiceProductContainer" prefHeight="340.0" prefWidth="200.0">
+                                 <children>
+                                    <TableView fx:id="tbvDetailInvoiceProduct" layoutX="4.0" prefHeight="340.0" prefWidth="376.0" styleClass="tbvDetailProduct">
+                                      <columns>
+                                        <TableColumn fx:id="tbListInvoiceProductIndex" prefWidth="36.0" text="STT" />
+                                        <TableColumn fx:id="tbListInvoiceProductName" prefWidth="148.0" text="Tên Sản Phẩm" />
+                                          <TableColumn fx:id="tbListInvoiceProductQuantity" prefWidth="30.0" text="SL" />
+                                          <TableColumn fx:id="tbListInvoiceProductPrice" prefWidth="75.0" text="Đơn Giá" />
+                                          <TableColumn fx:id="tbListInvoiceProductTotalPrice" prefWidth="82.0" text="Tổng tiền" />
+                                      </columns>
+                                       <padding>
+                                          <Insets bottom="8.0" />
+                                       </padding>
+                                    </TableView>
+                                 </children>
+                                 <styleClass>
+                                    <String fx:value="pShowDetailProductContainer" />
+                                    <String fx:value="pShowDetailInvoiceProductContainer" />
+                                 </styleClass></Pane>
+                              <Pane fx:id="pShowOtherInvoiceProduct" prefHeight="182.0" prefWidth="200.0" styleClass="pShowOtherInvoiceProduct">
+                                 <children>
+                                    <VBox fx:id="vbOtherSellingFuncs" prefHeight="182.0" prefWidth="384.0">
+                                       <children>
+                                          <Pane fx:id="pCreateDetailInvoiceButtons" prefHeight="200.0" prefWidth="384.0">
+                                             <children>
+                                                <Button fx:id="btnInvoiceListProductClear" layoutX="112.0" layoutY="7.0" mnemonicParsing="false" styleClass="btnFunctionForm" text="Clear">
+                                                   <padding>
+                                                      <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+                                                   </padding></Button>
+                                                <Button fx:id="btnInvoiceListProductRemove" layoutX="290.0" layoutY="7.0" mnemonicParsing="false" styleClass="btnFunctionForm" text="Xóa">
+                                                   <padding>
+                                                      <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+                                                   </padding></Button>
+                                                <Button fx:id="btnInvoiceListProductEdit" layoutX="200.0" layoutY="7.0" mnemonicParsing="false" styleClass="btnFunctionForm" text="Chỉnh Sửa">
+                                                   <padding>
+                                                      <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+                                                   </padding></Button>
+                                             </children>
+                                          </Pane>
+                                          <Pane fx:id="pShowInvoiceSaleEvent" prefHeight="200.0" prefWidth="200.0">
+                                             <children>
+                                                <Label layoutX="14.0" layoutY="15.0" styleClass="ocean-color" text="Mã KM:" />
+                                                <TextField fx:id="txtFieldShowInvoiceSaleCode" editable="false" layoutX="72.0" layoutY="13.0" prefHeight="7.0" prefWidth="120.0" styleClass="txtFieldShowInvoiceSaleCode" />
+                                                <Label layoutX="207.0" layoutY="15.0" styleClass="ocean-color" text="Giảm :" />
+                                                <TextField fx:id="txtFieldShowInvoiceSaleValue" editable="false" layoutX="250.0" layoutY="13.0" prefWidth="120.0" styleClass="txtFieldShowInvoiceSaleValue" />
+                                             </children>
+                                          </Pane>
+                                          <Pane fx:id="pShowInvoiceTotalPrice" prefHeight="200.0" prefWidth="200.0">
+                                             <children>
+                                                <Label fx:id="lbTotalSellingInvoice" layoutX="14.0" layoutY="7.0" prefHeight="32.0" prefWidth="80.0" styleClass="lbTotalSellingInvoice" text="TỔNG : " textFill="RED">
+                                                   <padding>
+                                                      <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+                                                   </padding>
+                                                   <font>
+                                                      <Font name="System Bold" size="18.0" />
+                                                   </font></Label>
+                                                <Label fx:id="lbTotalInvoicePrice" layoutX="94.0" layoutY="6.0" prefHeight="35.0" prefWidth="130.0" styleClass="lbTotalInvoicePrice" text="0 Đ">
+                                                   <padding>
+                                                      <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+                                                   </padding>
+                                                   <font>
+                                                      <Font size="18.0" />
+                                                   </font>
+                                                </Label>
+                                             </children>
+                                          </Pane>
+                                          <Pane fx:id="pSubmitInvoiceBtnContainer" prefHeight="200.0" prefWidth="200.0">
+                                             <children>
+                                                <Button fx:id="btnSubmitIInvoice" alignment="CENTER" layoutX="111.0" layoutY="2.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="162.0" styleClass="btnSubmitIInvoice" text="Xuất Hóa Đơn">
+                                                   <padding>
+                                                      <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+                                                   </padding>
+                                                   <font>
+                                                      <Font name="System Bold" size="20.0" />
+                                                   </font></Button>
+                                             </children>
+                                          </Pane>
+                                       </children>
+                                    </VBox>
+                                 </children></Pane>
+                           </children>
+                        </VBox>
+                     </children>
+                     <HBox.margin>
+                        <Insets left="8.0" />
+                     </HBox.margin>
+                  </Pane>
+               </children>
+               <VBox.margin>
+                  <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+               </VBox.margin></HBox>
+         </children>
+         <styleClass>
+            <String fx:value="main-pane-container" />
+            <String fx:value="vbContainerRoot" />
+         </styleClass>
+      </VBox>
+   </children>
+   <stylesheets>
+      <URL value="@../css/base.css" />
+      <URL value="@../css/sellingform.css" />
+   </stylesheets>
+   <styleClass>
+      <String fx:value="main-pane-container" />
+      <String fx:value="acContainerRoot" />
+   </styleClass>
+</AnchorPane>
