@@ -36,6 +36,6 @@ public class ImportProductModalController {
 
     // close
     private void onMouseClickedExitImportingDetailEdit() {
-        ((Stage) (btnExitDetailEdit.getScene().getWindow())).close();;
+        ((Stage) (btnExitDetailEdit.getScene().getWindow())).close();
     }
 }

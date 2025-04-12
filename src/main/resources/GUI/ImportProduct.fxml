@@ -52,7 +52,7 @@
                            <children>
                               <Pane fx:id="pProductSearch" layoutY="-4.0" prefHeight="50.0" prefWidth="400.0">
                                  <children>
-                                    <TextField fx:id="txtSellingProductNameSearch" layoutX="14.0" layoutY="10.0" prefHeight="30.0" prefWidth="250.0" styleClass="txtSellingProductNameSearch" />
+                                    <TextField fx:id="txtProductNameSearch" layoutX="14.0" layoutY="10.0" prefHeight="30.0" prefWidth="250.0" styleClass="txtSellingProductNameSearch" />
                                     <Pane fx:id="pSearchProductBtnContainer" layoutX="279.0" layoutY="10.0" prefHeight="30.0" prefWidth="80.0">
                                        <children>
                                           <Button fx:id="btnSearchProduct" alignment="CENTER" layoutY="-1.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="80.0" styleClass="btnSearchProduct" text="Tìm Kiếm">
@@ -80,7 +80,7 @@
                                     <Cursor fx:constant="HAND" />
                                  </cursor>
                                  <padding>
-                                    <Insets bottom="6.0" />
+                                    <Insets bottom="4.0" />
                                  </padding>
                               </GridPane>
                            </content>
@@ -144,10 +144,9 @@
                                              <children>
                                                 <Label layoutX="14.0" layoutY="8.0" styleClass="ocean-color" text="Mã NCC: " />
                                                 <Label layoutX="65.0" layoutY="8.0" text="Label" />
-                                                <HBox alignment="CENTER" layoutX="116.0" prefHeight="33.0" prefWidth="70.0" spacing="8.0">
+                                                <HBox alignment="CENTER" layoutX="101.0" prefHeight="33.0" prefWidth="39.0" spacing="8.0">
                                                    <children>
                                                       <Button fx:id="btnGetSupInfo" alignment="TOP_CENTER" contentDisplay="CENTER" mnemonicParsing="false" styleClass="btnGetCusInfo" text="..." />
-                                                      <Button fx:id="btnAddSupplier" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" prefWidth="23.0" styleClass="btnAddSupplier" text="+" textAlignment="JUSTIFY" textOverrun="CLIP" />
                                                    </children>
                                                 </HBox>
                                              </children>
@@ -167,17 +166,20 @@
                               </Pane>
                               <Pane fx:id="pShowDetailImportProductContainer" prefHeight="340.0" prefWidth="200.0">
                                  <children>
-                                    <TableView fx:id="tbvDetailImportProduct" layoutX="4.0" prefHeight="340.0" prefWidth="376.0" styleClass="tbvDetailProduct">
+                                    <TableView fx:id="tbvDetailImportProduct" layoutX="4.0" prefHeight="340.0" prefWidth="376.0" styleClass="tbvDetailProduct" stylesheets="@../css/base.css">
                                        <columns>
-                                          <TableColumn fx:id="tbListInvoiceProductIndex" prefWidth="36.0" text="STT" />
-                                          <TableColumn fx:id="tbListInvoiceProductName" prefWidth="148.0" text="Tên Sản Phẩm" />
-                                          <TableColumn fx:id="tbListInvoiceProductQuantity" prefWidth="30.0" text="SL" />
-                                          <TableColumn fx:id="tbListInvoiceProductPrice" prefWidth="75.0" text="Đơn Giá" />
-                                          <TableColumn fx:id="tbListInvoiceProductTotalPrice" prefWidth="82.0" text="Tổng tiền" />
+                                          <TableColumn fx:id="tbListInvoiceProductIndex" prefWidth="36.0" styleClass="ocean-color" text="STT" />
+                                          <TableColumn fx:id="tbListInvoiceProductName" prefWidth="148.0" styleClass="ocean-color" text="Tên Sản Phẩm" />
+                                          <TableColumn fx:id="tbListInvoiceProductQuantity" prefWidth="30.0" styleClass="ocean-color" text="SL" />
+                                          <TableColumn fx:id="tbListInvoiceProductPrice" prefWidth="75.0" styleClass="ocean-color" text="Giá nhập" />
+                                          <TableColumn fx:id="tbListInvoiceProductTotalPrice" prefWidth="82.0" styleClass="ocean-color" text="Tổng tiền" />
                                        </columns>
                                        <padding>
                                           <Insets bottom="8.0" />
                                        </padding>
+                                       <cursor>
+                                          <Cursor fx:constant="HAND" />
+                                       </cursor>
                                     </TableView>
                                  </children>
                                  <styleClass>

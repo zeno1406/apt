@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="acSellingCustomerContainer" prefHeight="700.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.SupForImportModalController">
+<AnchorPane fx:id="acSupplierContainer" prefHeight="700.0" prefWidth="500.0" style="-fx-border-style: solid;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.SupForImportModalController">
    <stylesheets>
       <URL value="@../css/base.css" />
       <URL value="@../css/sellingform.css" />
@@ -54,7 +54,7 @@
                   </Button>
                </children>
             </Pane>
-            <ScrollPane prefHeight="550.0" prefWidth="200.0">
+            <ScrollPane hbarPolicy="NEVER" prefHeight="550.0" prefWidth="200.0">
                <content>
                   <Pane prefHeight="550.0" prefWidth="500.0">
                      <children>

@@ -369,6 +369,15 @@
     -fx-pref-height: 292px;
 }
 
+.tbvDetailImportProduct .cell {
+    -fx-text-fill: black;
+}
+
+.tbvDetailImportProduct .column-header {
+    -fx-background-color: #0077cc;
+    -fx-text-fill: white;
+}
+
 .btnFunctionForm {
     -fx-padding: 8px;
     -fx-background-color: #0b304d;

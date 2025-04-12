@@ -40,16 +40,16 @@ public class StatisticController {
 
 
     public void drawRevenueCostProfitChart(ArrayList<StatisticRevenue> data) {
-        chart1.setTitle("T�+�ng thu, T�+�ng chi v+� L�+�i nhuߦ�n");
+        chart1.setTitle("Tổng thu, tổng chi và lợi nhuận");
 
         XYChart.Series<String, Number> revenueSeries = new XYChart.Series<>();
-        revenueSeries.setName("T�+�ng thu");
+        revenueSeries.setName("Tổng thu");
 
         XYChart.Series<String, Number> costSeries = new XYChart.Series<>();
-        costSeries.setName("T�+�ng chi");
+        costSeries.setName("Tổng chi");
 
         XYChart.Series<String, Number> profitSeries = new XYChart.Series<>();
-        profitSeries.setName("L�+�i nhuߦ�n");
+        profitSeries.setName("Lợi nhuận");
 
         for (StatisticRevenue stat : data) {
             String time = stat.getTime();
