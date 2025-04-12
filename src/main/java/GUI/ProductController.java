@@ -186,7 +186,7 @@ public class ProductController implements IController {
             } else {
                 startPrice = null;
             }
-            System.out.println(startPrice);
+//            System.out.println(startPrice);
 
             String endText = txtEndPrice.getText().trim();
             if (!endText.isEmpty()) {
@@ -194,7 +194,7 @@ public class ProductController implements IController {
             } else {
                 endPrice = null;
             }
-            System.out.println(endPrice);
+//            System.out.println(endPrice);
 
             applyFilters();
         } catch (NumberFormatException e) {
@@ -293,7 +293,7 @@ public class ProductController implements IController {
             case 5 ->
                     NotificationUtils.showErrorAlert("Sản sản phẩm còn hàng tồn, không thể xóa!", "Thông báo");
             default ->
-                    NotificationUtils.showErrorAlert("Lỗi không xác định, vui lòng thử lại sau.", "Thông báo");
+                    NotificationUtils.showErrorAlert("Lỗi không xác định. Vui lòng thử lại sau.", "Thông báo");
         }
     }
 

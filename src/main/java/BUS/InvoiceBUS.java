@@ -87,7 +87,6 @@ public class InvoiceBUS extends BaseBUS<InvoiceDTO, Integer>{
             boolean matchesOther = false;
             LocalDate invoiceDate = invoice.getCreateDate().toLocalDate();
 
-            // C+� -��+� 2 -�ߦ�u
             if (startDate != null && endDate != null) {
                 matchesDate = !invoiceDate.isBefore(startDate) && !invoiceDate.isAfter(endDate);
             } else if (startDate != null) {
@@ -96,7 +95,6 @@ public class InvoiceBUS extends BaseBUS<InvoiceDTO, Integer>{
                 matchesDate = !invoiceDate.isAfter(endDate);
             }
 
-            // L�+�c c+�c tr���+�ng "HOߦ�C"
             if (employeeId != null && !employeeId.isEmpty()) {
                 matchesOther |= String.valueOf(invoice.getEmployeeId()).contains(employeeId);
             }
@@ -110,7 +108,6 @@ public class InvoiceBUS extends BaseBUS<InvoiceDTO, Integer>{
                         invoice.getDiscountCode().toLowerCase().contains(discountCode.toLowerCase());
             }
 
-            // Ki�+�m tra gi+� cߦ�
             if (startTotalPrice != null && endTotalPrice != null) {
                 matchesOther |= invoice.getTotalPrice().compareTo(startTotalPrice) >= 0 && invoice.getTotalPrice().compareTo(endTotalPrice) <= 0;
             } else if (startTotalPrice != null) {

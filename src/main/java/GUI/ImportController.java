@@ -133,7 +133,7 @@ public class ImportController implements IController {
         txtSearch.textProperty().addListener((observable, oldValue, newValue) -> handleKeywordChange());
         refreshBtn.setOnAction(event -> {
             resetFilters();
-            NotificationUtils.showInfoAlert("L+�m m�+�i th+�nh c+�ng", "Th+�ng b+�o");
+            NotificationUtils.showInfoAlert("Làm mới thành công.", "Thông báo");
         });
     }
 

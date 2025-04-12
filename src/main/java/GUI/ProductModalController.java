@@ -262,13 +262,11 @@ public class ProductModalController {
 
     private void updateProduct() throws IOException {
         ProductBUS proBus = ProductBUS.getInstance();
-
         if (isValidInput()) {
             String newImgUrl = product.getImageUrl();
             if (imageUrl != null && !imageUrl.equals(product.getImageUrl())) {
                 newImgUrl = ImageService.gI().saveProductImage(txtProductId.getText().trim(), imageUrl);
             }
-            System.out.println(newImgUrl);
 
             ProductDTO temp = new ProductDTO(txtProductId.getText().trim(), txtProductName.getText().trim(), 0, new BigDecimal(txtSellingPrice.getText().trim()),
                     cbSelectStatus.getValue().equals("Hoạt động"), txtDescription.getText().trim(),
