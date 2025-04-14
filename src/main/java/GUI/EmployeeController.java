@@ -215,13 +215,13 @@ public class EmployeeController implements IController {
 
     @Override
     public void hideButtonWithoutPermission() {
-        boolean canAdd = SessionManagerService.getInstance().hasPermission(1);
-        boolean canEdit = SessionManagerService.getInstance().hasPermission(3);
-        boolean canDelete = SessionManagerService.getInstance().hasPermission(2);
-
-        if (!canAdd) functionBtns.getChildren().remove(addBtn);
-        if (!canEdit) functionBtns.getChildren().remove(editBtn);
-        if (!canDelete) functionBtns.getChildren().remove(deleteBtn);
+//        boolean canAdd = SessionManagerService.getInstance().hasPermission(1);
+//        boolean canEdit = SessionManagerService.getInstance().hasPermission(3);
+//        boolean canDelete = SessionManagerService.getInstance().hasPermission(2);
+//
+//        if (!canAdd) functionBtns.getChildren().remove(addBtn);
+//        if (!canEdit) functionBtns.getChildren().remove(editBtn);
+//        if (!canDelete) functionBtns.getChildren().remove(deleteBtn);
     }
 
     public void handleAddBtn() {

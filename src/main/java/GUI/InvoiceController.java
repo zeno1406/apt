@@ -120,7 +120,7 @@ public class InvoiceController implements IController  {
         this.createDate.setText(validationUtils.formatDateTime(selectedInvoice.getCreateDate()));
         this.employeeId.setText(String.valueOf(selectedInvoice.getEmployeeId()));
         this.customerId.setText(String.valueOf(selectedInvoice.getCustomerId()));
-        this.discountCode.setText(selectedInvoice.getDiscountCode() != null ? selectedInvoice.getDiscountCode() : "Kh+�ng c+�");
+        this.discountCode.setText(selectedInvoice.getDiscountCode() != null ? selectedInvoice.getDiscountCode() : "Không có");
         this.discountAmount.setText(validationUtils.formatCurrency(selectedInvoice.getDiscountAmount()));
         this.totalPrice.setText(validationUtils.formatCurrency(selectedInvoice.getTotalPrice()));
 

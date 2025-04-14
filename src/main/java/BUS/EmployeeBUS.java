@@ -3,10 +3,13 @@ package BUS;
 
 import DAL.EmployeeDAL;
 import DTO.EmployeeDTO;
+import DTO.ProductDTO;
 import SERVICE.AuthorizationService;
+import SERVICE.ExcelService;
 import UTILS.AvailableUtils;
 import UTILS.ValidationUtils;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -85,7 +88,7 @@ public class EmployeeBUS extends BaseBUS <EmployeeDTO, Integer> {
 
         // Kh+�ng c+� quy�+�n 3 th+� kh+�ng ch�+�nh ch+�nh m+�nh hay ng���+�i kh+�c
         if (!AuthorizationService.getInstance().hasPermission(employeeLoginId, employee_roleId, 3)) {
-            return 2;
+            return 3;
         }
 
         // Ng-�n chߦ+n cߦ�p nhߦ�t nh+�n vi+�n g�+�c nߦ+u kh+�ng phߦ�i ch+�nh n+�
@@ -137,7 +140,6 @@ public class EmployeeBUS extends BaseBUS <EmployeeDTO, Integer> {
         }
     }
 
-//  VALIDATE HERE!!!
     private boolean isValidEmployeeInput(EmployeeDTO obj) {
         if (obj.getFirstName() == null || obj.getLastName() == null || obj.getSalary() == null) {
             return false;
@@ -232,11 +234,11 @@ public class EmployeeBUS extends BaseBUS <EmployeeDTO, Integer> {
 
     private boolean isDuplicateEmployee(EmployeeDTO obj) {
         EmployeeDTO existingEm = getByIdLocal(obj.getId());
-        ValidationUtils validate = ValidationUtils.getInstance();
 
+        // Ki�+�m tra xem t+�n, m+� tߦ�, v+� h�+� s�+� l����ng c+� tr+�ng kh+�ng
         return existingEm != null &&
-                Objects.equals(existingEm.getFirstName(), validate.normalizeWhiteSpace(obj.getFirstName())) &&
-                Objects.equals(existingEm.getLastName(), validate.normalizeWhiteSpace(obj.getLastName())) &&
+                Objects.equals(existingEm.getFirstName(), obj.getFirstName()) &&
+                Objects.equals(existingEm.getLastName(), obj.getLastName()) &&
                 Objects.equals(existingEm.getSalary(), obj.getSalary()) &&
                 Objects.equals(existingEm.getDateOfBirth(), obj.getDateOfBirth()) &&
                 Objects.equals(existingEm.isStatus(), obj.isStatus()) &&

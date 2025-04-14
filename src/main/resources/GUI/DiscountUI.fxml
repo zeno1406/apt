@@ -198,8 +198,8 @@
                   </VBox>
                   <TableView fx:id="tblDetailDiscount" layoutX="9.0" layoutY="186.0" prefHeight="350.0" prefWidth="262.0" AnchorPane.bottomAnchor="70.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="8.0">
                     <columns>
-                      <TableColumn fx:id="tlb_col_totalPriceInvoice" prefWidth="137.60003662109375" text="Tối thiểu" />
-                      <TableColumn fx:id="tlb_col_discountAmount" prefWidth="131.199951171875" text="Giảm giá" />
+                      <TableColumn fx:id="tlb_col_totalPriceInvoice" prefWidth="137.60003662109375" text="Mức tối thiểu" />
+                      <TableColumn fx:id="tlb_col_discountAmount" prefWidth="131.199951171875" text="Mức giảm" />
                     </columns>
                   </TableView>
                   <Button fx:id="refreshBtn" layoutX="39.0" layoutY="561.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="200.0" styleClass="action-btn" text="Đặt lại" AnchorPane.bottomAnchor="14.200000000000045" />
