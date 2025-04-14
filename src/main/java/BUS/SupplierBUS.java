@@ -3,6 +3,7 @@ package BUS;
 import DAL.SupplierDAL;
 import DTO.CustomerDTO;
 import DTO.SupplierDTO;
+import com.itextpdf.text.pdf.languages.ArabicLigaturizer;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -62,4 +63,20 @@ public class SupplierBUS extends BaseBUS<SupplierDTO, Integer>{
 
         return filteredList;
     }
+
+    public ArrayList<SupplierDTO> searchSupplierByPhone(String phone) {
+        ArrayList<SupplierDTO> temp = new ArrayList<>();
+
+        if (phone == null || phone.trim().isEmpty()) {
+            return temp; // hoặc return arrLocal nếu bạn muốn hiển thị tất cả
+        }
+
+        for (SupplierDTO s : arrLocal) {
+            if (s.getPhone() != null && s.getPhone().contains(phone.trim())) {
+                temp.add(s);
+            }
+        }
+        return temp;
+    }
+
 }
