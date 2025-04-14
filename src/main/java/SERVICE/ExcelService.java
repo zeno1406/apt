@@ -160,7 +160,6 @@ public class ExcelService {
                 // validate before insert
             if (validateForProduct(product))
                 ProductBUS.getInstance().insert(product, SessionManagerService.getInstance().employeeRoleId(), SessionManagerService.getInstance().employeeLoginId());
-        return;
     }
 
 //    validate after get list import products
@@ -173,23 +172,24 @@ public class ExcelService {
 
 //    VALIDATE ON PRODUCT BUS
     private ArrayList<ProductDTO> returnListProduct(Sheet sheet, ArrayList<ProductDTO> list) {
+        if (list == null)
+            return new ArrayList<>();
+        if (!list.isEmpty())
+            list.clear();
+
+        ValidationUtils validate = ValidationUtils.getInstance();
         for (Row row : sheet) {
             if (row.getRowNum() == 0)
                 continue;
-            if (list == null)
-                return new ArrayList<>();
-            if (!list.isEmpty())
-                list.clear();
 
             // get instance of product bus
-            ValidationUtils validate = ValidationUtils.getInstance();
             String id = row.getCell(0).getStringCellValue();
             String name = row.getCell(1).getStringCellValue();
+            int stockQuantity = validate.canParseToInt(row.getCell(2).getStringCellValue());
+            BigDecimal sellingPrice = validate.canParseToBigDecimal(row.getCell(3).getStringCellValue());
+            int statusInt = validate.canParseToInt(row.getCell(4).getStringCellValue());
             String description = row.getCell(5) != null ? row.getCell(5).getStringCellValue() : null;
             String imageUrl = row.getCell(6) != null ? row.getCell(6).getStringCellValue() : null;
-            BigDecimal sellingPrice = validate.canParseToBigDecimal(row.getCell(3).getStringCellValue());
-            int stockQuantity = validate.canParseToInt(row.getCell(2).getStringCellValue());
-            int statusInt = validate.canParseToInt(row.getCell(4).getStringCellValue());
             int categoryId = validate.canParseToInt(row.getCell(7).getStringCellValue());
 
             if (stockQuantity == -1 || statusInt == -1 || categoryId == -1) {
