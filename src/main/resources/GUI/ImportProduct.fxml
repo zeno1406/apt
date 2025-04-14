@@ -208,11 +208,6 @@
                                                       <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
                                                    </padding>
                                                 </Button>
-                                                <Button fx:id="btnImportListProductAdd" alignment="CENTER" layoutX="103.0" layoutY="18.0" mnemonicParsing="false" styleClass="btnFunctionForm" text="Thêm">
-                                                   <padding>
-                                                      <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
-                                                   </padding>
-                                                </Button>
                                              </children>
                                           </Pane>
                                           <Pane fx:id="pShowImportTotalPrice" minHeight="-Infinity" prefHeight="200.0" prefWidth="200.0" styleClass="pShowImportTotalPrice">

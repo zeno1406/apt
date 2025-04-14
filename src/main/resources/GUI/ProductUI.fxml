@@ -120,6 +120,14 @@
                                         <FontAwesomeIcon glyphName="REFRESH" size="1.2em" styleClass="action-icon" />
                                     </graphic>
                                 </Button>
+                        <Button fx:id="btnImportExcel" layoutX="164.0" layoutY="5.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="108.0" styleClass="action-btn" stylesheets="@../css/base.css" text="Import">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                           <graphic>
+                              <FontAwesomeIcon glyphName="REFRESH" size="1.2em" styleClass="action-icon" />
+                           </graphic>
+                        </Button>
                             </children>
                         </AnchorPane>
                     </children>

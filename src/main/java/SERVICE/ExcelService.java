@@ -129,7 +129,7 @@ public class ExcelService {
     }
 
 //    IMPORT EXCEL
-    private void ImportSheet(String importData) throws IOException {
+    public void ImportSheet(String importData) throws IOException {
         String fileName = importData.toLowerCase() + ".xlsx";
         File file = new File(fileName);
         if (!file.exists()) return;
@@ -139,11 +139,10 @@ public class ExcelService {
             //create sheets
             Sheet sheet = workbook.getSheetAt(0);
             //switch case employees or products
-            if (importData.equalsIgnoreCase("product"))
+            if (importData.equalsIgnoreCase("products"))
                 importToProducts(sheet);
-
         } catch (Exception e) {
-            throw new RuntimeException("Lỗi khi import file Excel: " + e.getMessage(), e);
+            System.out.println(("Lỗi khi import file Excel: " + e.getMessage()));
         }
     }
 
@@ -154,18 +153,31 @@ public class ExcelService {
             System.out.println("Error size of list");
             return;
         }
-
         //check local
-        for (ProductDTO product : list)
+        if(UiUtils.gI().showConfirmAlert("Are you sure babe?", "Cáo phó"))
+            for (ProductDTO product : list)
                 // validate before insert
-            if (validateForProduct(product))
-                ProductBUS.getInstance().insert(product, SessionManagerService.getInstance().employeeRoleId(), SessionManagerService.getInstance().employeeLoginId());
+                if (validateForProduct(product)) {
+                    //  ProductBUS.getInstance().insert(product, SessionManagerService.getInstance().employeeRoleId(), SessionManagerService.getInstance().employeeLoginId());
+
+                    System.out.println(product);
+                }
+    }
+
+//  validate for importing products
+    private boolean validateForImportingProduct(ProductDTO product) {
+
+        return false;
     }
 
 //    validate after get list import products
     private boolean validateForProduct(ProductDTO product) {
         ProductBUS validate = ProductBUS.getInstance();
         validate.getAllLocal();
+        if (validate.isLocalEmpty())
+            validate.getAll();
+        if(validate.isLocalEmpty())
+            return false;
         // check valid product
         return validate.isValidProductInput(product) && !validate.isDuplicateProduct(product);
     }
@@ -183,14 +195,14 @@ public class ExcelService {
                 continue;
 
             // get instance of product bus
-            String id = row.getCell(0).getStringCellValue();
+            int id = (int) row.getCell(0).getNumericCellValue();
             String name = row.getCell(1).getStringCellValue();
-            int stockQuantity = validate.canParseToInt(row.getCell(2).getStringCellValue());
-            BigDecimal sellingPrice = validate.canParseToBigDecimal(row.getCell(3).getStringCellValue());
-            int statusInt = validate.canParseToInt(row.getCell(4).getStringCellValue());
-            String description = row.getCell(5) != null ? row.getCell(5).getStringCellValue() : null;
             String imageUrl = row.getCell(6) != null ? row.getCell(6).getStringCellValue() : null;
-            int categoryId = validate.canParseToInt(row.getCell(7).getStringCellValue());
+            String description = row.getCell(5) != null ? row.getCell(5).getStringCellValue() : null;
+            int categoryId = (int) row.getCell(7).getNumericCellValue();
+            BigDecimal sellingPrice = validate.canParseToBigDecimal(String.valueOf(row.getCell(3).getNumericCellValue()));
+            int stockQuantity = (int) row.getCell(2).getNumericCellValue();
+            int statusInt = (int) row.getCell(4).getNumericCellValue();
 
             if (stockQuantity == -1 || statusInt == -1 || categoryId == -1) {
                 System.out.println("Lỗi định dạng số ở stock, status hoặc category.");
@@ -200,7 +212,7 @@ public class ExcelService {
                 System.out.println("Lỗi giá bán.");
                 return new ArrayList<>();
             }
-            ProductDTO product = new ProductDTO(id, name, stockQuantity, sellingPrice,statusInt != 0, description, imageUrl, categoryId);
+            ProductDTO product = new ProductDTO(null, name, stockQuantity, sellingPrice,statusInt != 0, description, null, categoryId);
             list.add(product);
         }
         return list;

@@ -137,6 +137,8 @@ public class ValidationUtils {
     public BigDecimal canParseToBigDecimal(String input) {
         try
         {
+            if(input.contains("."))
+                input = input.substring(0, input.indexOf("."));
             return BigDecimal.valueOf(Long.parseLong(input));
         } catch (Exception ex) {
             System.out.println(ex.getMessage());

@@ -60,6 +60,8 @@ public class ImportProductController {
         btnImportListProductEdit.setOnMouseClicked(event -> onMouseClickedImportListProductEdit());
         btnSearchProduct.setOnMouseClicked(event -> onMousedClickSearchProduct());
         btnGetSupInfo.setOnMouseClicked(event -> onMouseClickedShowSupplierContainer());
+        btnImportListProductClear.setOnMouseClicked(event -> onMouseClickedClearTable());
+        btnImportListProductRemove.setOnMouseClicked(event -> onMouseClickedDeleteCellTable());
     }
 
     // search
@@ -78,6 +80,19 @@ public class ImportProductController {
     // show select supplier
     private void onMouseClickedShowSupplierContainer() {
         (UiUtils.gI()).openStage("/GUI/SupForImportModal.fxml", "Danh Sách Nhà Cung Cấp", (Stage) btnGetSupInfo.getScene().getWindow());
+    }
+
+    // clear
+    private void onMouseClickedClearTable() {
+        tbvDetailImportProduct.getItems().clear();
+    }
+
+    // delete
+    private void onMouseClickedDeleteCellTable() {
+        int selectedIndex = tbvDetailImportProduct.getSelectionModel().getSelectedIndex();
+        if (selectedIndex >= 0) {
+            tbvDetailImportProduct.getItems().remove(selectedIndex);
+        }
     }
 
     // close
