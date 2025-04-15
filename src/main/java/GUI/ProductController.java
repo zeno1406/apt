@@ -345,7 +345,7 @@ public class ProductController implements IController {
 
     private void importData() throws IOException {
         ExcelService.getInstance().ImportSheet("products");
-        System.out.println("hello");
+        applyFilters();
     }
 
 }

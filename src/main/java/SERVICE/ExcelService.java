@@ -7,6 +7,7 @@ import BUS.RoleBUS;
 import DTO.EmployeeDTO;
 import DTO.ProductDTO;
 import DTO.RoleDTO;
+import UTILS.AvailableUtils;
 import UTILS.NotificationUtils;
 import UTILS.UiUtils;
 import UTILS.ValidationUtils;
@@ -20,8 +21,9 @@ import java.math.BigDecimal;
 import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ExcelService {
     private static final ExcelService INSTANCE = new ExcelService();
@@ -148,73 +150,120 @@ public class ExcelService {
 
     private void importToProducts(Sheet sheet) {
         ArrayList<ProductDTO> list = returnListProduct(sheet, new ArrayList<>());
-        //check empty
+
         if (list.isEmpty()) {
-            System.out.println("Error size of list");
             return;
         }
-        //check local
-        if(UiUtils.gI().showConfirmAlert("Are you sure babe?", "Cáo phó"))
-            for (ProductDTO product : list)
-                // validate before insert
-                if (validateForProduct(product)) {
-                    //  ProductBUS.getInstance().insert(product, SessionManagerService.getInstance().employeeRoleId(), SessionManagerService.getInstance().employeeLoginId());
 
-                    System.out.println(product);
-                }
-    }
+        if (UiUtils.gI().showConfirmAlert("Bạn chắc chắn muốn thêm sản phẩm bằng Excel?", "Thông báo")) {
+            int deleteResult = ProductBUS.getInstance().insertListProductExcel(list);
+            switch (deleteResult) {
+                case 1 -> NotificationUtils.showInfoAlert("Thêm sản phẩm thành công.", "Thông báo");
+                case 2 -> NotificationUtils.showErrorAlert("Danh sách rỗng.", "Thông báo");
+                case 3 -> NotificationUtils.showErrorAlert("Dữ liệu đầu vào không hợp lệ.", "Thông báo");
+                case 4 -> NotificationUtils.showErrorAlert("Thể loại không hợp lệ hoặc đã bị xóa.", "Thông báo");
+                case 5 -> NotificationUtils.showErrorAlert("Tên sản phẩm trong hệ thống đã tồn tại.", "Thông báo");
+                case 6 -> NotificationUtils.showErrorAlert("Có lỗi khi thêm danh sách sản phẩm qua Excel.", "Thông báo");
+                case 7 -> NotificationUtils.showErrorAlert("Lỗi cơ sở dữ liệu khi insert.", "Thông báo");
+                default -> NotificationUtils.showErrorAlert("Lỗi không xác định, vui lòng thử lại sau.", "Thông báo");
+            }
+        }
 
-//  validate for importing products
-    private boolean validateForImportingProduct(ProductDTO product) {
-
-        return false;
-    }
-
-//    validate after get list import products
-    private boolean validateForProduct(ProductDTO product) {
-        ProductBUS validate = ProductBUS.getInstance();
-        validate.getAllLocal();
-        if (validate.isLocalEmpty())
-            validate.getAll();
-        if(validate.isLocalEmpty())
-            return false;
-        // check valid product
-        return validate.isValidProductInput(product) && !validate.isDuplicateProduct(product);
     }
 
 //    VALIDATE ON PRODUCT BUS
     private ArrayList<ProductDTO> returnListProduct(Sheet sheet, ArrayList<ProductDTO> list) {
-        if (list == null)
-            return new ArrayList<>();
-        if (!list.isEmpty())
-            list.clear();
+        if (list == null) return new ArrayList<>();
+        if (!list.isEmpty()) list.clear();
 
-        ValidationUtils validate = ValidationUtils.getInstance();
+        ArrayList<ProductDTO> tempList = new ArrayList<>();
+        StringBuilder errorMessages = new StringBuilder();
+        int errorCount = 0; // Đếm số lỗi
+
         for (Row row : sheet) {
-            if (row.getRowNum() == 0)
-                continue;
+            if (row.getRowNum() == 0) continue; // Bỏ qua dòng tiêu đề
 
-            // get instance of product bus
-            int id = (int) row.getCell(0).getNumericCellValue();
-            String name = row.getCell(1).getStringCellValue();
-            String imageUrl = row.getCell(6) != null ? row.getCell(6).getStringCellValue() : null;
-            String description = row.getCell(5) != null ? row.getCell(5).getStringCellValue() : null;
-            int categoryId = (int) row.getCell(7).getNumericCellValue();
-            BigDecimal sellingPrice = validate.canParseToBigDecimal(String.valueOf(row.getCell(3).getNumericCellValue()));
-            int stockQuantity = (int) row.getCell(2).getNumericCellValue();
-            int statusInt = (int) row.getCell(4).getNumericCellValue();
+            try {
+                String name = row.getCell(1).getStringCellValue().trim();
+                String description = row.getCell(2) != null ? row.getCell(2).getStringCellValue().trim() : null;
 
-            if (stockQuantity == -1 || statusInt == -1 || categoryId == -1) {
-                System.out.println("Lỗi định dạng số ở stock, status hoặc category.");
-                return new ArrayList<>();
+                Cell categoryCell = row.getCell(3);
+                Cell statusCell = row.getCell(4);
+
+                // Kiểm tra và chuyển đổi categoryId
+                int categoryId;
+                try {
+                    categoryId = (int) categoryCell.getNumericCellValue();
+                } catch (Exception e) {
+                    errorMessages.append("Dòng ").append(row.getRowNum() + 1)
+                            .append(": Thể loại không hợp lệ (phải là số).\n");
+                    errorCount++;
+                    if (errorCount >= 20) break; // Dừng lại khi đã đủ 20 lỗi
+                    continue;
+                }
+
+                // Kiểm tra và chuyển đổi status
+                int statusInt;
+                try {
+                    statusInt = (int) statusCell.getNumericCellValue();
+                } catch (Exception e) {
+                    errorMessages.append("Dòng ").append(row.getRowNum() + 1)
+                            .append(": Trạng thái không hợp lệ (phải là 0 hoặc 1).\n");
+                    errorCount++;
+                    if (errorCount >= 20) break; // Dừng lại khi đã đủ 20 lỗi
+                    continue;
+                }
+
+                if (name.isEmpty()) {
+                    errorMessages.append("Dòng ").append(row.getRowNum() + 1)
+                            .append(": Tên sản phẩm không được để trống.\n");
+                    errorCount++;
+                    if (errorCount >= 20) break; // Dừng lại khi đã đủ 20 lỗi
+                    continue;
+                }
+
+                if (categoryId < 0 || !AvailableUtils.getInstance().isValidCategory(categoryId)) {
+                    errorMessages.append("Dòng ").append(row.getRowNum() + 1)
+                            .append(": Thể loại không hợp lệ hoặc đã bị xóa.\n");
+                    errorCount++;
+                    if (errorCount >= 20) break; // Dừng lại khi đã đủ 20 lỗi
+                    continue;
+                }
+
+                if (statusInt != 0 && statusInt != 1) {
+                    errorMessages.append("Dòng ").append(row.getRowNum() + 1)
+                            .append(": Trạng thái chỉ được là 0 hoặc 1.\n");
+                    errorCount++;
+                    if (errorCount >= 20) break; // Dừng lại khi đã đủ 20 lỗi
+                    continue;
+                }
+
+                ProductDTO product = new ProductDTO(
+                        null, name, 0, null, statusInt == 1, description, null, categoryId
+                );
+                tempList.add(product);
+
+            } catch (Exception e) {
+                errorMessages.append("Dòng ").append(row.getRowNum() + 1)
+                        .append(": Lỗi không xác định: ").append(e.getMessage()).append("\n");
+                errorCount++;
+                if (errorCount >= 20) break; // Dừng lại khi đã đủ 20 lỗi
             }
-            if (sellingPrice.equals(BigDecimal.valueOf(-1))) {
-                System.out.println("Lỗi giá bán.");
-                return new ArrayList<>();
-            }
-            ProductDTO product = new ProductDTO(null, name, stockQuantity, sellingPrice,statusInt != 0, description, null, categoryId);
-            list.add(product);
         }
+
+        if (errorMessages.length() > 0) {
+            // Nếu có hơn 20 lỗi, chỉ hiển thị 20 dòng đầu tiên
+            if (errorCount > 20) {
+                errorMessages.append("Và " + (errorCount - 20) + " lỗi khác không thể hiển thị.\n");
+            }
+            NotificationUtils.showErrorAlert(errorMessages.toString(), "Thông báo");
+            return new ArrayList<>(); // Trả về rỗng nếu có lỗi
+        }
+
+        list.addAll(tempList);
         return list;
     }
+
+
+
 }

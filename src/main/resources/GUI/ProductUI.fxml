@@ -120,16 +120,16 @@
                                         <FontAwesomeIcon glyphName="REFRESH" size="1.2em" styleClass="action-icon" />
                                     </graphic>
                                 </Button>
-                        <Button fx:id="btnImportExcel" layoutX="164.0" layoutY="5.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="108.0" styleClass="action-btn" stylesheets="@../css/base.css" text="Import">
-                           <font>
-                              <Font size="14.0" />
-                           </font>
-                           <graphic>
-                              <FontAwesomeIcon glyphName="REFRESH" size="1.2em" styleClass="action-icon" />
-                           </graphic>
-                        </Button>
                             </children>
                         </AnchorPane>
+                  <Button fx:id="btnImportExcel" layoutX="161.0" layoutY="14.0" mnemonicParsing="false" prefHeight="34.4" prefWidth="130.0" styleClass="action-btn" stylesheets="@../css/base.css" text="Nhập Excel" AnchorPane.bottomAnchor="11.0" AnchorPane.leftAnchor="151.0" AnchorPane.topAnchor="5.0">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                     <graphic>
+                        <FontAwesomeIcon glyphName="TABLE" size="1.2em" styleClass="action-icon" />
+                     </graphic>
+                  </Button>
                     </children>
                 </AnchorPane>
             </bottom>
