@@ -4,6 +4,7 @@ import BUS.CategoryBUS;
 import BUS.ProductBUS;
 import DTO.*;
 import INTERFACE.IController;
+import SERVICE.ExcelService;
 import SERVICE.SessionManagerService;
 import UTILS.NotificationUtils;
 import UTILS.UiUtils;
@@ -20,6 +21,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 
 import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.util.HashMap;
@@ -46,7 +48,7 @@ public class ProductController implements IController {
     @FXML
     private HBox functionBtns;
     @FXML
-    private Button addBtn, editBtn, deleteBtn, refreshBtn;
+    private Button addBtn, editBtn, deleteBtn, refreshBtn, btnImportExcel;
     @FXML
     private TextField txtSearch;
     @FXML
@@ -176,6 +178,13 @@ public class ProductController implements IController {
         addBtn.setOnAction(e -> handleAdd());
         editBtn.setOnAction(e -> handleEdit());
         deleteBtn.setOnAction(e -> handleDelete());
+        btnImportExcel.setOnMouseClicked(event -> {
+            try {
+                importData();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     private void handlePriceChange() {
@@ -333,4 +342,10 @@ public class ProductController implements IController {
         selectedProduct = tblProduct.getSelectionModel().getSelectedItem();
         return selectedProduct == null;
     }
+
+    private void importData() throws IOException {
+        ExcelService.getInstance().ImportSheet("products");
+        System.out.println("hello");
+    }
+
 }
