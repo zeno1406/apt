@@ -136,6 +136,8 @@ public class CustomerModalController {
             clearAndFocus(txtAddress);
             isValid = false; 
         } else if (isValid && !validator.validateVietnameseText255(address)) {
+            System.out.println(isValid);
+            System.out.println(address.length());
             NotificationUtils.showErrorAlert("Địa chỉ không hợp lệ (tối đa 255 ký tự)", "Thông báo");
             isValid = false;
         }
@@ -155,8 +157,6 @@ public class CustomerModalController {
         return isValid;
     }
 
-
-    //done
     private void handleSave() {
         if (typeModal == 0) {
             insertCustomer();
@@ -166,7 +166,6 @@ public class CustomerModalController {
         }
     }
 
-    //done
     private void insertCustomer() {
         CustomerBUS customerBus = CustomerBUS.getInstance();
         if (isValidInput()) {
@@ -177,7 +176,6 @@ public class CustomerModalController {
             int insertResult = customerBus.insert(temp, SessionManagerService.getInstance().employeeRoleId(), SessionManagerService.getInstance().employeeLoginId());
             switch (insertResult) {
                 case 1 -> {
-                    NotificationUtils.showInfoAlert("Thêm khách hàng thành công", "Thông báo");
                     isSaved = true;
                     handleClose();
                 }
@@ -190,7 +188,6 @@ public class CustomerModalController {
         }
     }
 
-    //done
     private void updateCustomer() {
         CustomerBUS customerBus = CustomerBUS.getInstance();
         if (isValidInput()) {
@@ -202,7 +199,7 @@ public class CustomerModalController {
             switch (updateResult) {
                 case 1 -> {
                     isSaved = true;
-                    NotificationUtils.showInfoAlert("Cập nhật thông tin khách hàng thành công.", "Thông báo.");
+//                    NotificationUtils.showInfoAlert("Cập nhật thông tin khách hàng thành công.", "Thông báo.");
                     handleClose();
                 }
                 case 2 -> NotificationUtils.showErrorAlert("Có lỗi khi cập nhật thông tin khách hàng. Vui lòng thử lại", "Lỗi");
@@ -218,7 +215,6 @@ public class CustomerModalController {
         }
     }
 
-    //done
     private void handleClose() {
         if(closeBtn.getScene() != null && closeBtn.getScene().getWindow()!= null){
             Stage stage = (Stage) closeBtn.getScene().getWindow();

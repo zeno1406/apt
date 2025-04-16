@@ -5,7 +5,6 @@ import java.sql.*;
 
 public class CustomerDAL extends BaseDAL<CustomerDTO, Integer> {
     public static final CustomerDAL INSTANCE = new CustomerDAL();
-
     private CustomerDAL() {
         super(ConnectApplication.getInstance().getConnectionFactory(), "customer", "id");
     }

@@ -34,7 +34,6 @@ public class CustomerBUS extends BaseBUS <CustomerDTO, Integer> {
         return null;
     }
 
-    //done
     public int delete(Integer id, int employee_roleId, int employeeLoginId) {
         // Kiểm tra ID hợp lệ
         if (id == null || id <= 0) return 2; // Khách hàng không tồn tại
@@ -51,9 +50,8 @@ public class CustomerBUS extends BaseBUS <CustomerDTO, Integer> {
 
         //Khach hang da bi xoa hoac khong ton tai
         CustomerDTO targetCustomer = getByIdLocal(id);
-        if (targetCustomer == null) return 5;
+        if (targetCustomer == null || !targetCustomer.isStatus()) return 5;
 
-        
         // Xóa khách hàng trong database
         if (!CustomerDAL.getInstance().delete(id)) {
             return 6;
@@ -68,7 +66,6 @@ public class CustomerBUS extends BaseBUS <CustomerDTO, Integer> {
         return 1;
     }
 
-    //done
     public int insert(CustomerDTO obj, int employee_roleId, int employeeLoginId) {
         if (obj == null || employee_roleId <= 0 || !AuthorizationService.getInstance().hasPermission(employeeLoginId, employee_roleId, 4) || !isValidCustomerInput(obj)) {
             return 2;
@@ -80,8 +77,7 @@ public class CustomerBUS extends BaseBUS <CustomerDTO, Integer> {
         // image_url và date_of_birth có thể null
         obj.setStatus(true);
 
-        if (isDuplicateCustomer(-1, obj.getFirstName(), obj.getLastName(), obj.getPhone(), obj.getAddress()) ||
-                !CustomerDAL.getInstance().insert(obj)) {
+        if (isDuplicateCustomer(-1, obj.getFirstName(), obj.getLastName(), obj.getPhone(), obj.getAddress())) {
             return 3;
         }
 
@@ -127,19 +123,21 @@ public class CustomerBUS extends BaseBUS <CustomerDTO, Integer> {
     //Cap nhat cache local
     private void updateLocalCache(CustomerDTO obj) {
         for (int i = 0; i < arrLocal.size(); i++) {
-            if (Objects.equals(arrLocal.get(i).getId(), obj.getId())) {                    arrLocal.set(i, new CustomerDTO(obj));
-            break;
+            if (Objects.equals(arrLocal.get(i).getId(), obj.getId())) {
+                arrLocal.set(i, new CustomerDTO(obj));
+                break;
             }
         }  
     }
 
-    public boolean isDuplicateCustomer(int id, String firstName, String lastName, String phone, String address) {
+    public boolean isDuplicateCustomer(int id, String firstName, String lastName,String phone, String address) {
         if (firstName == null || lastName == null || phone == null || address == null) return false;
 
         for (CustomerDTO customer : arrLocal) {
             if (customer.getId() != id &&
                     customer.getFirstName().trim().equalsIgnoreCase(firstName.trim()) &&
                     customer.getLastName().trim().equalsIgnoreCase(lastName.trim()) &&
+
                     customer.getPhone().trim().equals(phone.trim()) &&
                     customer.getAddress().trim().equalsIgnoreCase(address.trim())) {
                 return true;
@@ -161,6 +159,7 @@ public class CustomerBUS extends BaseBUS <CustomerDTO, Integer> {
                 validator.validateVietnameseText255(obj.getAddress());
     }
 
+    //searchbar
     public ArrayList<CustomerDTO> filterCustomers(String searchBy, String keyword, int statusFilter) {
         ArrayList<CustomerDTO> filteredList = new ArrayList<>();
 
@@ -177,12 +176,14 @@ public class CustomerBUS extends BaseBUS <CustomerDTO, Integer> {
             String firstName = cus.getFirstName() != null ? cus.getFirstName().toLowerCase() : "";
             String lastName = cus.getLastName() != null ? cus.getLastName().toLowerCase() : "";
             String id = String.valueOf(cus.getId());
+            String phone = cus.getPhone() != null ? cus.getPhone(): "";
 
             if (!keyword.isEmpty()) {
                 switch (searchBy) {
                     case "Mã khách hàng" -> matchesSearch = id.contains(keyword);
                     case "Họ đệm" -> matchesSearch = firstName.contains(keyword);
                     case "Tên" -> matchesSearch = lastName.contains(keyword);
+                    case "Số điện thoại" -> matchesSearch = phone.contains(keyword);
                 }
             }
 

@@ -89,9 +89,7 @@ public class CustomerController implements IController {
                 "Mã khách hàng",
                 "Họ đệm",
                 "Tên",
-                "Ngày sinh",
-                "Số điện thoại",
-                "Địa chỉ"
+                "Số điện thoại"
         );
 
         //default selection
@@ -105,16 +103,22 @@ public class CustomerController implements IController {
         cbSearchBy.setOnAction(event -> handleSearchByChange());
         ckbStatusFilter.setOnAction(event -> handleStatusFilterChange());
         txtSearch.textProperty().addListener((observable, oldValue, newValue) -> handleKeywordChange());
-        refreshBtn.setOnAction(event -> resetFilters());
+        refreshBtn.setOnAction(event -> {
+            resetFilters();
+            NotificationUtils.showInfoAlert("Làm mới thành công", "Thông báo");
+        });
+
+        addBtn.setOnAction(event -> handleAddBtn());
+        editBtn.setOnAction(event -> handleEditBtn());
+        deleteBtn.setOnAction(event -> handleDeleteBtn());
     }
 
-    //done
     private void handleStatusFilterChange() {
         statusFilter = ckbStatusFilter.isSelected() ? -1 : 1;
         applyFilters();
     }
 
-    //done
+    //searchbar
     private void handleSearchByChange() {
         searchBy = cbSearchBy.getValue();
         applyFilters();
@@ -125,7 +129,6 @@ public class CustomerController implements IController {
         applyFilters();
     }
 
-    //done
     @Override
     public void applyFilters() {
         CustomerBUS customerBUS = CustomerBUS.getInstance();
@@ -134,6 +137,7 @@ public class CustomerController implements IController {
         ));
         tblCustomer.getSelectionModel().clearSelection();
     }
+    //searchbar
 
     @Override
     public void resetFilters() {
@@ -148,7 +152,6 @@ public class CustomerController implements IController {
         applyFilters();//Reset filter
     }
 
-    //done
     private SimpleStringProperty formatCell(String value) {
         return new SimpleStringProperty(value);
     }
@@ -164,8 +167,8 @@ public class CustomerController implements IController {
         if (!canDelete) functionBtns.getChildren().remove(deleteBtn);
     }
 
-    //done
     private void handleAddBtn() {
+//        System.out.println("Dang o handle add");
         CustomerModalController modalController = UiUtils.gI().openStageWithController(
                 "/GUI/CustomerModal.fxml",
                 controller -> controller.setTypeModal(0),
@@ -177,8 +180,8 @@ public class CustomerController implements IController {
         }
     }
 
-    //done
     private void handleDeleteBtn() {
+        System.out.println("Dang o handle delete");
         if (isNotSelectedCustomer()) {
             NotificationUtils.showErrorAlert("Vui lòng chọn khách hàng cần xóa", "Lỗi");
             return;
@@ -204,36 +207,35 @@ public class CustomerController implements IController {
         }
     }
 
-        editBtn.setVisible(canEdit);
-        editBtn.setManaged(canEdit);
     private void handleEditBtn() {
-        CustomerDTO selectedCustomer = tblCustomer.getSelectionModel().getSelectedItem();
-        if (selectedCustomer == null) {
-            NotificationUtils.showErrorAlert("Vui lòng chọn khách hàng cần sửa", "Lỗi");
-            return;
-        }
-
-        CustomerModalController modalController = UiUtils.gI().openStageWithController(
-                "/GUI/CustomerModal.fxml",
-                controller -> {
-                    controller.setTypeModal(1);
-                    controller.setCustomer(selectedCustomer);
-                },
-                "Sửa khách hàng"
-        );
-        if (modalController != null && modalController.isSaved()) {
-            NotificationUtils.showInfoAlert("Sửa khách hàng thành công", "Thông báo");
-            applyFilters();
-        }
+//        CustomerDTO selectedCustomer = tblCustomer.getSelectionModel().getSelectedItem();
+//        if (selectedCustomer == null) {
+//            NotificationUtils.showErrorAlert("Vui lòng chọn khách hàng cần sửa", "Lỗi");
+//            return;
+//        }
+//
+//        CustomerModalController modalController = UiUtils.gI().openStageWithController(
+//                "/GUI/CustomerModal.fxml",
+//                controller -> {
+//                    controller.setTypeModal(1);
+//                    controller.setCustomer(selectedCustomer);
+//                },
+//                "Sửa khách hàng"
+//        );
+//        if (modalController != null && modalController.isSaved()) {
+//            NotificationUtils.showInfoAlert("Sửa khách hàng thành công", "Thông báo");
+//            applyFilters();
+//        }
     }
 
     //done
     private void handleExportExcel() throws IOException {
-        try {
-            ExcelService.getInstance().exportToFileExcel("customer");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        System.out.println("Dang o handle export excel");
+//        try {
+//            ExcelService.getInstance().exportToFileExcel("customer");
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
 
     //done
