@@ -127,8 +127,8 @@ CREATE TABLE `account` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 INSERT INTO `account` (`employee_id`, `username`, `password`) VALUES
-(1, 'huyhoang119763', '$2a$12$Yqnmw3n0OHa7KGtMA3FWgOHl1z.5Pl8MEqYidf6TTIMSsIcX77zsi'),
-(2, 'thanhlong', '$2a$12$Yqnmw3n0OHa7KGtMA3FWgOHl1z.5Pl8MEqYidf6TTIMSsIcX77zsi');
+(1, 'huyhoang119763', '$2a$12$BltP6IjOrQCIZ7g1ezMsDu9wyVU6tO5150AnbKdkkYHJYL1t3YUV6'),
+(2, 'thanhlong', '$2a$12$BltP6IjOrQCIZ7g1ezMsDu9wyVU6tO5150AnbKdkkYHJYL1t3YUV6');
 
 CREATE TABLE `customer` (
   `id` INT NOT NULL AUTO_INCREMENT,
