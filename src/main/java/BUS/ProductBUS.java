@@ -9,7 +9,9 @@ import UTILS.ValidationUtils;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 public class ProductBUS  extends BaseBUS <ProductDTO, String>{
     private static final ProductBUS INSTANCE = new ProductBUS();
@@ -73,6 +75,12 @@ public class ProductBUS  extends BaseBUS <ProductDTO, String>{
         }
     }
 
+    private String nextProductId(String currentId) {
+        int temp = Integer.parseInt(currentId.substring(2)) + 1;
+        return String.format("SP%05d", temp);
+    }
+
+
     public int insert(ProductDTO obj, int employee_roleId, int employeeLoginId) {
         if (obj == null || obj.getCategoryId() <= 0 || employee_roleId <= 0 || !isValidProductInput(obj)) {
             return 2;
@@ -97,6 +105,54 @@ public class ProductBUS  extends BaseBUS <ProductDTO, String>{
         arrLocal.add(new ProductDTO(obj));
         return 1;
     }
+
+    public int insertListProductExcel(ArrayList<ProductDTO> listProducts) {
+        if (listProducts == null || listProducts.isEmpty()) {
+            return 2; // Danh sách rỗng
+        }
+
+        AvailableUtils ava = AvailableUtils.getInstance();
+        Set<String> excelProductNames = new HashSet<>();
+        ValidationUtils validate = ValidationUtils.getInstance();
+        String id = autoId();
+
+        // Duyệt qua từng sản phẩm trong danh sách
+        for (ProductDTO p : listProducts) {
+            if (!isValidProductInput(p)) return 3; // Kiểm tra tính hợp lệ của sản phẩm
+
+            // Kiểm tra tên trùng trong danh sách Excel
+            String normalizedName = validate.normalizeWhiteSpace(p.getName());
+            if (excelProductNames.contains(normalizedName)) {
+                p.setName(p.getName() + " (" + id + ")"); // Nếu trùng, thêm ID vào tên
+            }
+            excelProductNames.add(normalizedName); // Thêm vào danh sách đã kiểm tra tên
+
+            // Kiểm tra danh mục hợp lệ
+            if (!ava.isValidCategory(p.getCategoryId())) return 4;
+
+            // Kiểm tra trùng tên trong hệ thống
+            if (isDuplicateProductName("", p.getName())) {
+                p.setName(p.getName() + " (" + id + ")"); // Thêm ID vào tên sản phẩm nếu trùng
+            }
+
+            // Thiết lập các giá trị còn lại cho sản phẩm
+            p.setId(id); // Tạo ID mới
+            p.setDescription(validate.normalizeWhiteSpace(p.getDescription()));
+            p.setStockQuantity(0);
+            p.setSellingPrice(new BigDecimal(0));
+            id = nextProductId(id); // Tạo ID mới cho sản phẩm tiếp theo
+        }
+
+        // Lưu sản phẩm vào cơ sở dữ liệu
+        if (!ProductDAL.getInstance().insertListProductExcel(listProducts)) return 7;
+
+        // Thêm vào danh sách cục bộ (arrLocal)
+        arrLocal.addAll(new ArrayList<>(listProducts));
+
+        return 1; // Thành công
+    }
+
+
 
     public int update(ProductDTO obj, int employee_roleId, int employeeLoginId) {
         if (obj == null || obj.getId().isEmpty() || employee_roleId <= 0 || obj.getCategoryId() <= 0) {

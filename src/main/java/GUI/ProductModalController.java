@@ -90,11 +90,11 @@ public class ProductModalController {
         if (type != 0 && type != 1) handleClose();
         typeModal = type;
         if (typeModal == 0) {
-            modalName.setText("Thêm tài khoản");
+            modalName.setText("Thêm sản phẩm");
             txtProductId.setText(ProductBUS.getInstance().autoId());
         } else {
             if (product == null) handleClose();
-            modalName.setText("Sửa tài khoản");
+            modalName.setText("Sửa sản phẩm");
         }
     }
 

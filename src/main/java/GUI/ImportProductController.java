@@ -20,20 +20,13 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
-import javafx.stage.Stage;
-import org.jboss.jandex.Main;
 
 import java.io.File;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
 
 public class ImportProductController {
     @FXML
@@ -406,6 +399,7 @@ public void addConstraintRow(GridPane gridPane, ArrayList<ProductDTO> products, 
                 temp.setQuantity(temp.getQuantity() + 1);
                 BigDecimal total = temp.getPrice().multiply(BigDecimal.valueOf(temp.getQuantity()));
                 temp.setTotalPrice(total);
+                loadCaculatedTotalImportPrice();
                 loadTable();
                 return;
             }
