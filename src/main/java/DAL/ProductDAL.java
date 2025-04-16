@@ -1,4 +1,5 @@
 package DAL;
+
 import DTO.ProductDTO;
 import java.sql.*;
 
@@ -63,5 +64,20 @@ public class ProductDAL extends BaseDAL<ProductDTO, String> {
     @Override
     protected boolean hasSoftDelete() {
         return true;
+    }
+
+    public boolean updateProductQuantity(ProductDTO obj) {
+        String query = "UPDATE product SET stock_quantity = ? WHERE id = ?";
+
+        try (Connection connection = connectionFactory.newConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setInt(1, obj.getStockQuantity());
+
+            return statement.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.err.println("Error updating stock quantity product: " + e.getMessage());
+            return false;
+        }
     }
 }
