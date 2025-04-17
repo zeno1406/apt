@@ -28,7 +28,7 @@
                <children>
                   <Pane fx:id="pExitBtnContainer" layoutX="1034.0" prefHeight="50.0" prefWidth="80.0" styleClass="pExitBtnContainer">
                      <children>
-                        <Button fx:id="btnExitSellingForm" alignment="CENTER" mnemonicParsing="false" onMouseClicked="#onMouseClickedExitImportingForm" prefHeight="50.0" prefWidth="80.0" styleClass="btnExitForm" text="X" textFill="RED">
+                        <Button fx:id="btnExitSellingForm" alignment="CENTER" mnemonicParsing="false" prefHeight="50.0" prefWidth="80.0" styleClass="btnExitForm" text="X" textFill="RED">
                            <font>
                               <Font name="System Bold" size="16.0" />
                            </font>
@@ -124,43 +124,47 @@
                                           <Pane fx:id="pFiledInvoiceID" prefHeight="200.0" prefWidth="200.0">
                                              <children>
                                                 <Label layoutX="14.0" layoutY="14.0" styleClass="ocean-color" text="Mã HĐ:" />
-                                                <Label fx:id="lbFieldInvoiceID" layoutX="59.0" layoutY="13.0" text="Label" />
+                                                <TextField fx:id="txtFieldInvoiceID" layoutX="57.0" layoutY="15.0" prefHeight="18.0" prefWidth="88.0" styleClass="txtSellingProductNameSearch" />
                                              </children>
                                           </Pane>
                                           <Pane fx:id="pFiledInvoiceDate" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1">
                                              <children>
                                                 <Label layoutX="14.0" layoutY="14.0" styleClass="ocean-color" text="Ngày:" />
-                                                <Label fx:id="lbFieldInvoiceDate" layoutX="65.0" layoutY="14.0" text="Label" />
+                                                <TextField fx:id="txtFieldInvoiceDate" layoutX="63.0" layoutY="15.0" prefHeight="18.0" prefWidth="88.0" styleClass="txtSellingProductNameSearch" />
                                              </children>
                                           </Pane>
                                           <Pane fx:id="pFieldInvoiceEMPID" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
                                              <children>
                                                 <Label layoutX="14.0" layoutY="13.0" styleClass="ocean-color" text="Mã NV:" />
-                                                <Label fx:id="lbFieldInvoiceEMPID" layoutX="59.0" layoutY="12.0" text="Label" />
+                                                <TextField fx:id="txtFieldEmpID" layoutX="57.0" layoutY="13.0" prefHeight="18.0" prefWidth="88.0" styleClass="txtSellingProductNameSearch" />
                                              </children>
                                           </Pane>
                                           <Pane fx:id="pFieldInvoiceCUSID" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                              <children>
                                                 <Label layoutX="14.0" layoutY="13.0" styleClass="ocean-color" text="Mã KH:" />
-                                                <Label fx:id="lbFieldInvoiceCUSID" layoutX="65.0" layoutY="12.0" text="Label" />
-                                                <Button fx:id="btnGetCusInfo" alignment="TOP_CENTER" contentDisplay="CENTER" layoutX="104.0" layoutY="7.0" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" styleClass="btnGetCusInfo" text="..." textAlignment="JUSTIFY" wrapText="true">
-                                                   <cursor>
-                                                      <Cursor fx:constant="HAND" />
-                                                   </cursor>
-                                                </Button>
-                                                <Button fx:id="btnAddCustomer" alignment="CENTER" layoutX="138.0" layoutY="7.0" mnemonicParsing="false" styleClass="btnAddCustomer" text="+" />
+                                                <HBox layoutX="128.0" layoutY="8.0" spacing="6.0">
+                                                   <children>
+                                                      <Button fx:id="btnGetCusInfo" alignment="TOP_CENTER" contentDisplay="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" prefWidth="31.0" styleClass="btnGetCusInfo" text="..." textAlignment="JUSTIFY" wrapText="true">
+                                                         <cursor>
+                                                            <Cursor fx:constant="HAND" />
+                                                         </cursor>
+                                                      </Button>
+                                                      <Button fx:id="btnAddCustomer" alignment="CENTER" ellipsisString="+" mnemonicParsing="false" styleClass="btnAddCustomer" text="+" textOverrun="CLIP" />
+                                                   </children>
+                                                </HBox>
+                                                <TextField fx:id="txtFieldCusID" layoutX="63.0" layoutY="11.0" prefHeight="16.0" prefWidth="60.0" styleClass="txtSellingProductNameSearch" />
                                              </children>
                                           </Pane>
                                           <Pane fx:id="pFieldInvoiceEMPName" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="2">
                                              <children>
                                                 <Label layoutX="14.0" layoutY="13.0" styleClass="ocean-color" text="Tên NV:" />
-                                                <Label fx:id="lbFieldInvoiceEMPName" layoutX="59.0" layoutY="13.0" text="Label" />
+                                                <TextField fx:id="txtFieldEmpName" layoutX="57.0" layoutY="11.0" prefHeight="18.0" prefWidth="88.0" styleClass="txtSellingProductNameSearch" />
                                              </children>
                                           </Pane>
                                           <Pane fx:id="pFieldInvoiceCUSName" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
                                              <children>
                                                 <Label layoutX="14.0" layoutY="13.0" styleClass="ocean-color" text="Tên KH:" />
-                                                <Label fx:id="lbFieldInvoiceCUSName" layoutX="65.0" layoutY="11.0" text="Label" />
+                                                <TextField fx:id="txtFieldCusName" layoutX="63.0" layoutY="13.0" prefHeight="18.0" prefWidth="88.0" styleClass="txtSellingProductNameSearch" />
                                              </children>
                                           </Pane>
                                        </children>

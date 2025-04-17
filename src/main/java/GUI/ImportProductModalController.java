@@ -1,5 +1,6 @@
 package GUI;
 
+import BUS.ProductBUS;
 import DTO.ProductDTO;
 import DTO.RoleDTO;
 import DTO.TempDetailImportDTO;
@@ -11,6 +12,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import lombok.Getter;
 
@@ -27,6 +30,10 @@ public class ImportProductModalController {
     private TextField txtSellingPrice;
     @FXML
     private Button saveBtn,closeBtn;
+    @FXML
+    private HBox hbInputPrice, hbInputSellingPrice;
+    @FXML
+    private AnchorPane acRootInput;
     @Getter
     private boolean isSaved;
     private int typeModal;
@@ -42,14 +49,32 @@ public class ImportProductModalController {
         closeBtn.setOnAction(e -> handleClose());
     }
 
+//   add handle for selling here
     public void setTypeModal(int type) {
-        if (type != 0 && type != 1) handleClose();
+        if (type != 0 && type != 1 && type !=2 && type !=3) handleClose();
         typeModal = type;
         if (typeModal == 0) {
             modalName.setText("Thêm chi tiết phiếu nhập");
-        } else {
+        } else if (typeModal == 1){
             if (tempDetailImport == null) handleClose();
             modalName.setText("Sửa chi tiết phiếu nhập");
+        }
+        else if (typeModal == 2) {
+            modalName.setText("Thêm sản phẩm");
+            hbInputPrice.setVisible(false);
+            hbInputSellingPrice.setVisible(false);
+            acRootInput.setMaxHeight(acRootInput.getHeight() - hbInputPrice.getHeight() - hbInputSellingPrice.getHeight());
+            txtPrice.setText(ProductBUS.getInstance().getByIdLocal(this.tempDetailImport.getProductId()).getSellingPrice().toString());
+            txtSellingPrice.setText(ProductBUS.getInstance().getByIdLocal(this.tempDetailImport.getProductId()).getSellingPrice().toString());
+        }
+        else {
+            if (tempDetailImport == null) handleClose();
+            modalName.setText("sửa số lượng sản phẩm");
+            hbInputPrice.setVisible(false);
+            hbInputSellingPrice.setVisible(false);
+            acRootInput.setMaxHeight(acRootInput.getHeight() - hbInputPrice.getHeight() - hbInputSellingPrice.getHeight());
+            txtPrice.setText(ProductBUS.getInstance().getByIdLocal(this.tempDetailImport.getProductId()).getSellingPrice().toString());
+            txtSellingPrice.setText(ProductBUS.getInstance().getByIdLocal(this.tempDetailImport.getProductId()).getSellingPrice().toString());
         }
     }
 
