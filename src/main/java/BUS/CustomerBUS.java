@@ -39,7 +39,7 @@ public class CustomerBUS extends BaseBUS <CustomerDTO, Integer> {
         if (id == null || id <= 0) return 2; // Khách hàng không tồn tại
     
         // Kiểm tra quyền xóa khách hàng (permission ID = 5)
-        if (employee_roleId <= 0 || !AuthorizationService.getInstance().hasPermission(employeeLoginId, employee_roleId, 5)) {
+        if (employee_roleId <= 0 || !AuthorizationService.getInstance().hasPermission(employee_roleId, employeeLoginId, 5)) {
             return 4; // Không có quyền xóa
         }
 
