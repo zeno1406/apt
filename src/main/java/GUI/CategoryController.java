@@ -1,9 +1,7 @@
 package GUI;
 
 import BUS.CategoryBUS;
-import BUS.CustomerBUS;
 import DTO.CategoryDTO;
-import DTO.CustomerDTO;
 import INTERFACE.IController;
 import SERVICE.SessionManagerService;
 import UTILS.NotificationUtils;
@@ -69,9 +67,7 @@ public class CategoryController implements IController {
     }
 
     private void loadComboBox() {
-        cbSearchBy.getItems().addAll(
-                "Mã thể loại",
-                "Tên thể loại");
+        cbSearchBy.getItems().addAll("Mã thể loại", "Tên thể loại");
 
         //default selection
         cbSearchBy.getSelectionModel().selectFirst();
@@ -115,9 +111,9 @@ public class CategoryController implements IController {
 
     @Override
     public void applyFilters() {
-        CategoryBUS cateBUS = CategoryBUS.getInstance();
+        CategoryBUS categoryBUS = CategoryBUS.getInstance();
         tblCategory.setItems(FXCollections.observableArrayList(
-                cateBUS.filterCategories(searchBy, keyword, statusFilter)
+                categoryBUS.filterCategories(searchBy, keyword, statusFilter)
         ));
         tblCategory.getSelectionModel().clearSelection();
     }
@@ -154,7 +150,7 @@ public class CategoryController implements IController {
         );
         if (modalController != null && modalController.isSaved()) {
             NotificationUtils.showInfoAlert("Thêm thể loại thành công", "Thông báo");
-            applyFilters();
+            resetFilters();
         }
     }
 
@@ -167,16 +163,21 @@ public class CategoryController implements IController {
             return;
         }
 
+        if(selectedCategory.getId() == 1)
+        {
+            NotificationUtils.showErrorAlert("Không thể xóa thể loại gốc!", "Thông báo");
+            return;
+        }
+
         int deleteResult = CategoryBUS.getInstance().delete(
-                                                            selectedCategory.getId(),
-                                                            SessionManagerService.getInstance().employeeRoleId(),
-                                                            SessionManagerService.getInstance().employeeLoginId());
+                selectedCategory.getId(),
+                SessionManagerService.getInstance().employeeRoleId(),
+                SessionManagerService.getInstance().employeeLoginId());
 
         switch (deleteResult) {
             case 1 -> {
-                loadTable();
-                applyFilters();
                 NotificationUtils.showInfoAlert("Xóa thể loại thành công!", "Thông báo");
+                resetFilters();
             }
             case 2  -> NotificationUtils.showErrorAlert("Lỗi xoá thể loại không thành công. Vui lòng thử lại", "Thông báo");
             case 4  -> NotificationUtils.showErrorAlert("Không có quyền xóa thể loại.", "Thông báo");
