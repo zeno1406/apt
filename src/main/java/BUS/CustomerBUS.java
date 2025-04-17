@@ -67,12 +67,12 @@ public class CustomerBUS extends BaseBUS <CustomerDTO, Integer> {
     }
 
     public int insert(CustomerDTO obj, int employee_roleId, int employeeLoginId) {
-        if (obj == null || employee_roleId <= 0 || !AuthorizationService.getInstance().hasPermission(employeeLoginId, employee_roleId, 4) || !isValidCustomerInput(obj)) {
+        if (obj == null || employee_roleId <= 0 || !AuthorizationService.getInstance().hasPermission(employee_roleId, employeeLoginId, 4) || !isValidCustomerInput(obj)) {
             return 2;
         }
 
         if (!AuthorizationService.getInstance().hasPermission
-        (employeeLoginId, employee_roleId, 4)) return 4;
+        (employee_roleId, employeeLoginId, 4)) return 4;
 
         // image_url và date_of_birth có thể null
         obj.setStatus(true);
@@ -92,7 +92,7 @@ public class CustomerBUS extends BaseBUS <CustomerDTO, Integer> {
 
     public int update(CustomerDTO obj, int employee_roleId, int employeeLoginId) {
         if (obj == null || obj.getId() <= 0 || employee_roleId <= 0 ||
-                !AuthorizationService.getInstance().hasPermission(employeeLoginId, employee_roleId, 6) || !isValidCustomerInput(obj)) {
+                !AuthorizationService.getInstance().hasPermission(employee_roleId, employeeLoginId, 6) || !isValidCustomerInput(obj)) {
             return 2;
         }
 

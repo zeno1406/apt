@@ -1,75 +1,68 @@
 package GUI;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 import BUS.CustomerBUS;
 import DTO.CustomerDTO;
 import SERVICE.SessionManagerService;
 import UTILS.NotificationUtils;
-import UTILS.UiUtils;
 import UTILS.ValidationUtils;
-import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.fxml.FXML;
-import javafx.scene.Node;
-import javafx.scene.control.*;
-import javafx.scene.layout.HBox;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import lombok.Getter;
-import net.bytebuddy.asm.Advice.Local;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.HashMap;
 
 public class CustomerModalController {
     // FXML Controls
-    @FXML private TextField txtCustomerId;
-    @FXML private TextField txtFirstName;
-    @FXML private TextField txtLastName;
-    @FXML private DatePicker dateOfBirth;
-    @FXML private TextField txtPhone;
-    @FXML private TextField txtAddress;
-    @FXML private Button saveBtn,closeBtn;
-    @FXML private Label modalName;
-    @FXML private ComboBox<String> cbSelectStatus; 
+    @FXML public Label modalName;
+    @FXML public TextField txtCustomerId;
+    @FXML public TextField txtFirstName;
+    @FXML public TextField txtLastName;
+    @FXML public DatePicker dateOfBirth;
+    @FXML public TextField txtPhone;
+    @FXML public TextField txtAddress;
+    @FXML public Button closeBtn;
+    @FXML public Button saveBtn;
+    @FXML public ComboBox<String> cbSelectStatus; 
 
     // State variables
-    @Getter private boolean isSaved = false;
+    @Getter
+    private boolean isSaved;
     private int typeModal; // 0: Add, 1: Edit
     private CustomerDTO customer;
 
-    //done
     @FXML
     public void initialize() {
         loadComboBox();
         setupListeners();
     }
 
-    //done
     private void setupListeners() {
         saveBtn.setOnAction(e -> handleSave());
         closeBtn.setOnAction(e -> handleClose());
     }
 
-    //done
     private void loadComboBox() {
         cbSelectStatus.getItems().addAll("Hoạt động", "Ngưng hoạt động");
         cbSelectStatus.getSelectionModel().selectFirst();
     }
 
-    //done
     public void setTypeModal(int type) {
         if (type != 0 && type != 1) handleClose();
         typeModal = type;
         if (typeModal == 0) {
             modalName.setText("Thêm khách hàng");
-            txtCustomerId.setText(String.valueOf(CustomerBUS.getInstance().getAllLocal().size() + 1));
         } else {
             if (customer == null) handleClose();
             modalName.setText("Sửa khách hàng");
         }
     }
 
-    //done
     public void setCustomer(CustomerDTO customer) {
         this.customer = customer;
         if (customer != null) {
@@ -91,9 +84,8 @@ public class CustomerModalController {
         }
     }
 
-    //done
     private boolean isValidInput() {
-        boolean isValid = true;        
+        boolean isValid = true;
         String firstName = txtFirstName.getText().trim();
         String lastName = txtLastName.getText().trim();
         String phone = txtPhone.getText().trim();
@@ -124,7 +116,7 @@ public class CustomerModalController {
         if (isValid && phone.isEmpty()) {
             NotificationUtils.showErrorAlert("Số điện thoại không được để trống.", "Thông báo");
             clearAndFocus(txtPhone);
-            isValid = false; 
+            isValid = false;
         } else if(isValid && !validator.validateVietnamesePhoneNumber(phone)) {
             NotificationUtils.showErrorAlert("Số điện thoại không hợp lệ(Số 0 đứng đầu và theo sau 9 ký tự)", "Thông báo");
             clearAndFocus(txtPhone);
@@ -134,10 +126,8 @@ public class CustomerModalController {
         if (isValid && address.isEmpty()) {
             NotificationUtils.showErrorAlert("Địa chỉ không được để trống.", "Thông báo");
             clearAndFocus(txtAddress);
-            isValid = false; 
+            isValid = false;
         } else if (isValid && !validator.validateVietnameseText255(address)) {
-            System.out.println(isValid);
-            System.out.println(address.length());
             NotificationUtils.showErrorAlert("Địa chỉ không hợp lệ (tối đa 255 ký tự)", "Thông báo");
             isValid = false;
         }
@@ -150,7 +140,7 @@ public class CustomerModalController {
                 if(date.isAfter(today)){
                     NotificationUtils.showErrorAlert("Ngày sinh không hợp lệ (ngày sinh không được lớn hơn ngày hiện tại)", "Thông báo");
                     isValid = false;
-                }   
+                }
             }
         }
 
@@ -160,7 +150,6 @@ public class CustomerModalController {
     private void handleSave() {
         if (typeModal == 0) {
             insertCustomer();
-
         } else {
             updateCustomer();
         }
@@ -169,7 +158,8 @@ public class CustomerModalController {
     private void insertCustomer() {
         CustomerBUS customerBus = CustomerBUS.getInstance();
         if (isValidInput()) {
-            CustomerDTO temp = new CustomerDTO(Integer.parseInt(txtCustomerId.getText().trim()), txtFirstName.getText().trim(),
+            // Create CustomerDTO with ID 0, which will be replaced by the generated ID
+            CustomerDTO temp = new CustomerDTO(-1, txtFirstName.getText().trim(),
                     txtLastName.getText().trim(), txtPhone.getText().trim(), txtAddress.getText().trim(),
                     dateOfBirth.getValue() != null ? dateOfBirth.getValue().atStartOfDay() : null,
                     cbSelectStatus.getValue().equals("Hoạt động"));
@@ -199,16 +189,12 @@ public class CustomerModalController {
             switch (updateResult) {
                 case 1 -> {
                     isSaved = true;
-//                    NotificationUtils.showInfoAlert("Cập nhật thông tin khách hàng thành công.", "Thông báo.");
                     handleClose();
                 }
                 case 2 -> NotificationUtils.showErrorAlert("Có lỗi khi cập nhật thông tin khách hàng. Vui lòng thử lại", "Lỗi");
-                case 3 ->
-                        NotificationUtils.showErrorAlert("Thông tin khách hàng bị trùng lặp.", "Lỗi");
+                case 3 -> NotificationUtils.showErrorAlert("Thông tin khách hàng bị trùng lặp.", "Lỗi");
                 case 4 -> NotificationUtils.showErrorAlert("Không có quyền cập nhật thông tin khách hàng.", "Thông báo.");
-                case 5 -> {
-                    NotificationUtils.showErrorAlert("Không thể cập nhật thông tin khách hàng. Vui lòng thử lại.", "Lỗi");
-                }
+                case 5 -> NotificationUtils.showErrorAlert("Không thể cập nhật thông tin khách hàng. Vui lòng thử lại.", "Lỗi");
                 case 6 -> NotificationUtils.showErrorAlert("Đầu vào không hợp lệ. Vui lòng thử lại.", "Thông báo");
                 default -> NotificationUtils.showErrorAlert("Lỗi không xác định. Vui lòng thử lại.", "Lỗi");
             }
@@ -216,14 +202,13 @@ public class CustomerModalController {
     }
 
     private void handleClose() {
-        if(closeBtn.getScene() != null && closeBtn.getScene().getWindow()!= null){
+        if (closeBtn.getScene() != null && closeBtn.getScene().getWindow() != null) {
             Stage stage = (Stage) closeBtn.getScene().getWindow();
             stage.close();
         }
     }
 
-    //done
-    private void clearAndFocus(TextField textField) {
-        textField.requestFocus();
+    private void clearAndFocus(TextField field) {
+        field.requestFocus();
     }
 }

@@ -208,29 +208,29 @@ public class CustomerController implements IController {
     }
 
     private void handleEditBtn() {
-//        CustomerDTO selectedCustomer = tblCustomer.getSelectionModel().getSelectedItem();
-//        if (selectedCustomer == null) {
-//            NotificationUtils.showErrorAlert("Vui lòng chọn khách hàng cần sửa", "Lỗi");
-//            return;
-//        }
-//
-//        CustomerModalController modalController = UiUtils.gI().openStageWithController(
-//                "/GUI/CustomerModal.fxml",
-//                controller -> {
-//                    controller.setTypeModal(1);
-//                    controller.setCustomer(selectedCustomer);
-//                },
-//                "Sửa khách hàng"
-//        );
-//        if (modalController != null && modalController.isSaved()) {
-//            NotificationUtils.showInfoAlert("Sửa khách hàng thành công", "Thông báo");
-//            applyFilters();
-//        }
+        CustomerDTO selectedCustomer = tblCustomer.getSelectionModel().getSelectedItem();
+        if (selectedCustomer == null) {
+            NotificationUtils.showErrorAlert("Vui lòng chọn khách hàng cần sửa", "Lỗi");
+            return;
+        }
+
+        CustomerModalController modalController = UiUtils.gI().openStageWithController(
+                "/GUI/CustomerModal.fxml",
+                controller -> {
+                    controller.setTypeModal(1);
+                    controller.setCustomer(selectedCustomer);
+                },
+                "Sửa khách hàng"
+        );
+        if (modalController != null && modalController.isSaved()) {
+            NotificationUtils.showInfoAlert("Sửa khách hàng thành công", "Thông báo");
+            applyFilters();
+        }
     }
 
     //done
     private void handleExportExcel() throws IOException {
-        System.out.println("Dang o handle export excel");
+//        System.out.println("Dang o handle export excel");
 //        try {
 //            ExcelService.getInstance().exportToFileExcel("customer");
 //        } catch (IOException e) {
