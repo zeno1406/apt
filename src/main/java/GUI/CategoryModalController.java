@@ -105,10 +105,7 @@ public class CategoryModalController {
     private void insertCategory() {
         CategoryBUS categoryBus = CategoryBUS.getInstance();
         if (isValidInput()) {
-            CategoryDTO temp = new CategoryDTO(
-                    Integer.parseInt(txtCategoryId.getText().trim()),
-                    txtCategoryName.getText().trim(),
-                    cbSelectStatus.getValue().equals("Hoạt động"));
+            CategoryDTO temp = new CategoryDTO(-1, txtCategoryName.getText().trim(), cbSelectStatus.getValue().equals("Hoạt động"));
 
             int insertResult = categoryBus.insert(temp, SessionManagerService.getInstance().employeeRoleId(), SessionManagerService.getInstance().employeeLoginId());
             switch (insertResult) {

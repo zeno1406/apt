@@ -106,9 +106,6 @@ public class CategoryController implements IController {
         applyFilters();
     }
 
-
-
-
     @Override
     public void applyFilters() {
         CategoryBUS categoryBUS = CategoryBUS.getInstance();
