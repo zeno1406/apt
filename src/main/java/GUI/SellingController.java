@@ -1,11 +1,7 @@
 package GUI;
 
-import BUS.EmployeeBUS;
-import BUS.ImportBUS;
-import BUS.ProductBUS;
-import DTO.CategoryDTO;
-import DTO.ProductDTO;
-import DTO.TempDetailImportDTO;
+import BUS.*;
+import DTO.*;
 import SERVICE.SessionManagerService;
 import UTILS.NotificationUtils;
 import UTILS.UiUtils;
@@ -26,13 +22,17 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.VBox;
+import jdk.jfr.Category;
 
+import javax.persistence.Table;
 import javax.swing.*;
 import java.io.File;
+import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.stream.Stream;
 
 public class SellingController {
     @FXML
@@ -44,7 +44,7 @@ public class SellingController {
     @FXML
     private GridPane gpShowProductWrapper;
     @FXML
-    private ComboBox<CategoryDTO> cbxListProductFilter;
+    private ComboBox<String> cbxListProductFilter;
     @FXML
     private TableView<TempDetailImportDTO> tbvDetailInvoiceProduct;
     @FXML
@@ -65,12 +65,15 @@ public class SellingController {
     @FXML
     public void initialize()
     {
-        if (ImportBUS.getInstance().isLocalEmpty()) ImportBUS.getInstance().loadLocal();
+        if (CategoryBUS.getInstance().isLocalEmpty()) CategoryBUS.getInstance().loadLocal();
         if (ProductBUS.getInstance().isLocalEmpty()) ProductBUS.getInstance().loadLocal();
+        if (InvoiceBUS.getInstance().isLocalEmpty()) InvoiceBUS.getInstance().loadLocal();
+        if (DetailInvoiceBUS.getInstance().isLocalEmpty()) DetailInvoiceBUS.getInstance().loadLocal();
         arrTempDetailImport.clear();
         loadProductWrapper();
         changeLabelContent();
         setOnMouseClicked();
+        setListFilterForSearch(cbxListProductFilter, filterSearchProduct());
     }
 
     // Set click Event
@@ -78,14 +81,11 @@ public class SellingController {
         btnExitSellingForm.setOnMouseClicked(event -> onMouseClickedExitSellingForm());
         btnSearchProduct.setOnMouseClicked(event -> onMousedClickSearchProduct());
         btnGetCusInfo.setOnMouseClicked(event -> onMouseClickedShowCustomerContainer());
-//        btnImportListProductEdit.setOnMouseClicked(e -> onMouseClickedEdit());
         btnInvoiceListProductRemove.setOnMouseClicked(e -> onMouseClickedRemove());
         btnInvoiceListProductClear.setOnMouseClicked(e -> onMouseClickedClear());
         btnInvoiceListProductEdit.setOnMouseClicked(event -> onMouseClickedEdit());
-//        btnClearProduct.setOnMouseClicked(e -> {
-//            loadProductWrapper();
-//            txtSellingProductNameSearch.setText("");
-//        });
+        cbxListProductFilter.setOnAction(event -> setFilterProducts(selectedFilter()));
+        btnSubmitIInvoice.setOnMouseClicked(event -> onMouseClickedSubmitInvoice());
     }
 
     // close
@@ -95,8 +95,15 @@ public class SellingController {
     }
 
     private void loadProductWrapper() {
+
         clearGrid(gpShowProductWrapper);
-        addConstraintRow(gpShowProductWrapper, ProductBUS.getInstance().getAllLocal(), 80.0);
+        addConstraintRow(gpShowProductWrapper, ProductBUS.getInstance().getProductWithValidQuantity(), 80.0);
+        addEventClickForProduct(tbvDetailInvoiceProduct, gpShowProductWrapper);
+    }
+
+    private void loadProductWrapper(ArrayList<ProductDTO> list) {
+        clearGrid(gpShowProductWrapper);
+        addConstraintRow(gpShowProductWrapper, list, 80.0);
         addEventClickForProduct(tbvDetailInvoiceProduct, gpShowProductWrapper);
     }
 
@@ -117,8 +124,6 @@ public class SellingController {
         tbListInvoiceProductQuantity.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getQuantity())));
         tbListInvoiceProductPrice.setCellValueFactory(cellData ->
                 new SimpleStringProperty(validationUtils.formatCurrency(cellData.getValue().getPrice())));
-//        tlb_col_sellingPrice.setCellValueFactory(cellData ->
-//                new SimpleStringProperty(validationUtils.formatCurrency(cellData.getValue().getSellingPrice())));
         tbListInvoiceProductTotalPrice.setCellValueFactory(cellData ->
                 new SimpleStringProperty(validationUtils.formatCurrency(cellData.getValue().getTotalPrice())));
         tbvDetailInvoiceProduct.setItems(FXCollections.observableArrayList(arrTempDetailImport));
@@ -127,7 +132,6 @@ public class SellingController {
         UiUtils.gI().addTooltipToColumn(tbListInvoiceProductName, 10);
         UiUtils.gI().addTooltipToColumn(tbListInvoiceProductQuantity, 10);
         UiUtils.gI().addTooltipToColumn(tbListInvoiceProductPrice, 10);
-//        UiUtils.gI().addTooltipToColumn(tlb_col_sellingPrice, 10);
         UiUtils.gI().addTooltipToColumn(tbListInvoiceProductTotalPrice, 10);
     }
 
@@ -150,11 +154,11 @@ public class SellingController {
                 "Danh sách khách hàng"
         );
 
-//        if (modalController != null && modalController.isSaved()) {
-//            txtSupplierId.setText(String.valueOf(modalController.getSelectedSupplier().getId()));
-//            txtSupplierName.setText(modalController.getSelectedSupplier().getName());
-//            NotificationUtils.showInfoAlert("Chọn nhà cung cấp thành công.", "Thông báo");
-//        }
+        if (modalController != null && modalController.isSaved()) {
+            txtFieldCusID.setText(String.valueOf(modalController.getSelectedCustomer().getId()));
+            txtFieldCusName.setText(modalController.getSelectedCustomer().getFirstName() + " " + modalController.getSelectedCustomer().getLastName());
+            NotificationUtils.showInfoAlert("Chọn khách hàng thành công.", "Thông báo");
+        }
     }
 
 
@@ -235,7 +239,11 @@ public class SellingController {
         }
     }
 
-    // add container
+    // add / clear container
+    public void clearProductGrid(GridPane gridPane) {
+        if (!gridPane.getChildren().isEmpty())
+            gridPane.getChildren().clear();
+    }
     public void addProductToGrid(GridPane gridPane, int row, int col, Image image, String name, int quantity, BigDecimal price, String id) {
         // ImageView
         ImageView imageView = new ImageView(image);
@@ -414,5 +422,86 @@ public class SellingController {
     private boolean isNotSelectedTempDetailImport() {
         selectedTempDetailImport = tbvDetailInvoiceProduct.getSelectionModel().getSelectedItem();
         return selectedTempDetailImport == null;
+    }
+
+    private ArrayList<String> filterSearchProduct() {
+        ArrayList<CategoryDTO> categories = CategoryBUS.getInstance().getAllLocal();
+        ArrayList<String> listNames = new ArrayList<>();
+        for(CategoryDTO categoryDTO : categories)
+            listNames.add(categoryDTO.getName());
+        cbxListProductFilter.getItems().addAll();
+        return listNames;
+    }
+
+    private void setListFilterForSearch(ComboBox<String> comboBox, ArrayList<String> filters) {
+            comboBox.getItems().addAll(filters);
+    }
+
+    private void setFilterProducts(String nameFilter) {
+        if (nameFilter.isEmpty())
+            return;
+        if (nameFilter.equalsIgnoreCase("Chưa xác định")) {
+            loadProductWrapper();
+            return;
+        }
+
+        int categoryID = CategoryBUS.getInstance().searchByName(nameFilter);
+        if(categoryID == -1)
+            return;
+        ArrayList<ProductDTO> listProducts = ProductBUS.getInstance().filterProducts("", "", categoryID, 1, null, null);
+        loadProductWrapper(ProductBUS.getInstance().getProductWithValidQuantity(listProducts));
+    }
+
+    private String selectedFilter() {
+        return cbxListProductFilter.getSelectionModel().getSelectedItem();
+    }
+
+    // submit form
+    private void onMouseClickedSubmitInvoice() {
+        // get fields text
+        String employeeID = txtFieldEmpID.getText();
+        String customerID = txtFieldCusID.getText();
+        String discountCode = txtFieldShowInvoiceSaleCode.getText();
+        String discountValue = txtFieldShowInvoiceSaleValue.getText();
+        LocalDateTime time = LocalDateTime.now();
+
+        // require selected customer!!
+        if (customerID.isEmpty()) {
+            NotificationUtils.showErrorAlert("not found customer!", "Alert");
+            return;
+        }
+
+        // get data table text
+        ArrayList<TempDetailImportDTO> list = listProductTable(tbvDetailInvoiceProduct);
+        System.out.println("list : " + list);
+        if (list == null || list.isEmpty()) {
+            NotificationUtils.showErrorAlert("not found any product!", "Alert");
+            return;
+        }
+
+        // submit
+
+    }
+
+    // get List data table
+    private ArrayList<TempDetailImportDTO> listProductTable(TableView<TempDetailImportDTO> listProducts) {
+        ArrayList<TempDetailImportDTO> list = new ArrayList<>(listProducts.getItems());
+        if (list.getFirst() == null || list.isEmpty())
+            return null;
+        return list;
+    }
+
+    // create invoice
+    private InvoiceDTO createInvoice(ArrayList<TempDetailImportDTO> list, LocalDateTime time, String empID, String cusID, String discountCode, String discountValue) {
+        InvoiceDTO invoice = new InvoiceDTO(0, time, ValidationUtils.getInstance().canParseToInt(empID), ValidationUtils.getInstance().canParseToInt(cusID), discountCode, ValidationUtils.getInstance().canParseToBigDecimal(discountValue), getTotalPrice(list));
+
+        return null;
+    }
+
+    private BigDecimal getTotalPrice(ArrayList<TempDetailImportDTO> list) {
+        BigDecimal total = new BigDecimal(0);
+        for (TempDetailImportDTO product : list)
+            total = total.add(product.getTotalPrice());
+        return total;
     }
 }

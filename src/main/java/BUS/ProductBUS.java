@@ -285,6 +285,7 @@ public class ProductBUS  extends BaseBUS <ProductDTO, String>{
             String name = pro.getName() != null ? pro.getName().toLowerCase() : "";
             String productId = pro.getId() != null ? pro.getId().toLowerCase() : "";
 
+
             if (!keyword.isEmpty()) {
                 switch (searchBy) {
                     case "Mã sản phẩm" -> matchesSearch = productId.contains(keyword);
@@ -300,4 +301,19 @@ public class ProductBUS  extends BaseBUS <ProductDTO, String>{
         return filteredList;
     }
 
+    // new
+    public ArrayList<ProductDTO> getProductWithValidQuantity() {
+        if(arrLocal.isEmpty()) ProductBUS.getInstance().loadLocal();
+        ArrayList<ProductDTO> temp = new ArrayList<>();
+        for(ProductDTO product : arrLocal)
+            if (product.getStockQuantity() > 0) temp.add(product);
+        return temp;
+    }
+
+    public ArrayList<ProductDTO> getProductWithValidQuantity(ArrayList<ProductDTO> list) {
+        ArrayList<ProductDTO> temp = new ArrayList<>();
+        for(ProductDTO product : list)
+            if (product.getStockQuantity() > 0) temp.add(product);
+        return temp;
+    }
 }

@@ -30,6 +30,13 @@ public class CategoryBUS extends BaseBUS<CategoryDTO, Integer> {
         return null;
     }
 
+    public int searchByName (String filterName) {
+        for (CategoryDTO category : arrLocal)
+            if (category.getName().equals(filterName) && category.isStatus())
+                return category.getId();
+        return -1;
+    }
+
     public ArrayList<CategoryDTO> filterCategories(String searchBy, String keyword, int statusFilter) {
         ArrayList<CategoryDTO> filteredList = new ArrayList<>();
 

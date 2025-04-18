@@ -6,6 +6,7 @@ import DTO.EmployeeDTO;
 import SERVICE.AuthorizationService;
 import UTILS.ValidationUtils;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -159,4 +160,14 @@ public class CustomerBUS extends BaseBUS <CustomerDTO, Integer> {
         return filteredList;
     }
 
+    public ArrayList<CustomerDTO> searchCustomerByPhone(String phone) {
+        ArrayList<CustomerDTO> list = new ArrayList<>();
+        if(phone == null || phone.trim().isEmpty())
+            return arrLocal;
+        for(CustomerDTO cus : arrLocal) {
+            if (cus.getPhone().contains(phone.trim()))
+                list.add(cus);
+        }
+        return list;
+    }
 }
