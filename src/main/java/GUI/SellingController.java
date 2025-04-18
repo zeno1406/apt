@@ -445,10 +445,10 @@ public class SellingController {
             return;
         }
 
-        int categoryID = CategoryBUS.getInstance().searchByName(nameFilter);
-        if(categoryID == -1)
+        ArrayList<CategoryDTO> listCategories = CategoryBUS.getInstance().filterCategories("Tên thể loại", nameFilter, -1);
+        if(listCategories == null || listCategories.isEmpty())
             return;
-        ArrayList<ProductDTO> listProducts = ProductBUS.getInstance().filterProducts("", "", categoryID, 1, null, null);
+        ArrayList<ProductDTO> listProducts = ProductBUS.getInstance().filterProducts("", "", listCategories.getFirst().getId(), 1, null, null);
         loadProductWrapper(ProductBUS.getInstance().getProductWithValidQuantity(listProducts));
     }
 

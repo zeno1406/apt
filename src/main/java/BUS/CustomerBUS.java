@@ -3,6 +3,7 @@ package BUS;
 import DAL.CustomerDAL;
 import DTO.CustomerDTO;
 import DTO.EmployeeDTO;
+import DTO.ProductDTO;
 import SERVICE.AuthorizationService;
 import UTILS.ValidationUtils;
 
@@ -75,12 +76,17 @@ public class CustomerBUS extends BaseBUS <CustomerDTO, Integer> {
         if (!AuthorizationService.getInstance().hasPermission
         (employee_roleId, employeeLoginId, 4)) return 4;
 
-        // image_url và date_of_birth có thể null
-        obj.setStatus(true);
-
         if (isDuplicateCustomer(-1, obj.getFirstName(), obj.getLastName(), obj.getPhone(), obj.getAddress())) {
             return 3;
         }
+
+        // image_url và date_of_birth có thể null
+        ValidationUtils validate = ValidationUtils.getInstance();
+        obj.setStatus(true);
+        obj.setFirstName(validate.normalizeWhiteSpace(obj.getFirstName()));
+        obj.setLastName(validate.normalizeWhiteSpace(obj.getLastName()));
+        obj.setAddress(validate.normalizeWhiteSpace(obj.getAddress()));
+        obj.setPhone(validate.normalizeWhiteSpace(obj.getPhone()));
 
         if (!CustomerDAL.getInstance().insert(obj)) {
             return 5;
@@ -106,14 +112,16 @@ public class CustomerBUS extends BaseBUS <CustomerDTO, Integer> {
         if (!AuthorizationService.getInstance().
         hasPermission(employeeLoginId, employee_roleId, 6)) return 4;
 
+        if (isDuplicateCustomerS(obj)) return 1;
+        ValidationUtils validate = ValidationUtils.getInstance();
+        obj.setStatus(true);
+        obj.setFirstName(validate.normalizeWhiteSpace(obj.getFirstName()));
+        obj.setLastName(validate.normalizeWhiteSpace(obj.getLastName()));
+        obj.setAddress(validate.normalizeWhiteSpace(obj.getAddress()));
+        obj.setPhone(validate.normalizeWhiteSpace(obj.getPhone()));
         // Thực hiện update trong database
         if (!CustomerDAL.getInstance().update(obj)) {
             return 5;
-        }
-
-        //Kiểm tra đầu vào hợp lệ
-        if (!isValidCustomerInput(obj)) {
-            return 6;
         }
 
         updateLocalCache(obj);
@@ -158,6 +166,20 @@ public class CustomerBUS extends BaseBUS <CustomerDTO, Integer> {
                 validator.validateVietnameseText100(obj.getLastName()) &&
                 validator.validateVietnamesePhoneNumber(obj.getPhone()) &&
                 validator.validateVietnameseText255(obj.getAddress());
+    }
+
+    public boolean isDuplicateCustomerS(CustomerDTO obj) {
+        CustomerDTO existingPro = getByIdLocal(obj.getId());
+        ValidationUtils validate = ValidationUtils.getInstance();
+
+        // Kiểm tra xem tên, mô tả, và hệ số lương có trùng không
+        return existingPro != null &&
+                Objects.equals(existingPro.getFirstName(), validate.normalizeWhiteSpace(obj.getFirstName())) &&
+                Objects.equals(existingPro.getLastName(), validate.normalizeWhiteSpace(obj.getLastName())) &&
+                Objects.equals(existingPro.getDateOfBirth(), obj.getDateOfBirth()) &&
+                Objects.equals(existingPro.getPhone(), obj.getPhone()) &&
+                Objects.equals(existingPro.isStatus(), obj.isStatus()) &&
+                Objects.equals(existingPro.getAddress(), validate.normalizeWhiteSpace(obj.getAddress()));
     }
 
     //searchbar
