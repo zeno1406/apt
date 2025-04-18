@@ -26,9 +26,9 @@ public class CategoryBUS extends BaseBUS<CategoryDTO, Integer> {
 
     public CategoryDTO getByIdLocal(int id) {
         if (id <= 0) return null;
-        for (CategoryDTO categoryx : arrLocal) {
-            if (Objects.equals(categoryx.getId(), id)) {
-                return new CategoryDTO(categoryx);
+        for (CategoryDTO category : arrLocal) {
+            if (Objects.equals(category.getId(), id)) {
+                return new CategoryDTO(category);
             }
         }
         return null;
@@ -36,8 +36,8 @@ public class CategoryBUS extends BaseBUS<CategoryDTO, Integer> {
 
     public int insert(CategoryDTO obj, int employee_roleId, int employeeLoginId) {
         // 1. Kiểm tra null & phân quyền
-        if (obj == null || employee_roleId <= 0 || employee_roleId <= 0) return 2;
-        if (!AuthorizationService.getInstance().hasPermission(employeeLoginId, employee_roleId, 17)) return 4;
+        if (obj == null || employee_roleId <= 0 || employeeLoginId <= 0) return 2;
+        if (!AuthorizationService.getInstance().hasPermission(employee_roleId, employeeLoginId, 17)) return 4;
 
         // 2. Kiểm tra đầu vào hợp lệ
         if (!isValidCategoryInput(obj)) return 2;
@@ -55,19 +55,46 @@ public class CategoryBUS extends BaseBUS<CategoryDTO, Integer> {
 
     public int update(CategoryDTO obj, int employee_roleId, int employeeLoginId) {
         // 1. Kiểm tra null & phân quyền
-        if (obj == null || employee_roleId <= 0 || employee_roleId <= 0) return 2;
-        if (!AuthorizationService.getInstance().hasPermission(employeeLoginId, employee_roleId, 19)) return 4;
+        if (obj == null || employee_roleId <= 0 || employeeLoginId <= 0) return 2;
+        if (!AuthorizationService.getInstance().hasPermission(employee_roleId, employeeLoginId, 19)) return 4;
 
         // 2. Kiểm tra đầu vào hợp lệ
         if (!isValidCategoryInput(obj)) return 2;
 
         // 3. Kiểm tra trùng tên
-        if (isDuplicateCategory(-1, obj.getName())) return 3;
+        if (isDuplicateCategory(obj.getId(), obj.getName())) return 3;
 
         // 4. Kiểm tra thêm vào CSDL
-        if(!CategoryDAL.getInstance().insert(obj)) return 5;
+        if(!CategoryDAL.getInstance().update(obj)) return 5;
 
         updateLocalCache(obj);
+        return 1;
+    }
+
+    public int delete(Integer id, int employee_roleId, int employeeLoginId) {
+        // 1.Kiểm tra null
+        if (id == null || id <= 0) return 2;
+
+        // 2.Kiểm tra phân quyền
+        if (employee_roleId <= 0 || employeeLoginId <= 0 || !AuthorizationService.getInstance().hasPermission(employee_roleId, employeeLoginId, 18)) return 4;
+
+        // 3.Kiểm tra phần tử root
+        if (id == 1) return 3;
+
+        // 4.Kiểm tra thể loại đã bị xoá hoặc không tồn tại
+        CategoryDTO targetCategory = getByIdLocal(id);
+        if (targetCategory == null || !targetCategory.isStatus()) return 5;
+
+        // 5.Kiểm tra đã xoá ở CSDL
+        if(!CategoryDAL.getInstance().delete(id)) return 6;
+
+        // Cập nhật trạng thái trong bộ nhớ local
+        for (CategoryDTO category : arrLocal) {
+            if (Objects.equals(category.getId(), id)) {
+                category.setStatus(false);
+                break;
+            }
+        }
         return 1;
     }
 
@@ -83,14 +110,18 @@ public class CategoryBUS extends BaseBUS<CategoryDTO, Integer> {
     public boolean isDuplicateCategory(int id, String name) {
         if (name == null) return false;
 
+        //chỉ check trùng với các thể loại active, non active không check
         for (CategoryDTO category : arrLocal) {
-            if (category.getId() != id && category.getName().trim().equalsIgnoreCase(name.trim())) return true;
+            if (category.getId() != id &&
+                category.getName().trim().equalsIgnoreCase(name.trim()) &&
+                category.isStatus())
+                return true;
         }
         return false;
     }
 
     private boolean isValidCategoryInput(CategoryDTO obj) {
-        int MIN_LENGTH =4;
+        int MIN_LENGTH =1;
         int MAX_LENGTH = 50;
         if (obj.getName() == null || obj.getName().trim().isEmpty()) return false;
         ValidationUtils validator = ValidationUtils.getInstance();
