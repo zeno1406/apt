@@ -128,11 +128,6 @@ public class SellingController {
                 new SimpleStringProperty(validationUtils.formatCurrency(cellData.getValue().getTotalPrice())));
         tbvDetailInvoiceProduct.setItems(FXCollections.observableArrayList(arrTempDetailImport));
         tbvDetailInvoiceProduct.getSelectionModel().clearSelection();
-
-        UiUtils.gI().addTooltipToColumn(tbListInvoiceProductName, 10);
-        UiUtils.gI().addTooltipToColumn(tbListInvoiceProductQuantity, 10);
-        UiUtils.gI().addTooltipToColumn(tbListInvoiceProductPrice, 10);
-        UiUtils.gI().addTooltipToColumn(tbListInvoiceProductTotalPrice, 10);
     }
 
 
@@ -480,7 +475,7 @@ public class SellingController {
         }
 
         // submit
-
+        createInvoice(list, time, employeeID, customerID, discountCode, discountValue);
     }
 
     // get List data table
@@ -492,10 +487,11 @@ public class SellingController {
     }
 
     // create invoice
-    private InvoiceDTO createInvoice(ArrayList<TempDetailImportDTO> list, LocalDateTime time, String empID, String cusID, String discountCode, String discountValue) {
-        InvoiceDTO invoice = new InvoiceDTO(0, time, ValidationUtils.getInstance().canParseToInt(empID), ValidationUtils.getInstance().canParseToInt(cusID), discountCode, ValidationUtils.getInstance().canParseToBigDecimal(discountValue), getTotalPrice(list));
+    private void createInvoice(ArrayList<TempDetailImportDTO> list, LocalDateTime time, String empID, String cusID, String discountCode, String discountValue) {
+        InvoiceDTO invoice = new InvoiceDTO(InvoiceBUS.getInstance().getAllLocal().getLast().getId() + 1, time, ValidationUtils.getInstance().canParseToInt(empID), ValidationUtils.getInstance().canParseToInt(cusID),
+                            discountCode, ValidationUtils.getInstance().canParseToBigDecimal(discountValue), getTotalPrice(list));
 
-        return null;
+
     }
 
     private BigDecimal getTotalPrice(ArrayList<TempDetailImportDTO> list) {
