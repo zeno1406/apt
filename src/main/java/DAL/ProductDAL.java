@@ -48,19 +48,18 @@ public class ProductDAL extends BaseDAL<ProductDTO, String> {
 
     @Override
     protected String getUpdateQuery() {
-        return "SET name = ?, stock_quantity = ?, selling_price = ?, status = ?, description = ?, image_url = ?, category_id = ? WHERE id = ?";
+        return "SET name = ?, selling_price = ?, status = ?, description = ?, image_url = ?, category_id = ? WHERE id = ?";
     }
 
     @Override
     protected void setUpdateParameters(PreparedStatement statement, ProductDTO obj) throws SQLException {
         statement.setString(1, obj.getName());
-        statement.setInt(2, obj.getStockQuantity());
-        statement.setBigDecimal(3, obj.getSellingPrice());
-        statement.setBoolean(4, obj.isStatus());
-        statement.setString(5, obj.getDescription());
-        statement.setString(6, obj.getImageUrl());
-        statement.setInt(7, obj.getCategoryId());
-        statement.setString(8, obj.getId());
+        statement.setBigDecimal(2, obj.getSellingPrice());
+        statement.setBoolean(3, obj.isStatus());
+        statement.setString(4, obj.getDescription());
+        statement.setString(5, obj.getImageUrl());
+        statement.setInt(6, obj.getCategoryId());
+        statement.setString(7, obj.getId());
     }
 
     @Override
@@ -68,17 +67,31 @@ public class ProductDAL extends BaseDAL<ProductDTO, String> {
         return true;
     }
 
-    public boolean updateProductQuantity(ProductDTO obj) {
-        String query = "UPDATE product SET stock_quantity = ? WHERE id = ?";
+    public boolean updateProductQuantityAndSellingPrice(ArrayList<ProductDTO> list) {
+        String query = "UPDATE product SET stock_quantity = ?, selling_price = ? WHERE id = ?";
 
         try (Connection connection = connectionFactory.newConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
 
-            statement.setInt(1, obj.getStockQuantity());
+            for (ProductDTO obj : list) {
+                statement.setInt(1, obj.getStockQuantity());
+                statement.setBigDecimal(2, obj.getSellingPrice());
+                statement.setString(3, obj.getId());
+                statement.addBatch();
+            }
 
-            return statement.executeUpdate() > 0;
+            int[] results = statement.executeBatch();
+
+            for (int result : results) {
+                if (result < 0) {
+                    return false;
+                }
+            }
+
+            return true;
+
         } catch (SQLException e) {
-            System.err.println("Error updating stock quantity product: " + e.getMessage());
+            System.err.println("Error updating stock quantity, selling price product: " + e.getMessage());
             return false;
         }
     }

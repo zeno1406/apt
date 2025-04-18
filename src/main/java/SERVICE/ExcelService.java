@@ -11,9 +11,13 @@ import UTILS.AvailableUtils;
 import UTILS.NotificationUtils;
 import UTILS.UiUtils;
 import UTILS.ValidationUtils;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.io.*;
 import java.nio.channels.FileChannel;
@@ -130,23 +134,40 @@ public class ExcelService {
         return sheet;
     }
 
-//    IMPORT EXCEL
-    public void ImportSheet(String importData) throws IOException {
-        String fileName = importData.toLowerCase() + ".xlsx";
-        File file = new File(fileName);
-        if (!file.exists()) return;
-        //file input
+    public void ImportSheet(String importData, Stage stage) throws IOException {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Chọn file Excel để nhập dữ liệu");
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("Excel Files", "*.xlsx")
+        );
+
+        File file = fileChooser.showOpenDialog(stage);
+
+        if (file == null) {
+            return; // Người dùng không chọn file
+        }
+
+        // Kiểm tra đúng định dạng
+        if (!file.getName().toLowerCase().endsWith(".xlsx")) {
+            NotificationUtils.showErrorAlert("Vui lòng chọn file Excel (.xlsx)", "Thông báo");
+            return;
+        }
+
         try (FileInputStream fis = new FileInputStream(file);
              Workbook workbook = new XSSFWorkbook(fis)) {
-            //create sheets
+
             Sheet sheet = workbook.getSheetAt(0);
-            //switch case employees or products
-            if (importData.equalsIgnoreCase("products"))
+
+            if (importData.equalsIgnoreCase("products")) {
                 importToProducts(sheet);
+            }
+
         } catch (Exception e) {
-            System.out.println(("Lỗi khi import file Excel: " + e.getMessage()));
+            e.printStackTrace();
+            NotificationUtils.showErrorAlert("Không thể mở file Excel: " + e.getMessage(), "Lỗi");
         }
     }
+
 
     private void importToProducts(Sheet sheet) {
         ArrayList<ProductDTO> list = returnListProduct(sheet, new ArrayList<>());
@@ -180,22 +201,29 @@ public class ExcelService {
         StringBuilder errorMessages = new StringBuilder();
         int errorCount = 0; // Đếm số lỗi
 
-        for (Row row : sheet) {
-            if (row.getRowNum() == 0) continue; // Bỏ qua dòng tiêu đề
-
-            try {
-                String name = row.getCell(1).getStringCellValue().trim();
-                String description = row.getCell(2) != null ? row.getCell(2).getStringCellValue().trim() : null;
-
-                Cell categoryCell = row.getCell(3);
-                Cell statusCell = row.getCell(4);
-
-                // Kiểm tra và chuyển đổi categoryId
-                int categoryId;
+            for (Row row : sheet) {
+                if (row.getRowNum() == 0) continue; // Bỏ qua dòng tiêu đề
+                boolean isEmpty = true;
+                for (Cell cell : row) {
+                    if (cell != null && cell.getCellType() != CellType.BLANK && !cell.toString().trim().isEmpty()) {
+                        isEmpty = false;
+                        break;
+                    }
+                }
+                if (isEmpty) continue;
                 try {
-                    categoryId = (int) categoryCell.getNumericCellValue();
-                } catch (Exception e) {
-                    errorMessages.append("Dòng ").append(row.getRowNum() + 1)
+                    String name = row.getCell(1).getStringCellValue().trim();
+                    String description = row.getCell(2) != null ? row.getCell(2).getStringCellValue().trim() : null;
+
+                    Cell categoryCell = row.getCell(3);
+                    Cell statusCell = row.getCell(4);
+
+                    // Kiểm tra và chuyển đổi categoryId
+                    int categoryId;
+                    try {
+                        categoryId = (int) categoryCell.getNumericCellValue();
+                    } catch (Exception e) {
+                        errorMessages.append("Dòng ").append(row.getRowNum() + 1)
                             .append(": Thể loại không hợp lệ (phải là số).\n");
                     errorCount++;
                     if (errorCount >= 20) break; // Dừng lại khi đã đủ 20 lỗi

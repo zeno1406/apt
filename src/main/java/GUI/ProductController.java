@@ -14,12 +14,15 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.stage.Stage;
 
+import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -179,12 +182,10 @@ public class ProductController implements IController {
         editBtn.setOnAction(e -> handleEdit());
         deleteBtn.setOnAction(e -> handleDelete());
         btnImportExcel.setOnMouseClicked(event -> {
-            try {
-                importData();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            importProductExcel(stage);
         });
+
     }
 
     private void handlePriceChange() {
@@ -343,9 +344,14 @@ public class ProductController implements IController {
         return selectedProduct == null;
     }
 
-    private void importData() throws IOException {
-        ExcelService.getInstance().ImportSheet("products");
-        applyFilters();
+    public void importProductExcel(Stage stage) {
+        try {
+            ExcelService.getInstance().ImportSheet("products", stage);
+            applyFilters();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
+
 
 }

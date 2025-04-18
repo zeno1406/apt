@@ -9,8 +9,6 @@ import java.util.ArrayList;
 
 public class InvoiceService {
     private static final InvoiceService INSTANCE = new InvoiceService();
-    private static final int maxMinute = 5;
-
     public static InvoiceService getInstance() {
         return INSTANCE;
     }
