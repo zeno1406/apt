@@ -173,8 +173,6 @@ public class CategoryController implements IController {
 
         alert.showAndWait().ifPresent(response -> {
             if (response == ButtonType.OK) {
-                int deleteResult = CategoryBUS.getInstance()
-                        .delete(selectedCategory.getId(), SessionManagerService.getInstance().employeeRoleId(), SessionManagerService.getInstance().employeeLoginId());
 
                 switch (deleteResult) {
                     case 1 -> {
