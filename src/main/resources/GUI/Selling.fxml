@@ -182,7 +182,7 @@
                                         <TableColumn fx:id="tbListInvoiceProductName" prefWidth="148.0" text="Tên Sản Phẩm" />
                                           <TableColumn fx:id="tbListInvoiceProductQuantity" prefWidth="30.0" text="SL" />
                                           <TableColumn fx:id="tbListInvoiceProductPrice" prefWidth="75.0" text="Đơn Giá" />
-                                          <TableColumn fx:id="tbListInvoiceProductTotalPrice" prefWidth="82.0" text="Tổng tiền" />
+                                          <TableColumn fx:id="tbListInvoiceProductTotalPrice" prefWidth="85.0" text="Tổng tiền" />
                                       </columns>
                                        <padding>
                                           <Insets bottom="8.0" />

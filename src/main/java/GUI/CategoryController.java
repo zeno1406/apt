@@ -171,26 +171,26 @@ public class CategoryController implements IController {
         alert.setHeaderText("Xác nhận xóa thể loại");
         alert.setContentText("Bạn có chắc chắn muốn xóa thể loại này không?");
 
-        alert.showAndWait().ifPresent(response -> {
-            if (response == ButtonType.OK) {
-                int deleteResult = CategoryBUS.getInstance()
-                        .delete(selectedCategory.getId(), SessionManagerService.getInstance().employeeRoleId(), SessionManagerService.getInstance().employeeLoginId());
-
-                switch (deleteResult) {
-                    case 1 -> {
-                        loadTable();
-                        applyFilters();
-                        NotificationUtils.showInfoAlert("Xóa thể loại thành công!", "Thông báo");
-                    }
-                    case 2 ->
-                            NotificationUtils.showErrorAlert("Thể loại này đã bị ràng buộc. Không thể xóa.", "Thông báo");
-                    case 3 -> NotificationUtils.showErrorAlert("Không có quyền xóa thể loại.", "Thông báo");
-                    case 4 -> NotificationUtils.showErrorAlert("Lỗi kết nối CSDL. Xóa thể loại thất bại.", "Thông báo");
-                    default ->
-                            NotificationUtils.showErrorAlert("Lỗi không xác định. Xóa thể loại thất bại.", "Thông báo");
-                }
-            }
-        });
+//        alert.showAndWait().ifPresent(response -> {
+//            if (response == ButtonType.OK) {
+//                int deleteResult = CategoryBUS.getInstance()
+//                        .delete(selectedCategory.getId(), SessionManagerService.getInstance().employeeRoleId(), SessionManagerService.getInstance().employeeLoginId());
+//
+//                switch (deleteResult) {
+//                    case 1 -> {
+//                        loadTable();
+//                        applyFilters();
+//                        NotificationUtils.showInfoAlert("Xóa thể loại thành công!", "Thông báo");
+//                    }
+//                    case 2 ->
+//                            NotificationUtils.showErrorAlert("Thể loại này đã bị ràng buộc. Không thể xóa.", "Thông báo");
+//                    case 3 -> NotificationUtils.showErrorAlert("Không có quyền xóa thể loại.", "Thông báo");
+//                    case 4 -> NotificationUtils.showErrorAlert("Lỗi kết nối CSDL. Xóa thể loại thất bại.", "Thông báo");
+//                    default ->
+//                            NotificationUtils.showErrorAlert("Lỗi không xác định. Xóa thể loại thất bại.", "Thông báo");
+//                }
+//            }
+//        });
     }
 
     private void handleEditBtn() {

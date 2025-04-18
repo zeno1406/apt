@@ -204,8 +204,8 @@ public class CustomerController implements IController {
         }
     }
 
-        editBtn.setVisible(canEdit);
-        editBtn.setManaged(canEdit);
+//        editBtn.setVisible(canEdit);
+//        editBtn.setManaged(canEdit);
     private void handleEditBtn() {
         CustomerDTO selectedCustomer = tblCustomer.getSelectionModel().getSelectedItem();
         if (selectedCustomer == null) {

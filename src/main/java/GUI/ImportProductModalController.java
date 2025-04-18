@@ -37,10 +37,12 @@ public class ImportProductModalController {
     @Getter
     private boolean isSaved;
     private int typeModal;
+    private boolean isSell = false;
     @Getter
     private TempDetailImportDTO tempDetailImport;
     @FXML
     public void initialize() {
+        if(ProductBUS.getInstance().getAllLocal().isEmpty()) ProductBUS.getInstance().loadLocal();
         setupListeners();
     }
 
@@ -117,6 +119,11 @@ public class ImportProductModalController {
                     clearAndFocus(txtQuantity);
                     isValid = false;
                 }
+                if (isSell && !isValidQuantity(ValidationUtils.getInstance().canParseToInt(txtQuantity.getText().trim()), ProductBUS.getInstance().getByIdLocal(tempDetailImport.getProductId()))) {
+                        clearAndFocus(txtQuantity);
+                        isValid = false;
+                }
+
             } catch (NumberFormatException e) {
                 NotificationUtils.showErrorAlert("Số lượng phải là số nguyên hợp lệ.", "Thông báo");
                 clearAndFocus(txtQuantity);
@@ -173,6 +180,9 @@ public class ImportProductModalController {
         return isValid;
     }
 
+    public void setIsSell(Boolean isSell) {
+        this.isSell = isSell;
+    }
 
     private void handleSave() {
         if (typeModal == 0) {
@@ -223,6 +233,14 @@ public class ImportProductModalController {
             tempDetailImport.setPrice(price);
             handleClose();
         }
+    }
+
+    private boolean isValidQuantity(int nowQuantity, ProductDTO product) {
+        if (nowQuantity <= 0 || nowQuantity > product.getStockQuantity()) {
+            NotificationUtils.showErrorAlert("Invalid quantity!", "Alert");
+            return false;
+        }
+        return true;
     }
 
     private void handleClose() {

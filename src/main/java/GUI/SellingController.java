@@ -374,6 +374,7 @@ public class SellingController {
                 controller -> {
                     controller.setProduct(product);
                     controller.setTypeModal(2);
+                    controller.setIsSell(true);
                 },
                 "Thêm Sản Phẩm"
         );
@@ -440,10 +441,11 @@ public class SellingController {
             return;
         }
 
-        int categoryID = CategoryBUS.getInstance().searchByName(nameFilter);
-        if(categoryID == -1)
+        ArrayList<CategoryDTO> categories = CategoryBUS.getInstance().filterCategories("Tên thể loại", "", 1);
+//        int categoryID = 1;
+        if(categories == null || categories.isEmpty())
             return;
-        ArrayList<ProductDTO> listProducts = ProductBUS.getInstance().filterProducts("", "", categoryID, 1, null, null);
+        ArrayList<ProductDTO> listProducts = ProductBUS.getInstance().filterProducts("", "", categories.getFirst().getId(), 1, null, null);
         loadProductWrapper(ProductBUS.getInstance().getProductWithValidQuantity(listProducts));
     }
 
@@ -476,6 +478,11 @@ public class SellingController {
 
         // submit
         createInvoice(list, time, employeeID, customerID, discountCode, discountValue);
+
+        // clear form
+        tbvDetailInvoiceProduct.getItems().clear();
+        txtFieldCusID.setText("");
+        txtFieldCusName.setText("");
     }
 
     // get List data table
@@ -490,8 +497,6 @@ public class SellingController {
     private void createInvoice(ArrayList<TempDetailImportDTO> list, LocalDateTime time, String empID, String cusID, String discountCode, String discountValue) {
         InvoiceDTO invoice = new InvoiceDTO(InvoiceBUS.getInstance().getAllLocal().getLast().getId() + 1, time, ValidationUtils.getInstance().canParseToInt(empID), ValidationUtils.getInstance().canParseToInt(cusID),
                             discountCode, ValidationUtils.getInstance().canParseToBigDecimal(discountValue), getTotalPrice(list));
-
-
     }
 
     private BigDecimal getTotalPrice(ArrayList<TempDetailImportDTO> list) {
