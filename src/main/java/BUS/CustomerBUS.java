@@ -35,67 +35,103 @@ public class CustomerBUS extends BaseBUS <CustomerDTO, Integer> {
         return null;
     }
 
-    public boolean delete(Integer id, int employee_roleId, int employeeLoginId) {
-        if (id == null || id <= 0 ) return false;
-
+    //done
+    public int delete(Integer id, int employee_roleId, int employeeLoginId) {
+        // Kiểm tra ID hợp lệ
+        if (id == null || id <= 0) return 2; // Khách hàng không tồn tại
+    
+        // Kiểm tra quyền xóa khách hàng (permission ID = 5)
         if (employee_roleId <= 0 || !AuthorizationService.getInstance().hasPermission(employeeLoginId, employee_roleId, 5)) {
-            return false;
+            return 4; // Không có quyền xóa
         }
+
+        // // Kiểm tra khách hàng có đơn hàng không
+        // if (OrderBUS.getInstance().getByCustomerId(id) != null) {
+        //     return 3; // Không thể xóa khách hàng có đơn hàng
+        // }
+
+        //Khach hang da bi xoa hoac khong ton tai
+        CustomerDTO targetCustomer = getByIdLocal(id);
+        if (targetCustomer == null) return 5;
+
+        
+        // Xóa khách hàng trong database
         if (!CustomerDAL.getInstance().delete(id)) {
-            return false;
+            return 6;
         }
+        // Cập nhật trạng thái trong bộ nhớ local
         for (CustomerDTO customer : arrLocal) {
             if (Objects.equals(customer.getId(), id)) {
                 customer.setStatus(false);
-                return true;
+                break;
             }
         }
-        return false;
+        return 1;
     }
 
-    public boolean insert(CustomerDTO obj, int employee_roleId, int employeeLoginId) {
+    //done
+    public int insert(CustomerDTO obj, int employee_roleId, int employeeLoginId) {
         if (obj == null || employee_roleId <= 0 || !AuthorizationService.getInstance().hasPermission(employeeLoginId, employee_roleId, 4) || !isValidCustomerInput(obj)) {
-            return false;
+            return 2;
         }
+
+        if (!AuthorizationService.getInstance().hasPermission
+        (employeeLoginId, employee_roleId, 4)) return 4;
 
         // image_url và date_of_birth có thể null
         obj.setStatus(true);
 
         if (isDuplicateCustomer(-1, obj.getFirstName(), obj.getLastName(), obj.getPhone(), obj.getAddress()) ||
                 !CustomerDAL.getInstance().insert(obj)) {
-            return false;
+            return 3;
+        }
+
+        if (!CustomerDAL.getInstance().insert(obj)) {
+            return 5;
         }
 
         arrLocal.add(new CustomerDTO(obj));
-        return true;
+        return 1;//them thanh cong
     }
 
 
-    public boolean update(CustomerDTO obj, int employee_roleId, int employeeLoginId) {
+    public int update(CustomerDTO obj, int employee_roleId, int employeeLoginId) {
         if (obj == null || obj.getId() <= 0 || employee_roleId <= 0 ||
                 !AuthorizationService.getInstance().hasPermission(employeeLoginId, employee_roleId, 6) || !isValidCustomerInput(obj)) {
-            return false;
+            return 2;
         }
 
         // Kiểm tra trùng lặp trước khi cập nhật
         if (isDuplicateCustomer(obj.getId(), obj.getFirstName(), obj.getLastName(), obj.getPhone(), obj.getAddress())) {
-            return false;
+            return 3;
         }
+
+        //Không có quyền sửa
+        if (!AuthorizationService.getInstance().
+        hasPermission(employeeLoginId, employee_roleId, 6)) return 4;
 
         // Thực hiện update trong database
         if (!CustomerDAL.getInstance().update(obj)) {
-            return false;
+            return 5;
         }
 
-        // Cập nhật lại dữ liệu trong bộ nhớ cache `arrLocal`
+        //Kiểm tra đầu vào hợp lệ
+        if (!isValidCustomerInput(obj)) {
+            return 6;
+        }
+
+        updateLocalCache(obj);
+        //Them thanh cong
+        return 1;
+    }
+
+    //Cap nhat cache local
+    private void updateLocalCache(CustomerDTO obj) {
         for (int i = 0; i < arrLocal.size(); i++) {
-            if (Objects.equals(arrLocal.get(i).getId(), obj.getId())) {
-                arrLocal.set(i, new CustomerDTO(obj));
-                return true;
+            if (Objects.equals(arrLocal.get(i).getId(), obj.getId())) {                    arrLocal.set(i, new CustomerDTO(obj));
+            break;
             }
-        }
-
-        return false;
+        }  
     }
 
     public boolean isDuplicateCustomer(int id, String firstName, String lastName, String phone, String address) {
