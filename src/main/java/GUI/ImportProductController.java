@@ -5,6 +5,7 @@ import BUS.ImportBUS;
 import BUS.InvoiceBUS;
 import BUS.ProductBUS;
 import DTO.*;
+import SERVICE.ImportService;
 import SERVICE.SessionManagerService;
 import UTILS.NotificationUtils;
 import UTILS.UiUtils;
@@ -72,6 +73,7 @@ public class ImportProductController {
 
     private ArrayList<TempDetailImportDTO> arrTempDetailImport = new ArrayList<>();
     private TempDetailImportDTO selectedTempDetailImport;
+    private SupplierDTO selectedSupplier = null;
 
     @FXML
     public void initialize()
@@ -133,6 +135,7 @@ public class ImportProductController {
             loadProductWrapper();
             txtProductNameSearch.setText("");
         });
+        btnSubmitImport.setOnAction(e -> handleImport());
     }
 
     // search
@@ -147,18 +150,19 @@ public class ImportProductController {
 
     // show select supplier
     private void onMouseClickedShowSupplierContainer() {
-        SupForImportModalController modalController = UiUtils.gI().openStageWithController(
-                "/GUI/SupForImportModal.fxml",
-                null,
-                "Danh sách nhà cung cấp"
-        );
+            SupForImportModalController modalController = UiUtils.gI().openStageWithController(
+                    "/GUI/SupForImportModal.fxml",
+                    null,
+                    "Danh sách nhà cung cấp"
+            );
 
-        if (modalController != null && modalController.isSaved()) {
-            txtSupplierId.setText(String.valueOf(modalController.getSelectedSupplier().getId()));
-            txtSupplierName.setText(modalController.getSelectedSupplier().getName());
-            NotificationUtils.showInfoAlert("Chọn nhà cung cấp thành công.", "Thông báo");
+            if (modalController != null && modalController.isSaved()) {
+                selectedSupplier = new SupplierDTO(modalController.getSelectedSupplier());
+                txtSupplierId.setText(String.valueOf(selectedSupplier.getId()));
+                txtSupplierName.setText(selectedSupplier.getName());
+                NotificationUtils.showInfoAlert("Chọn nhà cung cấp thành công.", "Thông báo");
+            }
         }
-    }
 
     // close
     private void onMouseClickedExitImportingForm() {
@@ -174,74 +178,71 @@ public class ImportProductController {
         txtCreateDate.setText(ValidationUtils.getInstance().formatDateTime(LocalDateTime.now()));
     }
 
+    public void addConstraintRow(GridPane gridPane, ArrayList<ProductDTO> products, double height) {
+        boolean row_col = true, wait = false;
+        int quantity = products.size();
+        int numRows = (int) Math.ceil(quantity / 2.0);
 
-//
-// Add constraint row
-public void addConstraintRow(GridPane gridPane, ArrayList<ProductDTO> products, double height) {
-    boolean row_col = true, wait = false;
-    int quantity = products.size();
-    int numRows = (int) Math.ceil(quantity / 2.0);
-
-    // Thiết lập chiều cao cho các hàng
-    for (int i = 0; i < numRows; i++) {
-        RowConstraints rowConstraints = new RowConstraints();
-        rowConstraints.setPrefHeight(height);
-        gridPane.getRowConstraints().add(rowConstraints);
-    }
-
-    int prevRow = 0;
-    for (int i = 0; i < quantity; i++) {
-        ProductDTO product = products.get(i);
-        String imageUrl = product.getImageUrl();
-        File imageFile = null;
-        Image image = null;
-
-        // Kiểm tra đường dẫn ảnh
-        if (imageUrl != null && !imageUrl.isEmpty()) {
-            imageFile = new File(imageUrl);
+        // Thiết lập chiều cao cho các hàng
+        for (int i = 0; i < numRows; i++) {
+            RowConstraints rowConstraints = new RowConstraints();
+            rowConstraints.setPrefHeight(height);
+            gridPane.getRowConstraints().add(rowConstraints);
         }
 
-        // Load ảnh sản phẩm hoặc ảnh mặc định
-        if (imageFile != null && imageFile.exists()) {
-            try {
-                image = new Image(imageFile.toURI().toString());
-            } catch (Exception e) {
-                // Nếu lỗi khi load ảnh -> fallback ảnh mặc định
+        int prevRow = 0;
+        for (int i = 0; i < quantity; i++) {
+            ProductDTO product = products.get(i);
+            String imageUrl = product.getImageUrl();
+            File imageFile = null;
+            Image image = null;
+
+            // Kiểm tra đường dẫn ảnh
+            if (imageUrl != null && !imageUrl.isEmpty()) {
+                imageFile = new File(imageUrl);
+            }
+
+            // Load ảnh sản phẩm hoặc ảnh mặc định
+            if (imageFile != null && imageFile.exists()) {
+                try {
+                    image = new Image(imageFile.toURI().toString());
+                } catch (Exception e) {
+                    // Nếu lỗi khi load ảnh -> fallback ảnh mặc định
+                    image = loadDefaultImage();
+                }
+            } else {
                 image = loadDefaultImage();
             }
-        } else {
-            image = loadDefaultImage();
+
+            row_col = !row_col;
+            int row = wait ? prevRow : i;
+            int col = row_col ? 1 : 0;
+
+            addProductToGrid(
+                    gridPane,
+                    row,
+                    col,
+                    image,
+                    product.getName(),
+                    product.getStockQuantity(),
+                    product.getSellingPrice(),
+                    product.getId()
+            );
+
+            wait = !wait;
+            prevRow = i;
         }
-
-        row_col = !row_col;
-        int row = wait ? prevRow : i;
-        int col = row_col ? 1 : 0;
-
-        addProductToGrid(
-                gridPane,
-                row,
-                col,
-                image,
-                product.getName(),
-                product.getStockQuantity(),
-                product.getSellingPrice(),
-                product.getId()
-        );
-
-        wait = !wait;
-        prevRow = i;
     }
-}
 
     private Image loadDefaultImage() {
-        URL defaultImageUrl = getClass().getResource("/images/default/default.png");
-        if (defaultImageUrl != null) {
-            return new Image(defaultImageUrl.toExternalForm(), 100, 100, true, true);
-        } else {
-            System.err.println("Ảnh mặc định không tìm thấy.");
-            return null;
+            URL defaultImageUrl = getClass().getResource("/images/default/default.png");
+            if (defaultImageUrl != null) {
+                return new Image(defaultImageUrl.toExternalForm(), 100, 100, true, true);
+            } else {
+                System.err.println("Ảnh mặc định không tìm thấy.");
+                return null;
+            }
         }
-    }
 
     // add container
     public void addProductToGrid(GridPane gridPane, int row, int col, Image image, String name, int quantity, BigDecimal price, String id) {
@@ -324,8 +325,6 @@ public void addConstraintRow(GridPane gridPane, ArrayList<ProductDTO> products, 
         }
         lbTotalImportPrice.setText(ValidationUtils.getInstance().formatCurrency(totalImportPrice) + " Đ");
     }
-
-
 
     private void onMouseClickedClear() {
         arrTempDetailImport.clear();
@@ -422,5 +421,51 @@ public void addConstraintRow(GridPane gridPane, ArrayList<ProductDTO> products, 
     private boolean isNotSelectedTempDetailImport() {
         selectedTempDetailImport = tbvDetailImportProduct.getSelectionModel().getSelectedItem();
         return selectedTempDetailImport == null;
+    }
+
+    private boolean isNotSelectedSupplier() {
+        return selectedSupplier == null;
+    }
+
+    private void handleImport() {
+        if (arrTempDetailImport.isEmpty()) {
+            NotificationUtils.showErrorAlert("Vui lòng thêm ít nhất một sản phẩm nhập.", "Thông báo");
+            return;
+        }
+        if (isNotSelectedSupplier()) {
+            NotificationUtils.showErrorAlert("Vui lòng chọn nhà cung cấp để nhập hàng.", "Thông báo");
+            return;
+        }
+
+        // Tạo phiếu nhập kèm chi tiết
+        SessionManagerService ses = SessionManagerService.getInstance();
+        ArrayList<DetailImportDTO> list = new ArrayList<>();
+        ArrayList<ProductDTO> listProduct = new ArrayList<>();
+        BigDecimal totalImportPrice = BigDecimal.ZERO;
+
+        for (TempDetailImportDTO t : arrTempDetailImport) {
+            DetailImportDTO di = new DetailImportDTO(t.getImportId(), t.getProductId(), t.getQuantity(), t.getPrice(), t.getTotalPrice());
+            ProductDTO p = new ProductDTO(t.getProductId(), t.getName(), t.getQuantity() , t.getSellingPrice(), true, null, null, 0);
+            list.add(di);
+            listProduct.add(p);
+            totalImportPrice = totalImportPrice.add(t.getTotalPrice());
+        }
+
+        ImportDTO temp = new ImportDTO(Integer.parseInt(txtImportId.getText().trim()), null, Integer.parseInt(txtEmployeeId.getText().trim()),
+                Integer.parseInt(txtSupplierId.getText().trim()), totalImportPrice);
+
+        boolean result = ImportService.getInstance().createImportWithDetailImport(temp, ses.employeeRoleId(),list , ses.employeeLoginId());
+
+        // Sau đó tăng số lượng sản phẩm và set lại giá
+        if (result && ProductBUS.getInstance().updateQuantitySellingPriceListProduct(listProduct, true)) {
+            NotificationUtils.showInfoAlert("Nhập hàng thành công.", "Thông báo");
+            arrTempDetailImport.clear();
+            loadProductWrapper();
+            selectedSupplier =null;
+            txtSupplierId.setText("");
+            txtSupplierName.setText("");
+            loadTable();
+            loadCaculatedTotalImportPrice();
+        }
     }
 }

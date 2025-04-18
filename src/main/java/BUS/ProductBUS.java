@@ -152,8 +152,6 @@ public class ProductBUS  extends BaseBUS <ProductDTO, String>{
         return 1; // Thành công
     }
 
-
-
     public int update(ProductDTO obj, int employee_roleId, int employeeLoginId) {
         if (obj == null || obj.getId().isEmpty() || employee_roleId <= 0 || obj.getCategoryId() <= 0) {
             return 2;
@@ -177,14 +175,72 @@ public class ProductBUS  extends BaseBUS <ProductDTO, String>{
         // Cập nhật arrLocal nếu database cập nhật thành công
         for (int i = 0; i < arrLocal.size(); i++) {
             if (Objects.equals(arrLocal.get(i).getId(), obj.getId())) {
-                arrLocal.set(i, new ProductDTO(obj));
+                ProductDTO local = arrLocal.get(i);
+                ProductDTO newProduct = new ProductDTO(local); // Giữ nguyên các field khác
+
+                newProduct.setName(obj.getName());
+                newProduct.setSellingPrice(obj.getSellingPrice());
+                newProduct.setDescription(obj.getDescription());
+                newProduct.setImageUrl(obj.getImageUrl());
+                newProduct.setCategoryId(obj.getCategoryId());
+
+                arrLocal.set(i, newProduct);
                 break;
             }
         }
         return 1;
     }
 
-//    VALIDATE IS HERE!!!
+    public boolean updateQuantitySellingPriceListProduct(ArrayList<ProductDTO> listProducts, boolean isAdd) {
+        if (listProducts == null || listProducts.isEmpty()) {
+            return false;
+        }
+
+        ArrayList<ProductDTO> tempList = (ArrayList<ProductDTO>) listProducts.clone();
+
+        if (isAdd) {
+            for (ProductDTO p : tempList) {
+                ProductDTO current = getByIdLocal(p.getId());
+                if (current == null) continue;
+
+                p.setStockQuantity(p.getStockQuantity() + current.getStockQuantity());
+            }
+        } else {
+            for (ProductDTO p : tempList) {
+                ProductDTO current = getByIdLocal(p.getId());
+                if (current == null) return false;
+
+                int newQty = current.getStockQuantity() - p.getStockQuantity();
+                p.setStockQuantity(Math.max(0, newQty));
+                p.setSellingPrice(p.getSellingPrice()); // giữ nguyên giá
+            }
+        }
+
+        // Cập nhật database
+        if (!ProductDAL.getInstance().updateProductQuantityAndSellingPrice(tempList)) return false;
+
+        // Cập nhật lại arrLocal
+        for (ProductDTO updated : tempList) {
+            for (int i = 0; i < arrLocal.size(); i++) {
+                if (Objects.equals(arrLocal.get(i).getId(), updated.getId())) {
+                    ProductDTO local = arrLocal.get(i);
+                    ProductDTO newProduct = new ProductDTO(local); // Giữ nguyên các field khác
+
+                    newProduct.setStockQuantity(updated.getStockQuantity());
+                    newProduct.setSellingPrice(updated.getSellingPrice());
+
+                    arrLocal.set(i, newProduct);
+                    break;
+                }
+            }
+        }
+
+        return true;
+    }
+
+
+
+    //    VALIDATE IS HERE!!!
     private boolean isDuplicateProductName(String id, String name) {
         if (name == null) return false;
         ValidationUtils validate = ValidationUtils.getInstance();

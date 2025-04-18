@@ -34,7 +34,9 @@ public class ImportDAL extends BaseDAL<ImportDTO, Integer> {
 
     @Override
     protected void setGeneratedKey(ImportDTO obj, ResultSet generatedKeys) throws SQLException {
-        obj.setId(generatedKeys.getInt(1));
+        if (generatedKeys.next()) {
+            obj.setId(generatedKeys.getInt(1));
+        }
     }
 
     @Override

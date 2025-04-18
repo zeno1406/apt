@@ -52,6 +52,7 @@ public class ImportBUS extends BaseBUS<ImportDTO, Integer>{
         }
 
         obj.setCreateDate(LocalDateTime.now());
+
         if (!ImportDAL.getInstance().insert(obj)) return false;
         arrLocal.add(new ImportDTO(obj));
         return true;
@@ -61,7 +62,7 @@ public class ImportBUS extends BaseBUS<ImportDTO, Integer>{
         if (obj.getEmployeeId() <= 0 || obj.getSupplierId() <= 0) return false;
 
         ValidationUtils validator = ValidationUtils.getInstance();
-        return validator.validateBigDecimal(obj.getTotalPrice(), 10, 2, false);
+        return validator.validateBigDecimal(obj.getTotalPrice(), 12, 2, false);
     }
 
 }
