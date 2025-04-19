@@ -173,6 +173,7 @@ public class CustomerModalController {
                 case 3 -> NotificationUtils.showErrorAlert("Đã có khách hàng trong cơ sở dữ liệu", "Thông báo");
                 case 4 -> NotificationUtils.showErrorAlert("Không có quyền thêm khách hàng.", "Thông báo");
                 case 5 -> NotificationUtils.showErrorAlert("Thêm khách hàng thất bại. Vui lòng thử lại.", "Thông báo");
+                case 6 -> NotificationUtils.showErrorAlert("Dữ liệu nhập không hợp lệ.","Thông báo");
                 default -> NotificationUtils.showErrorAlert("Lỗi không xác định. Vui lòng thử lại.", "Thông báo");
             }
         }
@@ -196,6 +197,7 @@ public class CustomerModalController {
                 case 4 -> NotificationUtils.showErrorAlert("Không có quyền cập nhật thông tin khách hàng.", "Thông báo.");
                 case 5 -> NotificationUtils.showErrorAlert("Không thể cập nhật thông tin khách hàng. Vui lòng thử lại.", "Lỗi");
                 case 6 -> NotificationUtils.showErrorAlert("Đầu vào không hợp lệ. Vui lòng thử lại.", "Thông báo");
+                case 7 -> NotificationUtils.showErrorAlert("Không thể xoá khách hàng mặc định.","Thông báo");
                 default -> NotificationUtils.showErrorAlert("Lỗi không xác định. Vui lòng thử lại.", "Lỗi");
             }
         }

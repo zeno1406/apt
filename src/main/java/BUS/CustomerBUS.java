@@ -41,14 +41,12 @@ public class CustomerBUS extends BaseBUS <CustomerDTO, Integer> {
         if (id == null || id <= 0) return 2; // Khách hàng không tồn tại
     
         // Kiểm tra quyền xóa khách hàng (permission ID = 5)
-        if (employee_roleId <= 0 || !AuthorizationService.getInstance().hasPermission(employee_roleId, employeeLoginId, 5)) {
+        if (employee_roleId <= 0 || !AuthorizationService.getInstance().hasPermission(employeeLoginId, employee_roleId, 5)) {
             return 4; // Không có quyền xóa
         }
 
-        // // Kiểm tra khách hàng có đơn hàng không
-        // if (OrderBUS.getInstance().getByCustomerId(id) != null) {
-        //     return 3; // Không thể xóa khách hàng có đơn hàng
-        // }
+        // Kiểm tra ID khách hàng vãng lai(gốc)
+        if (id == 1) return 7;
 
         //Khach hang da bi xoa hoac khong ton tai
         CustomerDTO targetCustomer = getByIdLocal(id);
@@ -69,18 +67,19 @@ public class CustomerBUS extends BaseBUS <CustomerDTO, Integer> {
     }
 
     public int insert(CustomerDTO obj, int employee_roleId, int employeeLoginId) {
-        if (obj == null || employee_roleId <= 0 || !AuthorizationService.getInstance().hasPermission(employee_roleId, employeeLoginId, 4) || !isValidCustomerInput(obj)) {
+        if (obj == null || employee_roleId <= 0 || !AuthorizationService.getInstance().hasPermission(employeeLoginId, employee_roleId, 4) || !isValidCustomerInput(obj)) {
             return 2;
         }
 
-        if (!AuthorizationService.getInstance().hasPermission
-        (employee_roleId, employeeLoginId, 4)) return 4;
+        if (!AuthorizationService.getInstance().hasPermission(employeeLoginId, employee_roleId, 4)) return 4;
 
         if (isDuplicateCustomer(-1, obj.getFirstName(), obj.getLastName(), obj.getPhone(), obj.getAddress())) {
             return 3;
         }
 
         // image_url và date_of_birth có thể null
+
+        //validate khi chuyen xuong database
         ValidationUtils validate = ValidationUtils.getInstance();
         obj.setStatus(true);
         obj.setFirstName(validate.normalizeWhiteSpace(obj.getFirstName()));
@@ -96,22 +95,27 @@ public class CustomerBUS extends BaseBUS <CustomerDTO, Integer> {
         return 1;//them thanh cong
     }
 
-
     public int update(CustomerDTO obj, int employee_roleId, int employeeLoginId) {
-        if (obj == null || obj.getId() <= 0 || employee_roleId <= 0 ||
-                !AuthorizationService.getInstance().hasPermission(employee_roleId, employeeLoginId, 6) || !isValidCustomerInput(obj)) {
+        if (obj == null || obj.getId() <= 0 || employee_roleId <= 0) {
             return 2;
         }
+
+        if(!isValidCustomerInput(obj)) return 6;
+
+        //Không có quyền sửa
+        if (!AuthorizationService.getInstance().
+                hasPermission(employeeLoginId, employee_roleId, 6)) return 4;
+
+
 
         // Kiểm tra trùng lặp trước khi cập nhật
         if (isDuplicateCustomer(obj.getId(), obj.getFirstName(), obj.getLastName(), obj.getPhone(), obj.getAddress())) {
             return 3;
         }
 
-        //Không có quyền sửa
-        if (!AuthorizationService.getInstance().
-        hasPermission(employeeLoginId, employee_roleId, 6)) return 4;
 
+
+        //Kiểm tra input ở database
         if (isDuplicateCustomerS(obj)) return 1;
         ValidationUtils validate = ValidationUtils.getInstance();
         obj.setStatus(true);
@@ -119,13 +123,14 @@ public class CustomerBUS extends BaseBUS <CustomerDTO, Integer> {
         obj.setLastName(validate.normalizeWhiteSpace(obj.getLastName()));
         obj.setAddress(validate.normalizeWhiteSpace(obj.getAddress()));
         obj.setPhone(validate.normalizeWhiteSpace(obj.getPhone()));
+
         // Thực hiện update trong database
         if (!CustomerDAL.getInstance().update(obj)) {
             return 5;
         }
 
+        //Sửa thành công
         updateLocalCache(obj);
-        //Them thanh cong
         return 1;
     }
 

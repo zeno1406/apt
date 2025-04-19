@@ -71,8 +71,6 @@ public class CategoryModalController {
     }
 
     private boolean isValidInput() {
-        int MIN_LENGTH = 1;
-        int MAX_LENGTH = 50;
         boolean isValid = true;
         String categoryName = txtCategoryName.getText().trim();
 
@@ -85,12 +83,11 @@ public class CategoryModalController {
             isValid = false;
         }
         //Kiểm tra vượt 50 ký tự
-        else if (!validator.validateUsername(categoryName, MIN_LENGTH, MAX_LENGTH)) {
-            NotificationUtils.showErrorAlert("Tên không hợp lệ (1-50 ký tự, a-z, A-Z, 0-9, không có khoảng trắng.)", "Thông báo");
+        else if (!validator.validateVietnameseText50(categoryName)) {
+            NotificationUtils.showErrorAlert("Tên không hợp lệ (1-50 ký tự, a-z, A-Z, 0-9.)", "Thông báo");
             clearAndFocus(txtCategoryName);
             isValid = false;
         }
-
         return isValid;
     }
 
@@ -110,7 +107,6 @@ public class CategoryModalController {
             int insertResult = categoryBus.insert(temp, SessionManagerService.getInstance().employeeRoleId(), SessionManagerService.getInstance().employeeLoginId());
             switch (insertResult) {
                 case 1 -> {
-//                    NotificationUtils.showInfoAlert("Thêm thể loại thành công!", "Thông báo");
                     isSaved = true;
                     handleClose();
                 }
@@ -133,7 +129,6 @@ public class CategoryModalController {
             int updateResult = categoryBus.update(temp, SessionManagerService.getInstance().employeeRoleId(), SessionManagerService.getInstance().employeeLoginId());
             switch (updateResult) {
                 case 1 -> {
-//                    NotificationUtils.showInfoAlert("Thêm thể loại thành công!", "Thông báo");
                     isSaved = true;
                     handleClose();
                 }

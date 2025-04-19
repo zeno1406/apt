@@ -124,8 +124,10 @@ public class CategoryController implements IController {
         searchBy = "Mã thể loại";
         keyword = "";
         statusFilter = 1;
-
         applyFilters();
+
+        NotificationUtils.showInfoAlert("Làm mới thành công", "Thông báo");
+
     }
 
     @Override
@@ -147,7 +149,7 @@ public class CategoryController implements IController {
         );
         if (modalController != null && modalController.isSaved()) {
             NotificationUtils.showInfoAlert("Thêm thể loại thành công", "Thông báo");
-            resetFilters();
+            applyFilters();
         }
     }
 
@@ -183,6 +185,8 @@ public class CategoryController implements IController {
             case 5  -> NotificationUtils.showErrorAlert("Thể loại không tồn tại hoặc đã bị xoá.", "Thông báo");
             default -> NotificationUtils.showErrorAlert("Lỗi không xác định. Xóa thể loại thất bại.", "Thông báo");
         }
+
+        applyFilters();
 
     }
 
