@@ -72,7 +72,7 @@ public class SupplierBUS extends BaseBUS<SupplierDTO, Integer>{
         }
 
         for (SupplierDTO s : arrLocal) {
-            if (s.getPhone() != null && s.getPhone().contains(phone.trim())) {
+            if (s.getPhone() != null && s.getPhone().contains(phone.trim()) && s.isStatus()) {
                 temp.add(s);
             }
         }

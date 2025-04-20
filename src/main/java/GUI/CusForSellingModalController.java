@@ -8,6 +8,8 @@ import DTO.CustomerDTO;
 import DTO.SupplierDTO;
 import UTILS.NotificationUtils;
 import UTILS.UiUtils;
+import UTILS.ValidationUtils;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -24,15 +26,14 @@ public class CusForSellingModalController {
     @FXML
     private Button btnExitGetCustomer, btnSearchCustomer, btnSubmitCustomer;
     @FXML
-    private TextField txtSearchCustomer, txtFieldCusFirstName, txtFieldCusLastName, txtFieldCusPhone, txtFieldCusAddress;
-    @FXML
-    private DatePicker dpDateOfBirth;
-    @FXML
-    private TableView <CustomerDTO> tbvInfoCusList;
-    @FXML
-    private TableColumn<CustomerDTO, String> tbcCusFirstName, tbcCusLastName, tbcCusPhone;
-    @FXML
-    private TableColumn<CustomerDTO, Integer> tbcCusID;
+    private TextField txtSearchCustomer;
+    @FXML private TableView<CustomerDTO> tblCustomer;
+    @FXML private TableColumn<CustomerDTO, Integer> tlb_col_id;
+    @FXML private TableColumn<CustomerDTO, String> tlb_col_firstName;
+    @FXML private TableColumn<CustomerDTO, String> tlb_col_lastName;
+    @FXML private TableColumn<CustomerDTO, String> tlb_col_dateOfBirth;
+    @FXML private TableColumn<CustomerDTO, String> tlb_col_phone;
+    @FXML private TableColumn<CustomerDTO, String> tlb_col_address;
     @Getter
     private boolean isSaved;
     @Getter
@@ -48,29 +49,36 @@ public class CusForSellingModalController {
 
     // Setup Customer Table
     public void loadTable() {
-        tbcCusID.setCellValueFactory(new PropertyValueFactory<>("id"));
-        tbcCusFirstName.setCellValueFactory(new PropertyValueFactory<>("firstName"));
-        tbcCusLastName.setCellValueFactory(new PropertyValueFactory<>("lastName"));
-        tbcCusPhone.setCellValueFactory(new PropertyValueFactory<>("phone"));
-        UiUtils.gI().addTooltipToColumn(tbcCusFirstName, 10);
-        UiUtils.gI().addTooltipToColumn(tbcCusLastName, 10);
-        UiUtils.gI().addTooltipToColumn(tbcCusPhone, 10);
+        tlb_col_id.setCellValueFactory(new PropertyValueFactory<>("id"));
+        tlb_col_firstName.setCellValueFactory(new PropertyValueFactory<>("firstName"));
+        tlb_col_lastName.setCellValueFactory(new PropertyValueFactory<>("lastName"));
+        tlb_col_dateOfBirth.setCellValueFactory(cellData ->
+                new SimpleStringProperty(ValidationUtils.getInstance().formatDateTime(cellData.getValue().getDateOfBirth())));
 
-        tbvInfoCusList.setItems(FXCollections.observableArrayList(CustomerBUS.getInstance().filterCustomers("", "", 1)));
-        tbvInfoCusList.getSelectionModel().clearSelection();
+        tlb_col_phone.setCellValueFactory(new PropertyValueFactory<>("phone"));
+        tlb_col_address.setCellValueFactory(new PropertyValueFactory<>("address"));
+        UiUtils.gI().addTooltipToColumn(tlb_col_firstName, 10);
+        UiUtils.gI().addTooltipToColumn(tlb_col_lastName, 10);
+        UiUtils.gI().addTooltipToColumn(tlb_col_dateOfBirth, 10);
+        UiUtils.gI().addTooltipToColumn(tlb_col_phone, 10);
+        UiUtils.gI().addTooltipToColumn(tlb_col_address, 10);
+
+        tblCustomer.setItems(FXCollections.observableArrayList(CustomerBUS.getInstance().filterCustomers("", "", 1)));
+        tblCustomer.getSelectionModel().clearSelection();
     }
     
     // Set click Event
     public void setOnMouseClicked() {
         btnExitGetCustomer.setOnAction(e -> handleClose());
         btnSubmitCustomer.setOnAction(e -> handleGetCustomer());
-        btnSearchCustomer.setOnMouseClicked(e -> handleSearch());
+//        btnSearchCustomer.setOnMouseClicked(e -> handleSearch());
+        txtSearchCustomer.textProperty().addListener((observable, oldValue, newValue) -> handleSearch());
     }
 
     // handle search
     private void handleSearch() {
-        tbvInfoCusList.setItems(FXCollections.observableArrayList(CustomerBUS.getInstance().searchCustomerByPhone(txtSearchCustomer.getText().trim())));
-        tbvInfoCusList.getSelectionModel().clearSelection();
+        tblCustomer.setItems(FXCollections.observableArrayList(CustomerBUS.getInstance().searchCustomerByPhone(txtSearchCustomer.getText().trim())));
+        tblCustomer.getSelectionModel().clearSelection();
     }
 
     // close
@@ -93,7 +101,7 @@ public class CusForSellingModalController {
 
     // check select customer
     private boolean isNotSelectedCustomer() {
-        selectedCustomer = tbvInfoCusList.getSelectionModel().getSelectedItem();
+        selectedCustomer = tblCustomer.getSelectionModel().getSelectedItem();
         return selectedCustomer == null;
     }
 }

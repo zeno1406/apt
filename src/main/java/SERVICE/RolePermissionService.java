@@ -27,7 +27,7 @@ public class RolePermissionService {
         if (roleBus.isLocalEmpty()) roleBus.loadLocal();
         int resultr = roleBus.insert(role, employee_roleId, ServiceAccessCode.ROLE_PERMISSION_SERVICE, employeeLoginId);
         if (resultr != 1) {
-            System.err.println("Tạo role thất bại");
+//            System.err.println("Tạo role thất bại");
             return resultr;
         }
 

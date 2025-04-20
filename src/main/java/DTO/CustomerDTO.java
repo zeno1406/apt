@@ -35,4 +35,7 @@ public class CustomerDTO extends BaseInformationDTO {
 
     public String getAddress() { return address; }
     public void setAddress(String address) { this.address = address; }
+    public String getFullName() {
+        return this.firstName + " " + this.lastName;
+    }
 }

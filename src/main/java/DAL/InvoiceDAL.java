@@ -38,7 +38,9 @@ public class InvoiceDAL extends BaseDAL<InvoiceDTO, Integer> {
 
     @Override
     protected void setGeneratedKey(InvoiceDTO obj, ResultSet generatedKeys) throws SQLException {
-        obj.setId(generatedKeys.getInt(1));
+        if (generatedKeys.next()) {
+            obj.setId(generatedKeys.getInt(1));
+        }
     }
 
     @Override

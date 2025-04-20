@@ -22,6 +22,8 @@ public class DetailDiscountModalController {
     @FXML
     private Label modalName;
     @FXML
+    private TextField txtTypeDiscount;
+    @FXML
     private TextField txtTotalPriceInvoice;
     @FXML
     private TextField txtDiscountAmount;
@@ -30,8 +32,10 @@ public class DetailDiscountModalController {
     @Getter
     private boolean isSaved;
     private int typeModal;
+    private boolean typeDiscount;
+    @Getter
     private DetailDiscountDTO detailDiscount;
-    private ArrayList<DetailDiscountDTO> arrDetailDiscount;
+    private ArrayList<DetailDiscountDTO> arrDetailDiscount = new ArrayList<>();
 
     @FXML
     public void initialize() {
@@ -49,7 +53,7 @@ public class DetailDiscountModalController {
             insertDetailDiscount();
 
         } else {
-//            updateEmployee();
+            updateDetailDiscount();
         }
     }
 
@@ -86,11 +90,21 @@ public class DetailDiscountModalController {
             isValid = false;
         } else if (isValid) {
             try {
-                BigDecimal discountAmounts = new BigDecimal(discountAmount);
-                if (!validator.validateSalary(discountAmounts, 10, 2, false)) {
-                    NotificationUtils.showErrorAlert("Số tiền giảm giá không hợp lệ (Tối đa 10 chữ số, 2 số thập phân, không âm hoặc bằng 0).", "Thông báo");
-                    clearAndFocus(txtDiscountAmount);
-                    isValid = false;
+                BigDecimal discount = new BigDecimal(discountAmount);
+                if (typeDiscount) {
+                    // Giảm theo phần trăm: từ >0 đến <100
+                    if (discount.compareTo(BigDecimal.ZERO) <= 0 || discount.compareTo(BigDecimal.valueOf(100)) >= 0) {
+                        NotificationUtils.showErrorAlert("Phần trăm giảm giá phải lớn hơn 0 và nhỏ hơn 100.", "Thông báo");
+                        clearAndFocus(txtDiscountAmount);
+                        isValid = false;
+                    }
+                } else {
+                    // Giảm cứng: số tiền, không âm, > 0
+                    if (!validator.validateSalary(discount, 10, 2, false)) {
+                        NotificationUtils.showErrorAlert("Số tiền giảm giá không hợp lệ (Tối đa 10 chữ số, 2 số thập phân, không âm hoặc bằng 0).", "Thông báo");
+                        clearAndFocus(txtDiscountAmount);
+                        isValid = false;
+                    }
                 }
             } catch (NumberFormatException e) {
                 NotificationUtils.showErrorAlert("Số tiền giảm giá phải là số.", "Thông báo");
@@ -105,14 +119,28 @@ public class DetailDiscountModalController {
     private void insertDetailDiscount() {
         if (isValidInput()) {
             DetailDiscountDTO tempDetailDiscount = new DetailDiscountDTO("", new BigDecimal(txtTotalPriceInvoice.getText().trim()), new BigDecimal(txtDiscountAmount.getText().trim()));
-            arrDetailDiscount.add(tempDetailDiscount);
-            NotificationUtils.showInfoAlert("Thêm chi tiết khuyến mãi thành công.", "Thông báo");
+            isSaved = true;
+            detailDiscount = tempDetailDiscount;
+            handleClose();
         }
     }
 
-    public void setTypeModal(int type) {
+    private void updateDetailDiscount() {
+        if (isValidInput()) {
+            BigDecimal totalPriceInvoice = new BigDecimal(txtTotalPriceInvoice.getText().trim());
+            BigDecimal discountAmount = new BigDecimal(txtDiscountAmount.getText().trim());
+            isSaved = true;
+            detailDiscount.setTotalPriceInvoice(totalPriceInvoice);
+            detailDiscount.setDiscountAmount(discountAmount);
+            handleClose();
+        }
+    }
+
+    public void setTypeModal(int type, boolean typeDiscount) {
         if (type != 0 && type != 1) handleClose();
         typeModal = type;
+        this.typeDiscount = typeDiscount;
+        txtTypeDiscount.setText(typeDiscount ? "Phần trăm" : "Giảm cứng");
         if (typeModal == 0) {
             modalName.setText("Thêm chi tiết khuyến mãi");
         } else {
@@ -123,9 +151,8 @@ public class DetailDiscountModalController {
 
     public void setDetailDiscount(DetailDiscountDTO detailDiscount) {
         this.detailDiscount = detailDiscount;
-        ValidationUtils validate = ValidationUtils.getInstance();
-        txtTotalPriceInvoice.setText(validate.formatCurrency(detailDiscount.getTotalPriceInvoice()));
-        txtDiscountAmount.setText(validate.formatCurrency(detailDiscount.getDiscountAmount()));
+        txtTotalPriceInvoice.setText(detailDiscount.getTotalPriceInvoice().toString());
+        txtDiscountAmount.setText(detailDiscount.getDiscountAmount().toString());
     }
 
     private void handleClose() {

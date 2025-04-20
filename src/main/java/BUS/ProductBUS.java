@@ -183,6 +183,7 @@ public class ProductBUS  extends BaseBUS <ProductDTO, String>{
                 newProduct.setDescription(obj.getDescription());
                 newProduct.setImageUrl(obj.getImageUrl());
                 newProduct.setCategoryId(obj.getCategoryId());
+                newProduct.setStatus(obj.isStatus());
 
                 arrLocal.set(i, newProduct);
                 break;
@@ -313,7 +314,8 @@ public class ProductBUS  extends BaseBUS <ProductDTO, String>{
                 Objects.equals(existingPro.getImageUrl(), obj.getImageUrl());
     }
 
-    public ArrayList<ProductDTO> filterProducts(String searchBy, String keyword, int categoryIdFilter, int statusFilter, BigDecimal startPrice, BigDecimal endPrice) {
+    public ArrayList<ProductDTO> filterProducts(String searchBy, String keyword, int categoryIdFilter, int statusFilter,
+                                                BigDecimal startPrice, BigDecimal endPrice, boolean inStockOnly) {
         ArrayList<ProductDTO> filteredList = new ArrayList<>();
 
         if (keyword == null) keyword = "";
@@ -326,10 +328,12 @@ public class ProductBUS  extends BaseBUS <ProductDTO, String>{
             boolean matchesCategory = (categoryIdFilter == -1) || (pro.getCategoryId() == categoryIdFilter);
             boolean matchesStatus = (statusFilter == -1) || (pro.isStatus() == (statusFilter == 1));
             boolean matchesPrice = true;
+            boolean matchesStock = !inStockOnly || pro.getStockQuantity() > 0;
 
-            // Kiểm tra giá cả
+            // Giá
             if (startPrice != null && endPrice != null) {
-                matchesPrice = pro.getSellingPrice().compareTo(startPrice) >= 0 && pro.getSellingPrice().compareTo(endPrice) <= 0;
+                matchesPrice = pro.getSellingPrice().compareTo(startPrice) >= 0 &&
+                        pro.getSellingPrice().compareTo(endPrice) <= 0;
             } else if (startPrice != null) {
                 matchesPrice = pro.getSellingPrice().compareTo(startPrice) >= 0;
             } else if (endPrice != null) {
@@ -339,7 +343,6 @@ public class ProductBUS  extends BaseBUS <ProductDTO, String>{
             String name = pro.getName() != null ? pro.getName().toLowerCase() : "";
             String productId = pro.getId() != null ? pro.getId().toLowerCase() : "";
 
-
             if (!keyword.isEmpty()) {
                 switch (searchBy) {
                     case "Mã sản phẩm" -> matchesSearch = productId.contains(keyword);
@@ -347,7 +350,7 @@ public class ProductBUS  extends BaseBUS <ProductDTO, String>{
                 }
             }
 
-            if (matchesSearch && matchesCategory && matchesStatus && matchesPrice) {
+            if (matchesSearch && matchesCategory && matchesStatus && matchesPrice && matchesStock) {
                 filteredList.add(pro);
             }
         }
@@ -355,19 +358,10 @@ public class ProductBUS  extends BaseBUS <ProductDTO, String>{
         return filteredList;
     }
 
-    // new
-    public ArrayList<ProductDTO> getProductWithValidQuantity() {
-        if(arrLocal.isEmpty()) ProductBUS.getInstance().loadLocal();
-        ArrayList<ProductDTO> temp = new ArrayList<>();
-        for(ProductDTO product : arrLocal)
-            if (product.getStockQuantity() > 0) temp.add(product);
-        return temp;
+    public ArrayList<ProductDTO> filterProducts(String searchBy, String keyword, int categoryIdFilter,
+                                                int statusFilter, BigDecimal startPrice, BigDecimal endPrice) {
+        return filterProducts(searchBy, keyword, categoryIdFilter, statusFilter, startPrice, endPrice, false);
     }
 
-    public ArrayList<ProductDTO> getProductWithValidQuantity(ArrayList<ProductDTO> list) {
-        ArrayList<ProductDTO> temp = new ArrayList<>();
-        for(ProductDTO product : list)
-            if (product.getStockQuantity() > 0) temp.add(product);
-        return temp;
-    }
+
 }

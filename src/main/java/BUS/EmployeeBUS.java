@@ -120,7 +120,7 @@ public class EmployeeBUS extends BaseBUS <EmployeeDTO, Integer> {
             if (!EmployeeDAL.getInstance().updateBasic(obj, false)) return 7;
         } else {
             // Nߦ+u cߦ�p nhߦ�t ng���+�i kh+�c, ch�+� -榦�+�c ph+�p nߦ+u ng���+�i -�+� c+� quy�+�n thߦ�p h��n
-            if (AuthorizationService.getInstance().hasPermission(obj.getId(), obj.getRoleId(), 3)) return 6;
+            if (AuthorizationService.getInstance().hasPermission(obj.getId(), getByIdLocal(obj.getId()).getRoleId(), 3)) return 6;
             if (isInvalidEmployeeUpdate(obj, true, false)) return 4;
             if (isDuplicateEmployee(obj)) return 1;
             if (!EmployeeDAL.getInstance().updateBasic(obj, true)) return 7;

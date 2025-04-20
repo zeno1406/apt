@@ -22,10 +22,9 @@
                     <children>
                         <AnchorPane prefHeight="50.0" prefWidth="880.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                             <children>
-                                <FontAwesomeIcon fill="#58c9c9" glyphName="SEARCH" layoutX="169.0" layoutY="32.0" size="1.8em" text="" />
-                                <TextField layoutX="10.0" layoutY="10.0" prefHeight="26.0" prefWidth="158.0" promptText="Nhập để tìm kiếm" styleClass="textfield" stylesheets="@../css/base.css" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0" />
-                                <Line endX="79.0" endY="-3.814697265625E-6" layoutX="111.0" layoutY="38.0" startX="-100.0" stroke="#58c9c9" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="40.0" />
-                                <TextField fx:id="txtSearch" layoutX="10.0" layoutY="10.0" prefHeight="26.0" prefWidth="155.0" promptText="Nhập để tìm kiếm" styleClass="textfield" stylesheets="@../css/base.css" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="733.0" />
+                                <FontAwesomeIcon fill="#58c9c9" glyphName="SEARCH" layoutX="169.0" layoutY="32.0" size="1.8em" text="" AnchorPane.leftAnchor="169.0" AnchorPane.topAnchor="15.0" />
+                                <Line endX="79.0" endY="-3.814697265625E-6" layoutX="111.0" layoutY="38.0" startX="-100.0" stroke="#58c9c9" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="45.0" />
+                                <TextField fx:id="txtSearch" layoutX="10.0" layoutY="10.0" prefHeight="26.0" prefWidth="145.6" promptText="Nhập để tìm kiếm" styleClass="textfield" stylesheets="@../css/base.css" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="15.0" />
                         <HBox alignment="CENTER" layoutX="200.0" layoutY="1.0" prefHeight="46.0" prefWidth="267.0" spacing="10.0" AnchorPane.bottomAnchor="0.7999999999999972" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="431.2" AnchorPane.topAnchor="3.0">
                            <children>
                               <ComboBox fx:id="cbSearchBy" prefHeight="26.0" prefWidth="120.0" styleClass="combo-box" stylesheets="@../css/base.css" />

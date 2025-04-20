@@ -25,6 +25,8 @@ public class ImportProductModalController {
     @FXML
     private TextField txtQuantity;
     @FXML
+    private TextField txtProductName;
+    @FXML
     private TextField txtPrice;
     @FXML
     private TextField txtSellingPrice;
@@ -51,30 +53,13 @@ public class ImportProductModalController {
 
 //   add handle for selling here
     public void setTypeModal(int type) {
-        if (type != 0 && type != 1 && type !=2 && type !=3) handleClose();
+        if (type != 0 && type != 1) handleClose();
         typeModal = type;
         if (typeModal == 0) {
             modalName.setText("Thêm chi tiết phiếu nhập");
         } else if (typeModal == 1){
             if (tempDetailImport == null) handleClose();
             modalName.setText("Sửa chi tiết phiếu nhập");
-        }
-        else if (typeModal == 2) {
-            modalName.setText("Thêm sản phẩm");
-            hbInputPrice.setVisible(false);
-            hbInputSellingPrice.setVisible(false);
-            acRootInput.setMaxHeight(acRootInput.getHeight() - hbInputPrice.getHeight() - hbInputSellingPrice.getHeight());
-            txtPrice.setText(ProductBUS.getInstance().getByIdLocal(this.tempDetailImport.getProductId()).getSellingPrice().toString());
-            txtSellingPrice.setText(ProductBUS.getInstance().getByIdLocal(this.tempDetailImport.getProductId()).getSellingPrice().toString());
-        }
-        else {
-            if (tempDetailImport == null) handleClose();
-            modalName.setText("sửa số lượng sản phẩm");
-            hbInputPrice.setVisible(false);
-            hbInputSellingPrice.setVisible(false);
-            acRootInput.setMaxHeight(acRootInput.getHeight() - hbInputPrice.getHeight() - hbInputSellingPrice.getHeight());
-            txtPrice.setText(ProductBUS.getInstance().getByIdLocal(this.tempDetailImport.getProductId()).getSellingPrice().toString());
-            txtSellingPrice.setText(ProductBUS.getInstance().getByIdLocal(this.tempDetailImport.getProductId()).getSellingPrice().toString());
         }
     }
 
@@ -86,6 +71,7 @@ public class ImportProductModalController {
     }
 
     public void setProduct(ProductDTO product) {
+        txtProductName.setText(product.getName());
         this.tempDetailImport = new TempDetailImportDTO(
                 0,
                 product.getId(),

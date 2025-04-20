@@ -75,7 +75,6 @@ public class InvoiceAdvanceSearchModalController {
             NotificationUtils.showErrorAlert("Ngày tạo không được lớn hơn ngày kết thúc.", "Thông báo");
             return;
         }
-
         filteredInvoices = InvoiceBUS.getInstance().filterInvoicesAdvance(employeeId, customerId, discountCode, startCreateDate, endCreateDate, startTotalPrice, endTotalPrice);
         int numResult = filteredInvoices.size();
         if (numResult != 0) {
