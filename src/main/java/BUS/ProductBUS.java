@@ -238,8 +238,6 @@ public class ProductBUS  extends BaseBUS <ProductDTO, String>{
         return true;
     }
 
-
-
     //    VALIDATE IS HERE!!!
     private boolean isDuplicateProductName(String id, String name) {
         if (name == null) return false;

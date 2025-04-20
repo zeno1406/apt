@@ -128,6 +128,11 @@ public class SellingController {
                 new SimpleStringProperty(validationUtils.formatCurrency(cellData.getValue().getTotalPrice())));
         tbvDetailInvoiceProduct.setItems(FXCollections.observableArrayList(arrTempDetailImport));
         tbvDetailInvoiceProduct.getSelectionModel().clearSelection();
+
+        UiUtils.gI().addTooltipToColumn(tbListInvoiceProductName, 10);
+        UiUtils.gI().addTooltipToColumn(tbListInvoiceProductQuantity, 10);
+        UiUtils.gI().addTooltipToColumn(tbListInvoiceProductPrice, 10);
+        UiUtils.gI().addTooltipToColumn(tbListInvoiceProductTotalPrice, 10);
     }
 
 

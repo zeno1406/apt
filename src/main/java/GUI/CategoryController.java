@@ -1,9 +1,7 @@
 package GUI;
 
 import BUS.CategoryBUS;
-import BUS.CustomerBUS;
 import DTO.CategoryDTO;
-import DTO.CustomerDTO;
 import INTERFACE.IController;
 import SERVICE.SessionManagerService;
 import UTILS.NotificationUtils;
@@ -69,9 +67,7 @@ public class CategoryController implements IController {
     }
 
     private void loadComboBox() {
-        cbSearchBy.getItems().addAll(
-                "Mã thể loại",
-                "Tên thể loại");
+        cbSearchBy.getItems().addAll("Mã thể loại", "Tên thể loại");
 
         //default selection
         cbSearchBy.getSelectionModel().selectFirst();
@@ -110,14 +106,11 @@ public class CategoryController implements IController {
         applyFilters();
     }
 
-
-
-
     @Override
     public void applyFilters() {
-        CategoryBUS cateBUS = CategoryBUS.getInstance();
+        CategoryBUS categoryBUS = CategoryBUS.getInstance();
         tblCategory.setItems(FXCollections.observableArrayList(
-                cateBUS.filterCategories(searchBy, keyword, statusFilter)
+                categoryBUS.filterCategories(searchBy, keyword, statusFilter)
         ));
         tblCategory.getSelectionModel().clearSelection();
     }
@@ -131,8 +124,10 @@ public class CategoryController implements IController {
         searchBy = "Mã thể loại";
         keyword = "";
         statusFilter = 1;
-
         applyFilters();
+
+        NotificationUtils.showInfoAlert("Làm mới thành công", "Thông báo");
+
     }
 
     @Override
@@ -160,37 +155,39 @@ public class CategoryController implements IController {
 
     private void handleDeleteBtn() {
         // Get selected category
+
+        CategoryDTO selectedCategory = tblCategory.getSelectionModel().getSelectedItem();
         if (selectedCategory == null) {
             NotificationUtils.showErrorAlert("Vui lòng chọn một thể loại để xóa!", "Thông báo");
             return;
         }
 
-        // Confirm deletion
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Xác nhận");
-        alert.setHeaderText("Xác nhận xóa thể loại");
-        alert.setContentText("Bạn có chắc chắn muốn xóa thể loại này không?");
+        if(selectedCategory.getId() == 1)
+        {
+            NotificationUtils.showErrorAlert("Không thể xóa thể loại gốc!", "Thông báo");
+            return;
+        }
 
-//        alert.showAndWait().ifPresent(response -> {
-//            if (response == ButtonType.OK) {
-//                int deleteResult = CategoryBUS.getInstance()
-//                        .delete(selectedCategory.getId(), SessionManagerService.getInstance().employeeRoleId(), SessionManagerService.getInstance().employeeLoginId());
-//
-//                switch (deleteResult) {
-//                    case 1 -> {
-//                        loadTable();
-//                        applyFilters();
-//                        NotificationUtils.showInfoAlert("Xóa thể loại thành công!", "Thông báo");
-//                    }
-//                    case 2 ->
-//                            NotificationUtils.showErrorAlert("Thể loại này đã bị ràng buộc. Không thể xóa.", "Thông báo");
-//                    case 3 -> NotificationUtils.showErrorAlert("Không có quyền xóa thể loại.", "Thông báo");
-//                    case 4 -> NotificationUtils.showErrorAlert("Lỗi kết nối CSDL. Xóa thể loại thất bại.", "Thông báo");
-//                    default ->
-//                            NotificationUtils.showErrorAlert("Lỗi không xác định. Xóa thể loại thất bại.", "Thông báo");
-//                }
-//            }
-//        });
+        int deleteResult = CategoryBUS.getInstance().delete(
+                selectedCategory.getId(),
+                SessionManagerService.getInstance().employeeRoleId(),
+                SessionManagerService.getInstance().employeeLoginId());
+
+        switch (deleteResult) {
+            case 1 -> {
+                NotificationUtils.showInfoAlert("Xóa thể loại thành công!", "Thông báo");
+                resetFilters();
+            }
+            case 2  -> NotificationUtils.showErrorAlert("Lỗi xoá thể loại không thành công. Vui lòng thử lại", "Thông báo");
+            case 4  -> NotificationUtils.showErrorAlert("Không có quyền xóa thể loại.", "Thông báo");
+            case 3  -> NotificationUtils.showErrorAlert("Không thể xoá thể loại gốc. Vui lòng thử lại.", "Thông báo");
+            case 6  -> NotificationUtils.showErrorAlert("Không thể xoá thể loại ở CSDL.", "Thông báo");
+            case 5  -> NotificationUtils.showErrorAlert("Thể loại không tồn tại hoặc đã bị xoá.", "Thông báo");
+            default -> NotificationUtils.showErrorAlert("Lỗi không xác định. Xóa thể loại thất bại.", "Thông báo");
+        }
+
+        applyFilters();
+
     }
 
     private void handleEditBtn() {

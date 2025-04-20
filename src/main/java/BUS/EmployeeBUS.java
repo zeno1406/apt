@@ -32,6 +32,7 @@ public class EmployeeBUS extends BaseBUS <EmployeeDTO, Integer> {
         if (id <= 0) return null;
         for (EmployeeDTO employee : arrLocal) {
             if (Objects.equals(employee.getId(), id)) {
+//                System.out.println(employee);
                 return new EmployeeDTO(employee);
             }
         }
@@ -84,6 +85,9 @@ public class EmployeeBUS extends BaseBUS <EmployeeDTO, Integer> {
     }
 
     public int update(EmployeeDTO obj, int employee_roleId, int employeeLoginId) {
+
+//        System.out.println(obj.getRoleId());
+//        System.out.println();
         if (obj == null || obj.getId() <= 0 || employee_roleId <= 0) return 2;
 
         // Kh+�ng c+� quy�+�n 3 th+� kh+�ng ch�+�nh ch+�nh m+�nh hay ng���+�i kh+�c
@@ -98,10 +102,12 @@ public class EmployeeBUS extends BaseBUS <EmployeeDTO, Integer> {
         }
 
         // Ki�+�m tra -�ang cߦ�p nhߦ�t ch+�nh m+�nh hay ng���+�i kh+�c
-        boolean isSelfUpdate = (employeeLoginId == obj.getId());
-
+        boolean isSelfUpdate = (employeeLoginId == obj.getId());//false
+//        System.out.println("o ngoai ne");
+//        System.out.println(employee_roleId);
         // Role 1: c+� quy�+�n cao nhߦ�t nh��ng vߦ�n kh+�ng t�+� s�+�a role_id & status
         if (employee_roleId == 1) {
+
             boolean canUpdateAdvanced = !isSelfUpdate; // Ch�+� cߦ�p nhߦ�t full nߦ+u kh+�ng phߦ�i ch+�nh m+�nh
             if (isInvalidEmployeeUpdate(obj, canUpdateAdvanced, true)) {
                 return 4;
@@ -114,13 +120,14 @@ public class EmployeeBUS extends BaseBUS <EmployeeDTO, Integer> {
 
         // C+�c role kh+�c
         if (isSelfUpdate) {
+//            System.out.println(obj.getRoleId());
             // Ch�+� c+� th�+� cߦ�p nhߦ�t basic c�+�a ch+�nh m+�nh
             if (isInvalidEmployeeUpdate(obj, false, false)) return 4;
             if (isDuplicateEmployee(obj)) return 1;
             if (!EmployeeDAL.getInstance().updateBasic(obj, false)) return 7;
         } else {
             // Nߦ+u cߦ�p nhߦ�t ng���+�i kh+�c, ch�+� -榦�+�c ph+�p nߦ+u ng���+�i -�+� c+� quy�+�n thߦ�p h��n
-            if (AuthorizationService.getInstance().hasPermission(obj.getId(), obj.getRoleId(), 3)) return 6;
+            if (AuthorizationService.getInstance().hasPermission(obj.getId(), EmployeeBUS.getInstance().getByIdLocal(obj.getId()).getRoleId(), 3)) return 6;
             if (isInvalidEmployeeUpdate(obj, true, false)) return 4;
             if (isDuplicateEmployee(obj)) return 1;
             if (!EmployeeDAL.getInstance().updateBasic(obj, true)) return 7;
