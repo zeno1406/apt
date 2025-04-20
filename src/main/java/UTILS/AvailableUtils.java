@@ -2,6 +2,9 @@ package UTILS;
 
 import BUS.*;
 import DTO.CategoryDTO;
+import DTO.InvoiceDTO;
+
+import java.util.ArrayList;
 
 public class AvailableUtils {
     private static final AvailableUtils INSTANCE = new AvailableUtils();
@@ -58,5 +61,22 @@ public class AvailableUtils {
         return temp != null && temp.isStatus();
     }
 
+    public boolean isNotUsedDiscount(String discountCode) {
+        if (discountCode == null || discountCode.isEmpty()) {
+            return false;
+        }
+
+        // Load local nếu chưa có
+        InvoiceBUS invoiceBUS = InvoiceBUS.getInstance();
+        if (invoiceBUS.isLocalEmpty()) {
+            invoiceBUS.loadLocal();
+        }
+
+        // Kiểm tra xem có hóa đơn nào dùng mã này không
+        ArrayList<InvoiceDTO> invoicesUsingDiscount = invoiceBUS.filterInvoicesByDiscountCode(discountCode);
+
+        // Nếu không có => được phép xóa
+        return invoicesUsingDiscount.isEmpty();
+    }
 
 }

@@ -2,7 +2,8 @@ package GUI;
 
 import BUS.*;
 import DTO.*;
-import SERVICE.ImportService;
+
+import SERVICE.InvoiceService;
 import SERVICE.SessionManagerService;
 import UTILS.NotificationUtils;
 import UTILS.UiUtils;
@@ -13,37 +14,60 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.*;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.RowConstraints;
+import javafx.scene.layout.VBox;
 
 import java.io.File;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 
-public class ImportProductController {
+public class SellingProductController {
     @FXML
-    private Button btnExitImportingForm, btnImportListProductEdit, btnSearchProduct, btnImportListProductClear, btnImportListProductRemove, btnSubmitImport, btnGetSupInfo;
+    private Button btnExitSellingForm;
+
+    @FXML
+    private Button btnInvoiceListProductEdit;
+
+    @FXML
+    private Button btnSearchProduct;
+    @FXML
+    private Button btnGetDiscount;
+
+    @FXML
+    private Button btnInvoiceListProductClear;
+
+    @FXML
+    private Button btnInvoiceListProductRemove;
+
+    @FXML
+    private Button btnSubmitInvoice;
+
+    @FXML
+    private Button btnGetCusInfo;
     @FXML
     private Button btnClearProduct;
     @FXML
-    private TextField txtImportId;
+    private TextField txtInvoiceId;
     @FXML
-    private TextField txtEmployeeId;
+    private TextField txtEmployeeId, txtCodeDiscount;
     @FXML
     private TextField txtEmployeeFullName;
     @FXML
     private TextField txtCreateDate;
     @FXML
-    private TextField txtSupplierId;
+    private TextField txtCustomerId;
     @FXML
-    private TextField txtSupplierName;
+    private TextField txtCustomerName;
     @FXML
     private GridPane gpShowProductWrapper;
     @FXML
@@ -51,44 +75,46 @@ public class ImportProductController {
     @FXML
     private TextField txtProductNameSearch;
     @FXML
-    private ComboBox<CategoryDTO> cbxFieldProductCategory;
+    private Label lbTotalInvoicePrice, lbDiscountPrice;
     @FXML
-    private ComboBox<SupplierDTO> txtFieldProductSupplier;
+    private ComboBox<String> cbCategoryFilter;
+    private final HashMap<String, Integer> categoryMap = new HashMap<>();
     @FXML
-    private TableView<TempDetailImportDTO> tbvDetailImportProduct;
+    private TableView<TempDetailInvoiceDTO> tbvDetailInvoiceProduct;
     @FXML
-    private TableColumn<TempDetailImportDTO, String> tlb_col_index;
+    private TableColumn<TempDetailInvoiceDTO, String> tlb_col_index;
     @FXML
-    private TableColumn<TempDetailImportDTO, String> tlb_col_productName;
+    private TableColumn<TempDetailInvoiceDTO, String> tlb_col_productName;
     @FXML
-    private TableColumn<TempDetailImportDTO, String> tlb_col_quantity;
+    private TableColumn<TempDetailInvoiceDTO, String> tlb_col_quantity;
     @FXML
-    private TableColumn<TempDetailImportDTO, String> tlb_col_price;
+    private TableColumn<TempDetailInvoiceDTO, String> tlb_col_price;
     @FXML
-    private TableColumn<TempDetailImportDTO, String> tlb_col_sellingPrice;
-    @FXML
-    private TableColumn<TempDetailImportDTO, String> tlb_col_totalPrice;
+    private TableColumn<TempDetailInvoiceDTO, String> tlb_col_totalPrice;
 
-    private ArrayList<TempDetailImportDTO> arrTempDetailImport = new ArrayList<>();
-    private TempDetailImportDTO selectedTempDetailImport;
-    private SupplierDTO selectedSupplier = null;
+    private ArrayList<TempDetailInvoiceDTO> arrTempDetailInvoice = new ArrayList<>();
+    private TempDetailInvoiceDTO selectedTempDetailInvoice;
+    private CustomerDTO selectedCustomer = null;
+    private DiscountDTO selectedDiscount = null;
+    private BigDecimal discountPrice;
 
     @FXML
     public void initialize()
     {
         if (CategoryBUS.getInstance().isLocalEmpty()) CategoryBUS.getInstance().loadLocal();
-        if (ImportBUS.getInstance().isLocalEmpty()) ImportBUS.getInstance().loadLocal();
         if (ProductBUS.getInstance().isLocalEmpty()) ProductBUS.getInstance().loadLocal();
-        arrTempDetailImport.clear();
+        if (InvoiceBUS.getInstance().isLocalEmpty()) InvoiceBUS.getInstance().loadLocal();
+        arrTempDetailInvoice.clear();
         loadProductWrapper();
         changeLabelContent();
         setOnMouseClicked();
+        loadComboBox();
     }
 
     private void loadProductWrapper() {
         clearGrid(gpShowProductWrapper);
-        addConstraintRow(gpShowProductWrapper, ProductBUS.getInstance().filterProducts("", "", -1, 1, null,null), 140);
-        addEventClickForProduct(tbvDetailImportProduct, gpShowProductWrapper);
+        addConstraintRow(gpShowProductWrapper, ProductBUS.getInstance().filterProducts("", "", -1, 1, null,null, true), 140);
+        addEventClickForProduct(tbvDetailInvoiceProduct, gpShowProductWrapper);
     }
 
     public void loadTable() {
@@ -108,34 +134,33 @@ public class ImportProductController {
         tlb_col_quantity.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getQuantity())));
         tlb_col_price.setCellValueFactory(cellData ->
                 new SimpleStringProperty(validationUtils.formatCurrency(cellData.getValue().getPrice())));
-        tlb_col_sellingPrice.setCellValueFactory(cellData ->
-                new SimpleStringProperty(validationUtils.formatCurrency(cellData.getValue().getSellingPrice())));
         tlb_col_totalPrice.setCellValueFactory(cellData ->
                 new SimpleStringProperty(validationUtils.formatCurrency(cellData.getValue().getTotalPrice())));
-        tbvDetailImportProduct.setItems(FXCollections.observableArrayList(arrTempDetailImport));
-        tbvDetailImportProduct.getSelectionModel().clearSelection();
-
-        UiUtils.gI().addTooltipToColumn(tlb_col_productName, 10);
         UiUtils.gI().addTooltipToColumn(tlb_col_quantity, 10);
         UiUtils.gI().addTooltipToColumn(tlb_col_price, 10);
-        UiUtils.gI().addTooltipToColumn(tlb_col_sellingPrice, 10);
         UiUtils.gI().addTooltipToColumn(tlb_col_totalPrice, 10);
+        tbvDetailInvoiceProduct.setItems(FXCollections.observableArrayList(arrTempDetailInvoice));
+        tbvDetailInvoiceProduct.getSelectionModel().clearSelection();
     }
 
     // Set click Event
     private void setOnMouseClicked() {
-        btnExitImportingForm.setOnMouseClicked(event -> onMouseClickedExitImportingForm());
+        btnExitSellingForm.setOnMouseClicked(event -> onMouseClickedExitSellingForm());
         btnSearchProduct.setOnMouseClicked(event -> onMousedClickSearchProduct());
-        btnGetSupInfo.setOnMouseClicked(event -> onMouseClickedShowSupplierContainer());
-        btnImportListProductEdit.setOnMouseClicked(e -> onMouseClickedEdit());
-        btnImportListProductRemove.setOnMouseClicked(e -> onMouseClickedRemove());
-        btnImportListProductClear.setOnMouseClicked(e -> onMouseClickedClear());
+        cbCategoryFilter.setOnAction(e -> handleCategoryFilterChange());
+        btnGetCusInfo.setOnMouseClicked(event -> onMouseClickedShowCustomerContainer());
+        btnInvoiceListProductRemove.setOnMouseClicked(e -> onMouseClickedRemove());
+        btnInvoiceListProductClear.setOnMouseClicked(e -> onMouseClickedClear());
         btnClearProduct.setOnMouseClicked(e -> {
             loadProductWrapper();
+            cbCategoryFilter.getSelectionModel().select("Tất cả");
             txtProductNameSearch.setText("");
         });
-        btnSubmitImport.setOnAction(e -> handleImport());
+        btnInvoiceListProductEdit.setOnMouseClicked(event -> onMouseClickedEdit());
+        btnSubmitInvoice.setOnMouseClicked(event -> handleInvoice());
+        btnGetDiscount.setOnMouseClicked(event -> onMouseClickedShowDiscountContainer());
     }
+
 
     // search
     private void onMousedClickSearchProduct() {
@@ -145,34 +170,35 @@ public class ImportProductController {
             return;
         }
         addConstraintRow(gpShowProductWrapper, list, 140);
-        addEventClickForProduct(tbvDetailImportProduct, gpShowProductWrapper);
+        addEventClickForProduct(tbvDetailInvoiceProduct, gpShowProductWrapper);
     }
 
     // show select supplier
-    private void onMouseClickedShowSupplierContainer() {
-            SupForImportModalController modalController = UiUtils.gI().openStageWithController(
-                    "/GUI/SupForImportModal.fxml",
-                    null,
-                    "Danh sách nhà cung cấp"
-            );
+    private void onMouseClickedShowCustomerContainer() {
+        CusForSellingModalController modalController = UiUtils.gI().openStageWithController(
+                "/GUI/CusForSellingModal.fxml",
+                null,
+                "Danh sách khách hàng"
+        );
 
-            if (modalController != null && modalController.isSaved()) {
-                selectedSupplier = new SupplierDTO(modalController.getSelectedSupplier());
-                txtSupplierId.setText(String.valueOf(selectedSupplier.getId()));
-                txtSupplierName.setText(selectedSupplier.getName());
-                NotificationUtils.showInfoAlert("Chọn nhà cung cấp thành công.", "Thông báo");
-            }
+        if (modalController != null && modalController.isSaved()) {
+            selectedCustomer = new CustomerDTO(modalController.getSelectedCustomer());
+            txtCustomerId.setText(String.valueOf(selectedCustomer.getId()));
+            txtCustomerName.setText(selectedCustomer.getFullName());
+            NotificationUtils.showInfoAlert("Chọn khách hàng thành công.", "Thông báo");
         }
+    }
 
     // close
-    private void onMouseClickedExitImportingForm() {
+    private void onMouseClickedExitSellingForm() {
         (UiUtils.gI()).openStage("/GUI/NavigatePermission.fxml", "Danh sách chức năng");
-        btnExitImportingForm.getScene().getWindow().hide();
+        btnExitSellingForm.getScene().getWindow().hide();
     }
+
 
     private void changeLabelContent() {
         SessionManagerService ses = SessionManagerService.getInstance();
-        txtImportId.setText(String.valueOf(ImportBUS.getInstance().getAllLocal().size()+1));
+        txtInvoiceId.setText(String.valueOf(ImportBUS.getInstance().getAllLocal().size()+1));
         txtEmployeeId.setText(String.valueOf(ses.employeeLoginId()));
         txtEmployeeFullName.setText(EmployeeBUS.getInstance().getByIdLocal(ses.employeeLoginId()).getFullName());
         txtCreateDate.setText(ValidationUtils.getInstance().formatDateTime(LocalDateTime.now()));
@@ -251,7 +277,6 @@ public class ImportProductController {
         }
     }
 
-    // add container
     private void addProductToGrid(GridPane gridPane, int row, int col, Image image, String name, String categoryName, int quantity, BigDecimal price, String id) {
         // ImageView
         ImageView imageView = new ImageView(image);
@@ -311,55 +336,57 @@ public class ImportProductController {
     }
 
     private void onMouseClickedEdit() {
-        if (isNotSelectedTempDetailImport()) {
-            NotificationUtils.showErrorAlert("Vui lòng chọn chi tiết phiếu nhập.", "Thông báo");
+        if (isNotSelectedTempDetailInvoice()) {
+            NotificationUtils.showErrorAlert("Vui lòng chọn sản phẩm.", "Thông báo");
             return;
         }
 
-        ImportProductModalController modalController = UiUtils.gI().openStageWithController(
-                "/GUI/ImportProductModal.fxml",
+        SellingProductModalController modalController = UiUtils.gI().openStageWithController(
+                "/GUI/SellingProductModal.fxml",
                 controller -> {
-                    controller.setTypeModal(1);
-                    controller.setTempDetailImport(selectedTempDetailImport);
+                        controller.setTempDetailInvoice(selectedTempDetailInvoice);
+                        controller.setTypeModal(1);
                 },
-                "Sửa chi tiết phiếu nhập"
+                "Sửa chi tiết hóa đơn"
         );
         if (modalController != null && modalController.isSaved()) {
+            this.arrTempDetailInvoice.set(selectedTempDetailInvoice.getInvoiceId(), modalController.getTempDetailInvoice());
             loadCaculatedTotalImportPrice();
             loadTable();
 
-            NotificationUtils.showInfoAlert("Sửa chi tiết phiếu nhập thành công.", "Thông báo");
+            NotificationUtils.showInfoAlert("Sửa thành công.", "Thông báo");
         }
     }
 
     private void onMouseClickedRemove() {
-        if (isNotSelectedTempDetailImport()) {
-            NotificationUtils.showErrorAlert("Vui lòng chọn chi tiết phiếu nhập.", "Thông báo");
+        if (isNotSelectedTempDetailInvoice()) {
+            NotificationUtils.showErrorAlert("Vui lòng chọn sản phẩm.", "Thông báo");
             return;
         }
-        arrTempDetailImport.remove(selectedTempDetailImport);
-        addEventClickForProduct(tbvDetailImportProduct, gpShowProductWrapper);
+        arrTempDetailInvoice.remove(selectedTempDetailInvoice);
+        addEventClickForProduct(tbvDetailInvoiceProduct, gpShowProductWrapper);
         loadCaculatedTotalImportPrice();
+        System.out.println("2: " + arrTempDetailInvoice.getFirst().getTotalPrice());
         loadTable();
 
-        NotificationUtils.showInfoAlert("Xóa chi tiết phiếu nhập thành công.", "Thông báo");
+        NotificationUtils.showInfoAlert("Xóa sản phẩm khỏi đơn hàng thành công.", "Thông báo");
     }
 
     private void loadCaculatedTotalImportPrice() {
         BigDecimal totalImportPrice = BigDecimal.ZERO;
 
-        for (TempDetailImportDTO detail : arrTempDetailImport) {
+        for (TempDetailInvoiceDTO detail : arrTempDetailInvoice) {
             totalImportPrice = totalImportPrice.add(detail.getTotalPrice());
         }
-        lbTotalImportPrice.setText(ValidationUtils.getInstance().formatCurrency(totalImportPrice) + " Đ");
+        lbTotalInvoicePrice.setText(ValidationUtils.getInstance().formatCurrency(totalImportPrice) + " Đ");
     }
 
     private void onMouseClickedClear() {
-        arrTempDetailImport.clear();
-        addEventClickForProduct(tbvDetailImportProduct, gpShowProductWrapper);
+        arrTempDetailInvoice.clear();
+        addEventClickForProduct(tbvDetailInvoiceProduct, gpShowProductWrapper);
         loadCaculatedTotalImportPrice();
         loadTable();
-        NotificationUtils.showInfoAlert("Xóa toàn bộ chi tiết phiếu nhập thành công.", "Thông báo");
+        NotificationUtils.showInfoAlert("Xóa toàn bộ thành công.", "Thông báo");
     }
 
     private HBox createInfoRow(Label label, Label value) {
@@ -373,7 +400,7 @@ public class ImportProductController {
         gridPane.getRowConstraints().clear();
     }
 
-    private void addEventClickForProduct(TableView<TempDetailImportDTO> tableView, GridPane gridPane) {
+    private void addEventClickForProduct(TableView<TempDetailInvoiceDTO> tableView, GridPane gridPane) {
         ObservableList<Node> listNode = gridPane.getChildren();
         for (Node node : listNode) {
             String productID = node.getId();
@@ -383,7 +410,7 @@ public class ImportProductController {
             // Xóa sự kiện cũ nếu có
             node.setOnMouseClicked(null);
 
-            boolean isAlreadyInList = arrTempDetailImport.stream()
+            boolean isAlreadyInList = arrTempDetailInvoice.stream()
                     .anyMatch(temp -> temp.getProductId().equals(productID));
 
             if (isAlreadyInList) {
@@ -400,29 +427,55 @@ public class ImportProductController {
     }
 
     private void handleOpenSubModal(ProductDTO product) {
-        ImportProductModalController modalController = UiUtils.gI().openStageWithController(
-                "/GUI/ImportProductModal.fxml",
+        SellingProductModalController modalController = UiUtils.gI().openStageWithController(
+                "/GUI/SellingProductModal.fxml",
                 controller -> {
-                    controller.setTypeModal(0);
                     controller.setProduct(product);
+                    controller.setTypeModal(0);
                 },
-                "Thêm chi tiết phiếu nhập"
+                "Thêm Sản Phẩm"
         );
         if (modalController != null && modalController.isSaved()) {
-            arrTempDetailImport.add(modalController.getTempDetailImport());
+            arrTempDetailInvoice.add(modalController.getTempDetailInvoice());
             loadCaculatedTotalImportPrice();
             loadTable();
-            NotificationUtils.showInfoAlert("Thêm chi tiết phiếu nhập thành công.", "Thông báo");
+            NotificationUtils.showInfoAlert("Thêm sản phẩm thành công.", "Thông báo");
         }
     }
 
-    public void addProductToTable(String productId) {
+    private void onMouseClickedShowDiscountContainer() {
+        BigDecimal temp = BigDecimal.ZERO;
+        for(TempDetailInvoiceDTO invoice : arrTempDetailInvoice)
+            temp = temp.add(invoice.getTotalPrice());
+        BigDecimal finalTemp = temp;
+        DiscountForSellingModalController modalController = UiUtils.gI().openStageWithController(
+                "/GUI/DiscountForSellingModal.fxml",
+                discountForSellingModalController -> discountForSellingModalController.setPrice(finalTemp),
+                "Danh sách khuyến mãi"
+        );
+
+        if (modalController != null && modalController.isSaved()) {
+            selectedDiscount = new DiscountDTO(modalController.getSelectedDiscount());
+            txtCodeDiscount.setText(String.valueOf(selectedDiscount.getCode()));
+            this.discountPrice = modalController.getPrice().subtract(modalController.getDiscountPrice());
+            lbDiscountPrice.setText(ValidationUtils.getInstance().formatCurrency(discountPrice) + " Đ");
+            lbTotalInvoicePrice.setText(ValidationUtils.getInstance().formatCurrency(modalController.getDiscountPrice()) + " Đ");
+            NotificationUtils.showInfoAlert("Chọn khách khuyến mãi thành công.", "Thông báo");
+        }
+    }
+
+    private void addProductToTable(String productId) {
         ProductDTO product = ProductBUS.getInstance().getByIdLocal(productId);
         if (product == null) return;
 
-        for (TempDetailImportDTO temp : arrTempDetailImport) {
+        for (TempDetailInvoiceDTO temp : arrTempDetailInvoice) {
             if (temp.getProductId().equals(productId)) {
-                temp.setQuantity(temp.getQuantity() + 1);
+                int quantity = temp.getQuantity() + 1;
+                if (quantity > product.getStockQuantity()) {
+                    NotificationUtils.showErrorAlert("Vượt quá số lượng tồn kho!", "Thông báo");
+                    return;
+                }
+                temp.setQuantity(quantity);
                 BigDecimal total = temp.getPrice().multiply(BigDecimal.valueOf(temp.getQuantity()));
                 temp.setTotalPrice(total);
                 loadCaculatedTotalImportPrice();
@@ -431,66 +484,91 @@ public class ImportProductController {
             }
         }
 
-//        // Nếu chưa có sản phẩm trong bảng thì thêm mới
-//        TempDetailImportDTO tempDetailImport = new TempDetailImportDTO(
+        // Nếu chưa có sản phẩm trong bảng thì thêm mới
+//        TempDetailInvoiceDTO TempDetailInvoice = new TempDetailInvoiceDTO(
 //                0,
 //                product.getId(),
 //                product.getName(),
 //                1,
-//                BigDecimal.ZERO, // hoặc product.getImportPrice() nếu bạn muốn
-//                BigDecimal.ZERO,
+//                product.getSellingPrice(),
 //                BigDecimal.ZERO
 //        );
-//        arrTempDetailImport.add(tempDetailImport);
+//        arrTempDetailInvoice.add(TempDetailInvoice);
         loadTable();
     }
 
-    private boolean isNotSelectedTempDetailImport() {
-        selectedTempDetailImport = tbvDetailImportProduct.getSelectionModel().getSelectedItem();
-        return selectedTempDetailImport == null;
+    private boolean isNotSelectedTempDetailInvoice() {
+        selectedTempDetailInvoice = tbvDetailInvoiceProduct.getSelectionModel().getSelectedItem();
+        return selectedTempDetailInvoice == null;
     }
 
-    private boolean isNotSelectedSupplier() {
-        return selectedSupplier == null;
+    private void loadComboBox() {
+        CategoryBUS cateBUS = CategoryBUS.getInstance();
+        categoryMap.clear();
+
+        cbCategoryFilter.getItems().add("Tất cả");
+        categoryMap.put("Tất cả", -1);
+
+        for (CategoryDTO cate : cateBUS.getAllLocal()) {
+            cbCategoryFilter.getItems().add(cate.getName());
+            categoryMap.put(cate.getName(), cate.getId());
+        }
+
+        cbCategoryFilter.getSelectionModel().selectFirst();
     }
 
-    private void handleImport() {
-        if (arrTempDetailImport.isEmpty()) {
-            NotificationUtils.showErrorAlert("Vui lòng thêm ít nhất một sản phẩm nhập.", "Thông báo");
+    private void handleCategoryFilterChange() {
+        ArrayList<ProductDTO> list = ProductBUS.getInstance().filterProducts("", "",  categoryMap.getOrDefault(cbCategoryFilter.getValue(), -1), 1, null, null, true);
+        clearGrid(gpShowProductWrapper);
+        if (list.isEmpty()) {
             return;
         }
-        if (isNotSelectedSupplier()) {
-            NotificationUtils.showErrorAlert("Vui lòng chọn nhà cung cấp để nhập hàng.", "Thông báo");
+        addConstraintRow(gpShowProductWrapper, list, 140);
+        addEventClickForProduct(tbvDetailInvoiceProduct, gpShowProductWrapper);
+    }
+
+    private boolean isNotSelectedCustomer() {
+        return selectedCustomer == null;
+    }
+
+    // submit form
+    private void handleInvoice() {
+        if (arrTempDetailInvoice.isEmpty()) {
+            NotificationUtils.showErrorAlert("Vui lòng thêm ít nhất một sản phẩm.", "Thông báo");
+            return;
+        }
+        if (isNotSelectedCustomer()) {
+            NotificationUtils.showErrorAlert("Vui lòng chọn khách hàng để bán hàng.", "Thông báo");
             return;
         }
 
         // Tạo phiếu nhập kèm chi tiết
         SessionManagerService ses = SessionManagerService.getInstance();
-        ArrayList<DetailImportDTO> list = new ArrayList<>();
+        ArrayList<DetailInvoiceDTO> list = new ArrayList<>();
         ArrayList<ProductDTO> listProduct = new ArrayList<>();
-        BigDecimal totalImportPrice = BigDecimal.ZERO;
+        BigDecimal totalInvoicePrice = BigDecimal.ZERO;
 
-        for (TempDetailImportDTO t : arrTempDetailImport) {
-            DetailImportDTO di = new DetailImportDTO(t.getImportId(), t.getProductId(), t.getQuantity(), t.getPrice(), t.getTotalPrice());
-            ProductDTO p = new ProductDTO(t.getProductId(), t.getName(), t.getQuantity() , t.getSellingPrice(), true, null, null, 0);
+        for (TempDetailInvoiceDTO t : arrTempDetailInvoice) {
+            DetailInvoiceDTO di = new DetailInvoiceDTO(t.getInvoiceId(), t.getProductId(), t.getQuantity(), t.getPrice(), t.getTotalPrice());
+            ProductDTO p = new ProductDTO(t.getProductId(), t.getName(), t.getQuantity() , t.getPrice(), true, null, null, 0);
             list.add(di);
             listProduct.add(p);
-            totalImportPrice = totalImportPrice.add(t.getTotalPrice());
+            totalInvoicePrice = totalInvoicePrice.add(t.getTotalPrice());
         }
 
-        ImportDTO temp = new ImportDTO(Integer.parseInt(txtImportId.getText().trim()), null, Integer.parseInt(txtEmployeeId.getText().trim()),
-                Integer.parseInt(txtSupplierId.getText().trim()), totalImportPrice);
+        InvoiceDTO temp = new InvoiceDTO(Integer.parseInt(txtInvoiceId.getText().trim()), null, Integer.parseInt(txtEmployeeId.getText().trim()),
+                Integer.parseInt(txtCustomerId.getText().trim()), txtCodeDiscount.getText(), this.discountPrice, totalInvoicePrice);
 
-        boolean result = ImportService.getInstance().createImportWithDetailImport(temp, ses.employeeRoleId(),list , ses.employeeLoginId());
+        boolean result = InvoiceService.getInstance().createInvoiceWithDetailInvoice(temp, ses.employeeRoleId(), list, ses.employeeLoginId());
 
         // Sau đó tăng số lượng sản phẩm và set lại giá
-        if (result && ProductBUS.getInstance().updateQuantitySellingPriceListProduct(listProduct, true)) {
-            NotificationUtils.showInfoAlert("Nhập hàng thành công.", "Thông báo");
-            arrTempDetailImport.clear();
+        if (result && ProductBUS.getInstance().updateQuantitySellingPriceListProduct(listProduct, false)) {
+            NotificationUtils.showInfoAlert("Tạo hóa đơn thành công.", "Thông báo");
+            arrTempDetailInvoice.clear();
             loadProductWrapper();
-            selectedSupplier =null;
-            txtSupplierId.setText("");
-            txtSupplierName.setText("");
+            selectedCustomer =null;
+            txtCustomerId.setText("");
+            txtCustomerName.setText("");
             loadTable();
             loadCaculatedTotalImportPrice();
         }

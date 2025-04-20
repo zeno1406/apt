@@ -285,7 +285,7 @@ public class ProductModalController {
                     NotificationUtils.showErrorAlert("Tên sản phẩm đã tồn tại trong hệ thống.", "Thông báo");
                     focus(txtProductName);
                 }
-                case 6 -> NotificationUtils.showErrorAlert("Cập nhật tài khoản thất bại. Vui lòng thử lại sau.", "Thông báo");
+                case 6 -> NotificationUtils.showErrorAlert("Cập nhật sản phẩm thất bại. Vui lòng thử lại sau.", "Thông báo");
                 default -> NotificationUtils.showErrorAlert("Lỗi không xác định, vui lòng thử lại sau.", "Thông báo");
             }
         }

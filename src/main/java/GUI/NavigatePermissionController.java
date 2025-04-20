@@ -1,7 +1,5 @@
 package GUI;
 
-import BUS.ModuleBUS;
-import DTO.ModuleDTO;
 import SERVICE.SessionManagerService;
 import UTILS.UiUtils;
 import javafx.animation.ParallelTransition;
@@ -11,14 +9,6 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.annotations.common.util.impl.Log;
-
-import java.awt.*;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 public class NavigatePermissionController {
@@ -87,7 +77,7 @@ public class NavigatePermissionController {
             pItemPermissionAuth.setDisable(true);
     }
     private void openSelling() {
-        UiUtils.gI().openStage("/GUI/Selling.fxml", "Bán hàng");
+        UiUtils.gI().openStage("/GUI/SellingProduct.fxml", "Bán hàng");
         handleClose();
     }
 

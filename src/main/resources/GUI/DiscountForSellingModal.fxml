@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon?>
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="acDiscountContainer" maxWidth="500.0" minWidth="500.0" prefHeight="700.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.DiscountForSellingModalController">
+   <stylesheets>
+      <URL value="@../css/base.css" />
+      <URL value="@../css/sellingform.css" />
+   </stylesheets>
+   <children>
+      <VBox prefHeight="700.0" prefWidth="500.0" style="-fx-border-width: 2px; -fx-border-color: #30bac4;">
+         <children>
+            <AnchorPane maxHeight="50.0" minHeight="50.0" prefHeight="50.0" prefWidth="488.0" styleClass="top-form" stylesheets="@../css/main.css">
+               <children>
+                  <Label layoutX="172.0" layoutY="8.0" text="KHUYẾN MÃI" textFill="WHITE">
+                     <font>
+                        <Font name="System Bold" size="24.0" />
+                     </font>
+                  </Label>
+                  <Pane fx:id="pBtnExitGetDiscount" layoutX="436.0" layoutY="5.0" prefHeight="50.0" prefWidth="496.0" styleClass="pExitBtnContainer">
+                     <children>
+                        <Button fx:id="btnExitGetDiscount" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="42.0" prefWidth="60.0" styleClass="close" stylesheets="@../css/main.css">
+                           <graphic>
+                              <FontAwesomeIcon glyphName="CLOSE" selectionFill="BLACK" size="1.4em" styleClass="close-icon" />
+                           </graphic>
+                        </Button>
+                     </children></Pane>
+               </children>
+            </AnchorPane>
+            <Pane prefHeight="42.0" prefWidth="500.0">
+               <children>
+                  <TextField fx:id="txtSearchDiscount" layoutX="7.0" layoutY="7.0" prefHeight="30.0" prefWidth="148.0" promptText="Tìm kiếm theo mã" styleClass="txtSearchCustomer">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </TextField>
+                  <Button fx:id="btnSearchDiscount" layoutX="168.0" layoutY="8.0" mnemonicParsing="false" prefWidth="80.0" styleClass="btnSearchProduct" text="Tìm Kiếm">
+                     <padding>
+                        <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+                     </padding>
+                  </Button>
+               </children>
+            </Pane>
+            <TableView fx:id="tbvDiscount" editable="true" prefHeight="550.0" prefWidth="450.0">
+               <columns>
+                  <TableColumn fx:id="tbcCode" prefWidth="69.5999755859375" text="Mã KM" />
+                  <TableColumn fx:id="tbcDiscountName" prefWidth="71.20001220703125" text="Tên" />
+                  <TableColumn fx:id="tbcDiscountType" prefWidth="94.0" text="Loại" />
+                  <TableColumn fx:id="tbcStartDate" prefWidth="129.0" text="Ngày bắt đầu" />
+                  <TableColumn fx:id="tbcEndDate" prefWidth="125.0" text="Ngày hết hạn" />
+               </columns>
+            </TableView>
+            <Pane prefHeight="60.0" prefWidth="500.0">
+               <children>
+                  <Button fx:id="btnSubmitDiscount" layoutX="150.0" layoutY="12.0" mnemonicParsing="false" prefWidth="200.0" styleClass="btnSearchProduct" text="Xác Nhận">
+                     <padding>
+                        <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+                     </padding>
+                  </Button>
+               </children>
+            </Pane>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

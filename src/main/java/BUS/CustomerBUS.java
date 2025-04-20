@@ -229,7 +229,7 @@ public class CustomerBUS extends BaseBUS <CustomerDTO, Integer> {
         if(phone == null || phone.trim().isEmpty())
             return arrLocal;
         for(CustomerDTO cus : arrLocal) {
-            if (cus.getPhone().contains(phone.trim()))
+            if (cus.getPhone().contains(phone.trim()) && cus.isStatus())
                 list.add(cus);
         }
         return list;

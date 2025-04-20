@@ -61,7 +61,8 @@ public class SupForImportModalController {
     public void setupListeners() {
         btnExitGetSupplier.setOnAction(e -> handleClose());
         btnSubmitSupplier.setOnAction(e -> handleGetSupplier());
-        btnSearchSupplier.setOnMouseClicked(e -> handleSearch());
+//        btnSearchSupplier.setOnMouseClicked(e -> handleSearch());
+        txtSearchSupplier.textProperty().addListener((observable, oldValue, newValue) -> handleSearch());
     }
 
     private void handleSearch() {

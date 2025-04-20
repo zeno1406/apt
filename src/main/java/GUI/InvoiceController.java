@@ -84,7 +84,7 @@ public class InvoiceController implements IController  {
         if (InvoiceBUS.getInstance().isLocalEmpty()) InvoiceBUS.getInstance().loadLocal();
         if (DetailInvoiceBUS.getInstance().isLocalEmpty()) DetailInvoiceBUS.getInstance().loadLocal();
         tblInvoice.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
-        tblDetailInvoice.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
+//        tblDetailInvoice.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
         Platform.runLater(() -> tblInvoice.getSelectionModel().clearSelection());
         Platform.runLater(() -> tblDetailInvoice.getSelectionModel().clearSelection());
 

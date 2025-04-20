@@ -86,7 +86,6 @@ public class DetailImportDAL extends BaseDAL<DetailImportDTO, Integer> {
         }
     }
 
-
     public boolean deleteAllDetailImportByImportId(int importId) {
         final String query = "DELETE FROM detail_import WHERE import_id = ?";
         try (Connection connection = connectionFactory.newConnection();

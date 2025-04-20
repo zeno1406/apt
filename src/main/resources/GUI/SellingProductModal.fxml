@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="acRootInput" prefHeight="225.0" prefWidth="400.0" styleClass="white-bg" stylesheets="@../css/base.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.SellingProductModalController">
+    <children>
+        <BorderPane prefHeight="425.0" prefWidth="350.0" style="-fx-border-color: #30bac4; -fx-border-width: 2px;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <top>
+                <AnchorPane focusTraversable="true" prefHeight="60.0" prefWidth="550.0" BorderPane.alignment="CENTER">
+                    <children>
+                        <Label fx:id="modalName" alignment="CENTER" layoutX="97.0" layoutY="2.0" prefHeight="54.0" prefWidth="202.0" textAlignment="CENTER" textFill="#30bac4" wrapText="true">
+                            <font>
+                                <Font name="Arial Bold" size="20.0" />
+                            </font>
+                        </Label>
+                    </children>
+                </AnchorPane>
+            </top>
+            <center>
+                <AnchorPane prefHeight="362.0" prefWidth="589.0" BorderPane.alignment="CENTER">
+                    <children>
+                        <VBox prefHeight="200.0" prefWidth="421.6" stylesheets="@../css/base.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                            <children>
+                                <HBox alignment="CENTER" prefHeight="61.0" prefWidth="422.0" spacing="10.0">
+                                    <children>
+                                        <Label prefHeight="22.0" prefWidth="125.0" text="Tên sản phẩm" textFill="#30bac4">
+                                            <font>
+                                                <Font name="Arial Bold" size="18.0" />
+                                            </font>
+                                        </Label>
+                                        <Label text=":" textFill="#30bac4">
+                                            <font>
+                                                <Font size="20.0" />
+                                            </font>
+                                        </Label>
+                                        <TextField fx:id="txtProductName" editable="false" maxHeight="31.2" minHeight="31.2" prefHeight="31.2" prefWidth="150.0">
+                                            <font>
+                                                <Font size="16.0" />
+                                            </font>
+                                        </TextField>
+                                    </children>
+                                </HBox>
+                        <HBox alignment="CENTER" layoutX="10.0" layoutY="10.0" prefHeight="61.0" prefWidth="422.0" spacing="10.0">
+                           <children>
+                              <Label prefHeight="22.0" prefWidth="125.0" text="Số lượng" textFill="#30bac4">
+                                 <font>
+                                    <Font name="Arial Bold" size="18.0" />
+                                 </font>
+                              </Label>
+                              <Label text=":" textFill="#30bac4">
+                                 <font>
+                                    <Font size="20.0" />
+                                 </font>
+                              </Label>
+                              <TextField fx:id="txtQuantity" prefWidth="150.0" promptText="Nhập số lượng" styleClass="textfield-1">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                              </TextField>
+                           </children>
+                        </HBox>
+                            </children>
+                        </VBox>
+                    </children>
+                </AnchorPane>
+            </center>
+            <bottom>
+                <AnchorPane prefHeight="60.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+                    <children>
+                        <HBox alignment="CENTER" layoutX="15.0" prefHeight="60.0" prefWidth="316.0" spacing="30.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.399999999999977" AnchorPane.topAnchor="0.0">
+                            <children>
+                                <Button fx:id="closeBtn" mnemonicParsing="false" prefHeight="26.0" prefWidth="140.0" styleClass="action-btn" stylesheets="@../css/base.css" text="Thoát" />
+                                <Button fx:id="saveBtn" mnemonicParsing="false" prefHeight="26.0" prefWidth="140.0" styleClass="action-btn" stylesheets="@../css/base.css" text="Lưu" />
+                            </children>
+                        </HBox>
+                    </children>
+                </AnchorPane>
+            </bottom>
+        </BorderPane>
+    </children>
+</AnchorPane>

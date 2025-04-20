@@ -14,8 +14,11 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TableView;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.Month;
 import java.util.ArrayList;
+import java.util.Map;
 
 public class StatisticController {
     @FXML
@@ -26,6 +29,11 @@ public class StatisticController {
 
     @FXML
     private NumberAxis y1;
+
+    Map<LocalDate, BigDecimal> doanhThuTheoNgay;
+    Map<Month, BigDecimal> doanhThuTheoThang;
+    Map<Integer, BigDecimal> doanhThuTheoNam;
+
 
     @FXML
     public void initialize() {
