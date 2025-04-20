@@ -13,7 +13,6 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
 <AnchorPane prefHeight="650.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.StatisticController">
     <children>
         <TabPane prefHeight="650.0" prefWidth="900.0" styleClass="textarea" stylesheets="@../css/base.css" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -52,7 +51,7 @@
                                                             <children>
                                                                 <VBox layoutX="60.0" layoutY="-33.0" prefHeight="130.0" prefWidth="219.0" spacing="10.0" style="-fx-border-color: black;" AnchorPane.bottomAnchor="52.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                                     <children>
-                                                                        <Label prefHeight="46.0" prefWidth="186.0" text="T�+�ng chi:">
+                                                                        <Label prefHeight="46.0" prefWidth="186.0" text="TỔNG CHI :">
                                                                             <font>
                                                                                 <Font name="System Bold" size="30.0" />
                                                                             </font>
