@@ -47,10 +47,7 @@ public class DiscountBUS extends BaseBUS<DiscountDTO, String> {
         return result;
     }
 
-    public ArrayList<DiscountDTO> filterDiscountsAdvance(
-            String discountName, int type, LocalDate startDate,
-            LocalDate endDate
-    ) {
+    public ArrayList<DiscountDTO> filterDiscountsAdvance(String discountName, int type, LocalDate startDate, LocalDate endDate) {
         ArrayList<DiscountDTO> filteredList = new ArrayList<>();
 
         for (DiscountDTO dis : arrLocal) {

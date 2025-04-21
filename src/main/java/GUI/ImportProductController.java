@@ -311,6 +311,11 @@ public class ImportProductController {
     }
 
     private void onMouseClickedEdit() {
+        if(tbvDetailImportProduct.isMouseTransparent()) {
+            NotificationUtils.showErrorAlert("Vui lòng bấm nhập phiếu mới @_@!", "Thông báo");
+            return;
+        }
+
         if (isNotSelectedTempDetailImport()) {
             NotificationUtils.showErrorAlert("Vui lòng chọn chi tiết phiếu nhập.", "Thông báo");
             return;
@@ -319,8 +324,8 @@ public class ImportProductController {
         ImportProductModalController modalController = UiUtils.gI().openStageWithController(
                 "/GUI/ImportProductModal.fxml",
                 controller -> {
-                    controller.setTypeModal(1);
                     controller.setTempDetailImport(selectedTempDetailImport);
+                    controller.setTypeModal(1);
                 },
                 "Sửa chi tiết phiếu nhập"
         );
@@ -333,6 +338,11 @@ public class ImportProductController {
     }
 
     private void onMouseClickedRemove() {
+        if(tbvDetailImportProduct.isMouseTransparent()) {
+            NotificationUtils.showErrorAlert("Vui lòng bấm nhập phiếu mới @_@!", "Thông báo");
+            return;
+        }
+
         if (isNotSelectedTempDetailImport()) {
             NotificationUtils.showErrorAlert("Vui lòng chọn chi tiết phiếu nhập.", "Thông báo");
             return;
@@ -360,6 +370,11 @@ public class ImportProductController {
         loadCaculatedTotalImportPrice();
         loadTable();
         NotificationUtils.showInfoAlert("Xóa toàn bộ chi tiết phiếu nhập thành công.", "Thông báo");
+        tbvDetailImportProduct.setMouseTransparent(false);
+        tbvDetailImportProduct.setFocusTraversable(true);
+
+        txtSupplierId.setText("");
+        txtSupplierName.setText("");
     }
 
     private HBox createInfoRow(Label label, Label value) {
@@ -386,6 +401,7 @@ public class ImportProductController {
             boolean isAlreadyInList = arrTempDetailImport.stream()
                     .anyMatch(temp -> temp.getProductId().equals(productID));
 
+
             if (isAlreadyInList) {
                 node.setOnMouseClicked(event -> addProductToTable(productID));
             } else {
@@ -400,6 +416,8 @@ public class ImportProductController {
     }
 
     private void handleOpenSubModal(ProductDTO product) {
+        if (tbvDetailImportProduct.isMouseTransparent())
+            return;
         ImportProductModalController modalController = UiUtils.gI().openStageWithController(
                 "/GUI/ImportProductModal.fxml",
                 controller -> {
@@ -417,6 +435,8 @@ public class ImportProductController {
     }
 
     public void addProductToTable(String productId) {
+        if (tbvDetailImportProduct.isMouseTransparent())
+            return;
         ProductDTO product = ProductBUS.getInstance().getByIdLocal(productId);
         if (product == null) return;
 
@@ -477,10 +497,11 @@ public class ImportProductController {
             listProduct.add(p);
             totalImportPrice = totalImportPrice.add(t.getTotalPrice());
         }
-
         ImportDTO temp = new ImportDTO(Integer.parseInt(txtImportId.getText().trim()), null, Integer.parseInt(txtEmployeeId.getText().trim()),
                 Integer.parseInt(txtSupplierId.getText().trim()), totalImportPrice);
-
+        boolean submit =  NotificationUtils.showConfirmAlert("Xác nhận phiếu nhập", arrTempDetailImport, "Thông Báo");
+        // khong xac nhan khong nhap
+        if (!submit) return;
         boolean result = ImportService.getInstance().createImportWithDetailImport(temp, ses.employeeRoleId(),list , ses.employeeLoginId());
 
         // Sau đó tăng số lượng sản phẩm và set lại giá
@@ -489,10 +510,12 @@ public class ImportProductController {
             arrTempDetailImport.clear();
             loadProductWrapper();
             selectedSupplier =null;
-            txtSupplierId.setText("");
-            txtSupplierName.setText("");
-            loadTable();
-            loadCaculatedTotalImportPrice();
+//            txtSupplierId.setText("");
+//            txtSupplierName.setText("");
+//            loadTable();
+//            loadCaculatedTotalImportPrice();
+            tbvDetailImportProduct.setMouseTransparent(true);
+            tbvDetailImportProduct.setFocusTraversable(false);
         }
     }
 }

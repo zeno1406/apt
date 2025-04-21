@@ -68,8 +68,7 @@ public class CustomerController implements IController {
         tlb_col_id.setCellValueFactory(new PropertyValueFactory<>("id"));
         tlb_col_firstName.setCellValueFactory(new PropertyValueFactory<>("firstName"));
         tlb_col_lastName.setCellValueFactory(new PropertyValueFactory<>("lastName"));
-        tlb_col_dateOfBirth.setCellValueFactory(cellData ->
-                formatCell(validationUtils.formatDateTime(cellData.getValue().getDateOfBirth())));
+        tlb_col_dateOfBirth.setCellValueFactory(cellData -> formatCell(validationUtils.formatDateTime(cellData.getValue().getDateOfBirth())));
 
         tlb_col_phone.setCellValueFactory(new PropertyValueFactory<>("phone"));
         tlb_col_address.setCellValueFactory(new PropertyValueFactory<>("address"));

@@ -1,6 +1,14 @@
 package UTILS;
 
+import DTO.TempDetailImportDTO;
+import DTO.TempDetailInvoiceDTO;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
+import org.apache.poi.ss.formula.functions.T;
+
+import java.util.ArrayList;
+import java.util.Optional;
 
 public class NotificationUtils {
     public static void showErrorAlert(String message, String title) {
@@ -17,5 +25,42 @@ public class NotificationUtils {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    public static <T> boolean showConfirmAlert(String message, ArrayList<T> list, String title) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(message);
+
+        StringBuilder content = new StringBuilder();
+        for (T obj : list) {
+            if (obj instanceof TempDetailImportDTO item) {
+                content.append("- ")
+                        .append(item.getName())
+                        .append(" | SL: ").append(item.getQuantity())
+                        .append(" | Đơn giá: ").append(item.getPrice())
+                        .append("\n");
+            } 
+            else if (obj instanceof TempDetailInvoiceDTO item) {
+                content.append("- ")
+                        .append(item.getName())
+                        .append(" | SL: ").append(item.getQuantity())
+                        .append(" | Đơn giá: ").append(item.getPrice())
+                        .append("\n");
+            }
+            else {
+                content.append("- Không xác định: ").append(obj.toString()).append("\n");
+            }
+        }
+
+        alert.setContentText(content.toString());
+
+        ButtonType okButton = new ButtonType("Đồng ý", ButtonBar.ButtonData.OK_DONE);
+        ButtonType cancelButton = new ButtonType("Huỷ", ButtonBar.ButtonData.CANCEL_CLOSE);
+
+        alert.getButtonTypes().setAll(okButton, cancelButton);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        return result.isPresent() && result.get() == okButton;
     }
 }

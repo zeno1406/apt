@@ -30,6 +30,7 @@ import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.stream.Collectors;
 
 public class SellingProductController {
     @FXML
@@ -169,7 +170,8 @@ public class SellingProductController {
         if (list.isEmpty()) {
             return;
         }
-        addConstraintRow(gpShowProductWrapper, list, 140);
+        ArrayList<ProductDTO> finalFilter = list.stream().filter(product -> product.getStockQuantity() > 0).collect(Collectors.toCollection(ArrayList::new));
+        addConstraintRow(gpShowProductWrapper, finalFilter, 140);
         addEventClickForProduct(tbvDetailInvoiceProduct, gpShowProductWrapper);
     }
 
@@ -336,6 +338,11 @@ public class SellingProductController {
     }
 
     private void onMouseClickedEdit() {
+        if(tbvDetailInvoiceProduct.isMouseTransparent()) {
+            NotificationUtils.showErrorAlert("Vui lòng bấm nhập phiếu mới @_@!", "Thông báo");
+            return;
+        }
+
         if (isNotSelectedTempDetailInvoice()) {
             NotificationUtils.showErrorAlert("Vui lòng chọn sản phẩm.", "Thông báo");
             return;
@@ -359,6 +366,11 @@ public class SellingProductController {
     }
 
     private void onMouseClickedRemove() {
+        if(tbvDetailInvoiceProduct.isMouseTransparent()) {
+            NotificationUtils.showErrorAlert("Vui lòng bấm nhập phiếu mới @_@!", "Thông báo");
+            return;
+        }
+
         if (isNotSelectedTempDetailInvoice()) {
             NotificationUtils.showErrorAlert("Vui lòng chọn sản phẩm.", "Thông báo");
             return;
@@ -427,6 +439,8 @@ public class SellingProductController {
     }
 
     private void handleOpenSubModal(ProductDTO product) {
+        if(tbvDetailInvoiceProduct.isMouseTransparent()) return;
+
         SellingProductModalController modalController = UiUtils.gI().openStageWithController(
                 "/GUI/SellingProductModal.fxml",
                 controller -> {
@@ -465,6 +479,8 @@ public class SellingProductController {
     }
 
     private void addProductToTable(String productId) {
+        if(tbvDetailInvoiceProduct.isMouseTransparent()) return;
+
         ProductDTO product = ProductBUS.getInstance().getByIdLocal(productId);
         if (product == null) return;
 
@@ -558,6 +574,9 @@ public class SellingProductController {
 
         InvoiceDTO temp = new InvoiceDTO(Integer.parseInt(txtInvoiceId.getText().trim()), null, Integer.parseInt(txtEmployeeId.getText().trim()),
                 Integer.parseInt(txtCustomerId.getText().trim()), txtCodeDiscount.getText(), this.discountPrice, totalInvoicePrice);
+        boolean submit =  NotificationUtils.showConfirmAlert("Xác nhận phiếu bán", arrTempDetailInvoice, "Thông Báo");
+        // khong xac nhan khong nhap
+        if (!submit) return;
 
         boolean result = InvoiceService.getInstance().createInvoiceWithDetailInvoice(temp, ses.employeeRoleId(), list, ses.employeeLoginId());
 
@@ -567,10 +586,12 @@ public class SellingProductController {
             arrTempDetailInvoice.clear();
             loadProductWrapper();
             selectedCustomer =null;
-            txtCustomerId.setText("");
-            txtCustomerName.setText("");
-            loadTable();
-            loadCaculatedTotalImportPrice();
+//            txtCustomerId.setText("");
+//            txtCustomerName.setText("");
+//            loadTable();
+//            loadCaculatedTotalImportPrice();
+            tbvDetailInvoiceProduct.setMouseTransparent(true);
+            tbvDetailInvoiceProduct.setFocusTraversable(false);
         }
     }
 }

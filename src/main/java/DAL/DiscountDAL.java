@@ -15,16 +15,9 @@ public class DiscountDAL extends BaseDAL<DiscountDTO, String> {
 
     @Override
     protected DiscountDTO mapResultSetToObject(ResultSet resultSet) throws SQLException {
-        return new DiscountDTO(
-                resultSet.getString("code"),
-                resultSet.getString("name"),
-                resultSet.getInt("type"),
-                resultSet.getDate("startDate") != null
-                        ? resultSet.getDate("startDate").toLocalDate().atStartOfDay()
-                        : null,
-                resultSet.getDate("endDate") != null
-                        ? resultSet.getDate("endDate").toLocalDate().atStartOfDay()
-                        : null
+        return new DiscountDTO(resultSet.getString("code"), resultSet.getString("name"), resultSet.getInt("type"),
+                resultSet.getDate("startDate") != null ? resultSet.getDate("startDate").toLocalDate().atStartOfDay() : null,
+                resultSet.getDate("endDate") != null ? resultSet.getDate("endDate").toLocalDate().atStartOfDay() : null
         );
     }
 

@@ -51,6 +51,7 @@ public class ImportProductModalController {
     public void setupListeners() {
         saveBtn.setOnAction(e -> handleSave());
         closeBtn.setOnAction(e -> handleClose());
+        hbInputSellingPrice.setVisible(false);
     }
 
 //   add handle for selling here
@@ -70,6 +71,7 @@ public class ImportProductModalController {
         txtQuantity.setText(String.valueOf(tempDetailImport.getQuantity()));
         txtPrice.setText(String.valueOf(tempDetailImport.getPrice()));
         txtSellingPrice.setText(String.valueOf(tempDetailImport.getSellingPrice()));
+        txtProductName.setText(tempDetailImport.getName());
     }
 
     public void setProduct(ProductDTO product) {

@@ -24,9 +24,8 @@ public class ImportService {
         DetailImportBUS dimpBus = DetailImportBUS.getInstance();
 
         if (impBus.isLocalEmpty()) impBus.loadLocal();
-        if (!impBus.insert(imports, employee_roleId, ServiceAccessCode.IMPORT_DETAILIMPORT_SERVICE, eployeeLoginId)) {
+        if (!impBus.insert(imports, employee_roleId, ServiceAccessCode.IMPORT_DETAILIMPORT_SERVICE, eployeeLoginId))
             return false;
-        }
 
         if (dimpBus.isLocalEmpty()) dimpBus.loadLocal();
         // Không quan trọng invoiceId của từng thằng trong list. vì sẽ set lại dưới database
