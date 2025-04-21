@@ -399,6 +399,10 @@ public class SellingProductController {
         loadCaculatedTotalImportPrice();
         loadTable();
         NotificationUtils.showInfoAlert("Xóa toàn bộ thành công.", "Thông báo");
+        txtCodeDiscount.setText("");
+        lbDiscountPrice.setText("");
+        txtCustomerId.setText("");
+        txtCustomerName.setText("");
     }
 
     private HBox createInfoRow(Label label, Label value) {

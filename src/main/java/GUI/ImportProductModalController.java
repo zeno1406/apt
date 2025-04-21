@@ -46,12 +46,12 @@ public class ImportProductModalController {
     public void initialize() {
         if(ProductBUS.getInstance().getAllLocal().isEmpty()) ProductBUS.getInstance().loadLocal();
         setupListeners();
+        hbInputSellingPrice.setVisible(false);
     }
 
     public void setupListeners() {
         saveBtn.setOnAction(e -> handleSave());
         closeBtn.setOnAction(e -> handleClose());
-        hbInputSellingPrice.setVisible(false);
     }
 
 //   add handle for selling here
@@ -70,7 +70,7 @@ public class ImportProductModalController {
         this.tempDetailImport = tempDetailImport;
         txtQuantity.setText(String.valueOf(tempDetailImport.getQuantity()));
         txtPrice.setText(String.valueOf(tempDetailImport.getPrice()));
-        txtSellingPrice.setText(String.valueOf(tempDetailImport.getSellingPrice()));
+        txtSellingPrice.setText(String.valueOf(tempDetailImport.getPrice())); // CHANGE HERE
         txtProductName.setText(tempDetailImport.getName());
     }
 
@@ -141,9 +141,11 @@ public class ImportProductModalController {
 
         BigDecimal sellingPriceValue = BigDecimal.ZERO;
         if (isValid && sellingPrice.isEmpty()) {
-            NotificationUtils.showErrorAlert("Giá bán không được để trống.", "Thông báo");
-            clearAndFocus(txtSellingPrice);
-            isValid = false;
+            txtSellingPrice.setText(String.valueOf(tempDetailImport.getPrice())); // CHANGE HERE
+//
+//            NotificationUtils.showErrorAlert("Giá bán không được để trống.", "Thông báo");
+//            clearAndFocus(txtSellingPrice);
+//            isValid = false;
         } else if (isValid) {
             try {
                 sellingPriceValue = new BigDecimal(sellingPrice);
@@ -159,12 +161,11 @@ public class ImportProductModalController {
             }
         }
 
-        if (isValid && sellingPriceValue.compareTo(priceValue) < 0) {
-            NotificationUtils.showErrorAlert("Giá bán phải lớn hơn hoặc bằng giá nhập.", "Thông báo");
-            clearAndFocus(txtSellingPrice);
-            isValid = false;
-        }
-
+//        if (isValid && sellingPriceValue.compareTo(priceValue) < 0) {
+//            NotificationUtils.showErrorAlert("Giá bán phải lớn hơn hoặc bằng giá nhập.", "Thông báo");
+//            clearAndFocus(txtSellingPrice);
+//            isValid = false;
+//        }
         return isValid;
     }
 
@@ -184,7 +185,7 @@ public class ImportProductModalController {
         if (isValidInput()) {
             int quantity = Integer.parseInt(txtQuantity.getText().trim());
             BigDecimal price = new BigDecimal(txtPrice.getText().trim());
-            BigDecimal sellingPrice = new BigDecimal(txtSellingPrice.getText().trim());
+            BigDecimal sellingPrice = new BigDecimal(txtPrice.getText().trim());
             BigDecimal totalPrice = price.multiply(BigDecimal.valueOf(quantity));
 
             TempDetailImportDTO temp = new TempDetailImportDTO(
@@ -211,7 +212,7 @@ public class ImportProductModalController {
         if (isValidInput()) {
             int quantity = Integer.parseInt(txtQuantity.getText().trim());
             BigDecimal price = new BigDecimal(txtPrice.getText().trim());
-            BigDecimal sellingPrice = new BigDecimal(txtSellingPrice.getText().trim());
+            BigDecimal sellingPrice = new BigDecimal(txtPrice.getText().trim());
             BigDecimal totalPrice = price.multiply(BigDecimal.valueOf(quantity));
 
             isSaved = true;

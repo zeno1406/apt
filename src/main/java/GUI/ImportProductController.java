@@ -421,8 +421,8 @@ public class ImportProductController {
         ImportProductModalController modalController = UiUtils.gI().openStageWithController(
                 "/GUI/ImportProductModal.fxml",
                 controller -> {
-                    controller.setTypeModal(0);
                     controller.setProduct(product);
+                    controller.setTypeModal(0);
                 },
                 "Thêm chi tiết phiếu nhập"
         );
@@ -499,9 +499,11 @@ public class ImportProductController {
         }
         ImportDTO temp = new ImportDTO(Integer.parseInt(txtImportId.getText().trim()), null, Integer.parseInt(txtEmployeeId.getText().trim()),
                 Integer.parseInt(txtSupplierId.getText().trim()), totalImportPrice);
+
         boolean submit =  NotificationUtils.showConfirmAlert("Xác nhận phiếu nhập", arrTempDetailImport, "Thông Báo");
         // khong xac nhan khong nhap
         if (!submit) return;
+
         boolean result = ImportService.getInstance().createImportWithDetailImport(temp, ses.employeeRoleId(),list , ses.employeeLoginId());
 
         // Sau đó tăng số lượng sản phẩm và set lại giá
