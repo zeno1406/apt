@@ -62,25 +62,25 @@
                                         </TextField>
                                     </children>
                                 </HBox>
-                                <HBox alignment="CENTER" prefHeight="61.0" prefWidth="422.0" spacing="10.0">
-                                    <children>
-                                        <Label prefHeight="22.0" prefWidth="130.0" text="Người đại diện" textFill="#30bac4">
-                                            <font>
-                                                <Font name="Arial Bold" size="18.0" />
-                                            </font>
-                                        </Label>
-                                        <Label text=":" textFill="#30bac4">
-                                            <font>
-                                                <Font size="20.0" />
-                                            </font>
-                                        </Label>
-                                        <TextField fx:id="txtContactName" prefWidth="220.0" promptText="Nhập tên người đại diện" styleClass="textfield-1">
-                                            <font>
-                                                <Font size="16.0" />
-                                            </font>
-                                        </TextField>
-                                    </children>
-                                </HBox>
+<!--                                <HBox alignment="CENTER" prefHeight="61.0" prefWidth="422.0" spacing="10.0">-->
+<!--                                    <children>-->
+<!--                                        <Label prefHeight="22.0" prefWidth="130.0" text="Người đại diện" textFill="#30bac4">-->
+<!--                                            <font>-->
+<!--                                                <Font name="Arial Bold" size="18.0" />-->
+<!--                                            </font>-->
+<!--                                        </Label>-->
+<!--                                        <Label text=":" textFill="#30bac4">-->
+<!--                                            <font>-->
+<!--                                                <Font size="20.0" />-->
+<!--                                            </font>-->
+<!--                                        </Label>-->
+<!--                                        <TextField fx:id="txtContactName" prefWidth="220.0" promptText="Nhập tên người đại diện" styleClass="textfield-1">-->
+<!--                                            <font>-->
+<!--                                                <Font size="16.0" />-->
+<!--                                            </font>-->
+<!--                                        </TextField>-->
+<!--                                    </children>-->
+<!--                                </HBox>-->
                                 <HBox alignment="CENTER" prefHeight="61.0" prefWidth="422.0" spacing="10.0">
                                     <children>
                                         <Label prefHeight="22.0" prefWidth="130.0" text="Số điện thoại" textFill="#30bac4">
@@ -100,25 +100,25 @@
                                         </TextField>
                                     </children>
                                 </HBox>
-                                <HBox alignment="CENTER" prefHeight="61.0" prefWidth="422.0" spacing="10.0">
-                                    <children>
-                                        <Label prefHeight="22.0" prefWidth="130.0" text="Email" textFill="#30bac4">
-                                            <font>
-                                                <Font name="Arial Bold" size="18.0" />
-                                            </font>
-                                        </Label>
-                                        <Label text=":" textFill="#30bac4">
-                                            <font>
-                                                <Font size="20.0" />
-                                            </font>
-                                        </Label>
-                                        <TextField fx:id="txtEmail" prefWidth="220.0" promptText="Nhập email" styleClass="textfield-1">
-                                            <font>
-                                                <Font size="16.0" />
-                                            </font>
-                                        </TextField>
-                                    </children>
-                                </HBox>
+<!--                                <HBox alignment="CENTER" prefHeight="61.0" prefWidth="422.0" spacing="10.0">-->
+<!--                                    <children>-->
+<!--                                        <Label prefHeight="22.0" prefWidth="130.0" text="Email" textFill="#30bac4">-->
+<!--                                            <font>-->
+<!--                                                <Font name="Arial Bold" size="18.0" />-->
+<!--                                            </font>-->
+<!--                                        </Label>-->
+<!--                                        <Label text=":" textFill="#30bac4">-->
+<!--                                            <font>-->
+<!--                                                <Font size="20.0" />-->
+<!--                                            </font>-->
+<!--                                        </Label>-->
+<!--                                        <TextField fx:id="txtEmail" prefWidth="220.0" promptText="Nhập email" styleClass="textfield-1">-->
+<!--                                            <font>-->
+<!--                                                <Font size="16.0" />-->
+<!--                                            </font>-->
+<!--                                        </TextField>-->
+<!--                                    </children>-->
+<!--                                </HBox>-->
                                 <HBox alignment="CENTER" prefHeight="61.0" prefWidth="422.0" spacing="10.0">
                                     <children>
                                         <Label prefHeight="22.0" prefWidth="130.0" text="Địa chỉ" textFill="#30bac4">

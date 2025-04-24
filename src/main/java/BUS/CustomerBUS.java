@@ -106,14 +106,10 @@ public class CustomerBUS extends BaseBUS <CustomerDTO, Integer> {
         if (!AuthorizationService.getInstance().
                 hasPermission(employeeLoginId, employee_roleId, 6)) return 4;
 
-
-
         // Kiểm tra trùng lặp trước khi cập nhật
         if (isDuplicateCustomer(obj.getId(), obj.getFirstName(), obj.getLastName(), obj.getPhone(), obj.getAddress())) {
             return 3;
         }
-
-
 
         //Kiểm tra input ở database
         if (isDuplicateCustomerS(obj)) return 1;

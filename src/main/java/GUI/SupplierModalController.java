@@ -1,7 +1,5 @@
 package GUI;
 
-import java.time.LocalDate;
-
 import BUS.SupplierBUS;
 import DTO.SupplierDTO;
 import SERVICE.SessionManagerService;
@@ -18,8 +16,8 @@ import lombok.Getter;
 public class SupplierModalController {
     // FXML Controls
     @FXML public Label modalName;
-    @FXML public TextField txtCustomerId;
-    @FXML public TextField txtName;
+    @FXML public TextField txtSupplierId;
+    @FXML public TextField txtCompanyName;
     @FXML public TextField txtPhone;
     @FXML public TextField txtAddress;
     @FXML public Button closeBtn;
@@ -62,8 +60,8 @@ public class SupplierModalController {
     public void setSupplier(SupplierDTO supplier) {
         this.supplier = supplier;
         if (supplier != null) {
-            txtCustomerId.setText(String.valueOf(supplier.getId()));
-            txtName.setText(supplier.getName());
+            txtSupplierId.setText(String.valueOf(supplier.getId()));
+            txtCompanyName.setText(supplier.getName());
             txtPhone.setText(supplier.getPhone());
             txtAddress.setText(supplier.getAddress());
             cbSelectStatus.getSelectionModel().select(supplier.isStatus() ? "Hoạt động" : "Ngưng hoạt động");
@@ -72,7 +70,7 @@ public class SupplierModalController {
 
     private boolean isValidInput() {
         boolean isValid = true;
-        String name = txtName.getText().trim();
+        String name = txtCompanyName.getText().trim();
         String phone = txtPhone.getText().trim();
         String address = txtAddress.getText().trim();
 
@@ -80,11 +78,11 @@ public class SupplierModalController {
 
         if (name.isEmpty()) {
             NotificationUtils.showErrorAlert("Tên nhà cung cấp không được để trống.", "Thông báo");
-            clearAndFocus(txtName);
+            clearAndFocus(txtCompanyName);
             isValid = false;
         } else if (!validator.validateVietnameseText100(name)) {
             NotificationUtils.showErrorAlert("Tên nhà cung cấp không hợp lệ (tối đa 100 ký tự).", "Thông báo");
-            clearAndFocus(txtName);
+            clearAndFocus(txtCompanyName);
             isValid = false;
         }
 
@@ -121,7 +119,7 @@ public class SupplierModalController {
         SupplierBUS supplierBus = SupplierBUS.getInstance();
         if (isValidInput()) {
             // Create CustomerDTO with ID 0, which will be replaced by the generated ID
-            SupplierDTO temp = new SupplierDTO(-1, txtName.getText().trim(),
+            SupplierDTO temp = new SupplierDTO(-1, txtCompanyName.getText().trim(),
                     txtPhone.getText().trim(), txtAddress.getText().trim(),
                     cbSelectStatus.getValue().equals("Hoạt động"));
             int insertResult = supplierBus.insert(temp, SessionManagerService.getInstance().employeeRoleId(), SessionManagerService.getInstance().employeeLoginId());
@@ -143,7 +141,7 @@ public class SupplierModalController {
     private void updateSupplier() {
         SupplierBUS supplierBus = SupplierBUS.getInstance();
         if (isValidInput()) {
-            SupplierDTO temp = new SupplierDTO(supplier.getId(), txtName.getText().trim(),
+            SupplierDTO temp = new SupplierDTO(supplier.getId(), txtCompanyName.getText().trim(),
                     txtPhone.getText().trim(), txtAddress.getText().trim(),
                     cbSelectStatus.getValue().equals("Hoạt động"));
             int updateResult = supplierBus.update(temp, SessionManagerService.getInstance().employeeRoleId(), SessionManagerService.getInstance().employeeLoginId());
@@ -155,7 +153,7 @@ public class SupplierModalController {
                 case 2 -> NotificationUtils.showErrorAlert("Có lỗi khi cập nhật thông tin nhà cung cấp. Vui lòng thử lại", "Lỗi");
                 case 3 -> NotificationUtils.showErrorAlert("Thông tin nhà cung cấp bị trùng lặp.", "Lỗi");
                 case 4 -> NotificationUtils.showErrorAlert("Không có quyền cập nhật thông tin nhà cung cấp.", "Thông báo.");
-                case 5 -> NotificationUtils.showErrorAlert("Không thể cập nhật thông tin khách hàng. Vui lòng thử lại.", "Lỗi");
+                case 5 -> NotificationUtils.showErrorAlert("Không thể cập nhật thông tin nhà cung cấp. Vui lòng thử lại.", "Lỗi");
                 case 6 -> NotificationUtils.showErrorAlert("Đầu vào không hợp lệ. Vui lòng thử lại.", "Thông báo");
                 default -> NotificationUtils.showErrorAlert("Lỗi không xác định. Vui lòng thử lại.", "Lỗi");
             }
