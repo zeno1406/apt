@@ -133,10 +133,10 @@ public class CategoryModalController {
                     handleClose();
                 }
                 case 2 -> NotificationUtils.showErrorAlert("Dữ liệu không hợp lệ. Vui lòng kiểm tra lại.", "Thông báo");
-                case 3 -> NotificationUtils.showErrorAlert("Thể loại bị trùng lặp. Không thể thêm.", "Thông báo");
-                case 4 -> NotificationUtils.showErrorAlert("Không có quyền thêm thể loại.", "Thông báo");
-                case 5 -> NotificationUtils.showErrorAlert("Lỗi kết nối CSDL. Thêm thể loại thất bại.", "Thông báo");
-                default -> NotificationUtils.showErrorAlert("Lỗi không xác định. Thêm thể loại thất bại.", "Thông báo");
+                case 3 -> NotificationUtils.showErrorAlert("Thể loại bị trùng lặp. Không thể cập nhật.", "Thông báo");
+                case 4 -> NotificationUtils.showErrorAlert("Không có quyền sửa thể loại.", "Thông báo");
+                case 5 -> NotificationUtils.showErrorAlert("Không thể cập nhật thể loại.", "Thông báo");
+                default -> NotificationUtils.showErrorAlert("Lỗi không xác định. Cập nhật thể loại thất bại.", "Thông báo");
             }
         }
     }

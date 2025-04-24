@@ -176,7 +176,7 @@ public class CategoryController implements IController {
         switch (deleteResult) {
             case 1 -> {
                 NotificationUtils.showInfoAlert("Xóa thể loại thành công!", "Thông báo");
-                resetFilters();
+                applyFilters();
             }
             case 2  -> NotificationUtils.showErrorAlert("Lỗi xoá thể loại không thành công. Vui lòng thử lại", "Thông báo");
             case 4  -> NotificationUtils.showErrorAlert("Không có quyền xóa thể loại.", "Thông báo");
@@ -185,9 +185,6 @@ public class CategoryController implements IController {
             case 5  -> NotificationUtils.showErrorAlert("Thể loại không tồn tại hoặc đã bị xoá.", "Thông báo");
             default -> NotificationUtils.showErrorAlert("Lỗi không xác định. Xóa thể loại thất bại.", "Thông báo");
         }
-
-        applyFilters();
-
     }
 
     private void handleEditBtn() {
