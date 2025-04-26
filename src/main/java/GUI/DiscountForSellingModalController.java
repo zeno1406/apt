@@ -36,7 +36,7 @@ public class DiscountForSellingModalController {
     @FXML
     private TableColumn<DiscountDTO, String> tbcDiscountName;
     @FXML
-    private TableColumn<DiscountDTO, Integer> tbcDiscountType;
+    private TableColumn<DiscountDTO, String> tbcDiscountType;
     @FXML
     private TableColumn<DiscountDTO, String> tbcStartDate;
     @FXML
@@ -49,7 +49,11 @@ public class DiscountForSellingModalController {
     @Getter
     private DiscountDTO selectedDiscount;
     @Getter
-    private  BigDecimal discountPrice;
+    private  BigDecimal discountPrice = BigDecimal.ZERO;
+    @Getter
+    private BigDecimal totalPriceInvoice = BigDecimal.ZERO;
+    @Getter
+    private BigDecimal discountPercent = BigDecimal.ZERO;
 
     @FXML
     public void initialize() {
@@ -63,7 +67,8 @@ public class DiscountForSellingModalController {
     public void loadTable() {
         tbcCode.setCellValueFactory(new PropertyValueFactory<>("code"));
         tbcDiscountName.setCellValueFactory(new PropertyValueFactory<>("name"));
-        tbcDiscountType.setCellValueFactory(new PropertyValueFactory<>("type"));
+        tbcDiscountType.setCellValueFactory(cellData ->
+                new SimpleStringProperty(cellData.getValue().getType() == 0 ? "Phần trăm" : "Giảm cứng"));
         tbcStartDate.setCellValueFactory(cellData ->
                 new SimpleStringProperty(ValidationUtils.getInstance().formatDateTime(cellData.getValue().getStartDate())));
         tbcEndDate.setCellValueFactory(cellData ->
@@ -132,11 +137,14 @@ public class DiscountForSellingModalController {
                             (BigDecimal.valueOf(100).subtract(details.get(i).getDiscountAmount()))
                                     .divide(BigDecimal.valueOf(100), BigDecimal.ROUND_CEILING)
                     );
+                    this.discountPercent = details.get(i).getDiscountAmount();
+                    this.totalPriceInvoice = details.get(i).getTotalPriceInvoice();
                     return;
                 }
                 else
                 {
                     this.discountPrice = this.price.subtract(details.get(i).getDiscountAmount());
+                    this.totalPriceInvoice = details.get(i).getDiscountAmount();
                     return;
                 }
         }

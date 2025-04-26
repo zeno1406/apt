@@ -29,8 +29,6 @@ public class ImportProductModalController {
     @FXML
     private TextField txtPrice;
     @FXML
-    private TextField txtSellingPrice;
-    @FXML
     private Button saveBtn,closeBtn;
     @FXML
     private HBox hbInputPrice, hbInputSellingPrice;
@@ -39,14 +37,12 @@ public class ImportProductModalController {
     @Getter
     private boolean isSaved;
     private int typeModal;
-    private boolean isSell = false;
     @Getter
     private TempDetailImportDTO tempDetailImport;
     @FXML
     public void initialize() {
         if(ProductBUS.getInstance().getAllLocal().isEmpty()) ProductBUS.getInstance().loadLocal();
         setupListeners();
-        hbInputSellingPrice.setVisible(false);
     }
 
     public void setupListeners() {
@@ -70,7 +66,6 @@ public class ImportProductModalController {
         this.tempDetailImport = tempDetailImport;
         txtQuantity.setText(String.valueOf(tempDetailImport.getQuantity()));
         txtPrice.setText(String.valueOf(tempDetailImport.getPrice()));
-        txtSellingPrice.setText(String.valueOf(tempDetailImport.getPrice())); // CHANGE HERE
         txtProductName.setText(tempDetailImport.getName());
     }
 
@@ -91,7 +86,6 @@ public class ImportProductModalController {
         boolean isValid = true;
         String quantity = txtQuantity.getText().trim();
         String price = txtPrice.getText().trim();
-        String sellingPrice = txtSellingPrice.getText().trim();
 
         ValidationUtils validator = ValidationUtils.getInstance();
 
@@ -107,10 +101,10 @@ public class ImportProductModalController {
                     clearAndFocus(txtQuantity);
                     isValid = false;
                 }
-                if (isSell && !isValidQuantity(ValidationUtils.getInstance().canParseToInt(txtQuantity.getText().trim()), ProductBUS.getInstance().getByIdLocal(tempDetailImport.getProductId()))) {
-                        clearAndFocus(txtQuantity);
-                        isValid = false;
-                }
+//                if (!isValidQuantity(ValidationUtils.getInstance().canParseToInt(txtQuantity.getText().trim()), ProductBUS.getInstance().getByIdLocal(tempDetailImport.getProductId()))) {
+//                        clearAndFocus(txtQuantity);
+//                        isValid = false;
+//                }
 
             } catch (NumberFormatException e) {
                 NotificationUtils.showErrorAlert("Số lượng phải là số nguyên hợp lệ.", "Thông báo");
@@ -138,39 +132,7 @@ public class ImportProductModalController {
                 isValid = false;
             }
         }
-
-        BigDecimal sellingPriceValue = BigDecimal.ZERO;
-        if (isValid && sellingPrice.isEmpty()) {
-            txtSellingPrice.setText(String.valueOf(tempDetailImport.getPrice())); // CHANGE HERE
-//
-//            NotificationUtils.showErrorAlert("Giá bán không được để trống.", "Thông báo");
-//            clearAndFocus(txtSellingPrice);
-//            isValid = false;
-        } else if (isValid) {
-            try {
-                sellingPriceValue = new BigDecimal(sellingPrice);
-                if (!validator.validateSalary(sellingPriceValue, 10, 2, false)) {
-                    NotificationUtils.showErrorAlert("Giá bán không hợp lệ (tối đa 10 chữ số, 2 số thập phân, không âm hoặc bằng 0).", "Thông báo");
-                    clearAndFocus(txtSellingPrice);
-                    isValid = false;
-                }
-            } catch (NumberFormatException e) {
-                NotificationUtils.showErrorAlert("Giá bán phải là số.", "Thông báo");
-                clearAndFocus(txtSellingPrice);
-                isValid = false;
-            }
-        }
-
-//        if (isValid && sellingPriceValue.compareTo(priceValue) < 0) {
-//            NotificationUtils.showErrorAlert("Giá bán phải lớn hơn hoặc bằng giá nhập.", "Thông báo");
-//            clearAndFocus(txtSellingPrice);
-//            isValid = false;
-//        }
         return isValid;
-    }
-
-    public void setIsSell(Boolean isSell) {
-        this.isSell = isSell;
     }
 
     private void handleSave() {

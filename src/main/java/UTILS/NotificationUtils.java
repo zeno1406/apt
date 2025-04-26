@@ -27,26 +27,27 @@ public class NotificationUtils {
         alert.showAndWait();
     }
 
-    public static <T> boolean showConfirmAlert(String message, ArrayList<T> list, String title) {
+    public static <T> boolean showConfirmAlert(String message, ArrayList<T> list, String title, String extraFooter) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle(title);
         alert.setHeaderText(message);
 
         StringBuilder content = new StringBuilder();
         ValidationUtils validate = ValidationUtils.getInstance();
+
         for (T obj : list) {
             if (obj instanceof TempDetailImportDTO item) {
                 content.append("- ")
                         .append(item.getName())
                         .append(" | SL: ").append(item.getQuantity())
-                        .append(" | Đơn giá: ").append(validate.formatCurrency(item.getPrice()))
+                        .append(" | Đơn giá: ").append(validate.formatCurrency(item.getPrice()) + " Đ")
                         .append("\n");
-            } 
+            }
             else if (obj instanceof TempDetailInvoiceDTO item) {
                 content.append("- ")
                         .append(item.getName())
                         .append(" | SL: ").append(item.getQuantity())
-                        .append(" | Đơn giá: ").append(validate.formatCurrency(item.getPrice()))
+                        .append(" | Đơn giá: ").append(validate.formatCurrency(item.getPrice()) + " Đ")
                         .append("\n");
             }
             else {
@@ -54,14 +55,19 @@ public class NotificationUtils {
             }
         }
 
+        // Thêm phần extraFooter (nếu có)
+        if (extraFooter != null && !extraFooter.isEmpty()) {
+            content.append("\n").append(extraFooter);
+        }
+
         alert.setContentText(content.toString());
 
         ButtonType okButton = new ButtonType("Đồng ý", ButtonBar.ButtonData.OK_DONE);
         ButtonType cancelButton = new ButtonType("Huỷ", ButtonBar.ButtonData.CANCEL_CLOSE);
-
         alert.getButtonTypes().setAll(okButton, cancelButton);
 
         Optional<ButtonType> result = alert.showAndWait();
         return result.isPresent() && result.get() == okButton;
     }
+
 }

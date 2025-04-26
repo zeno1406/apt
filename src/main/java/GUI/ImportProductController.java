@@ -93,6 +93,8 @@ public class ImportProductController {
 
     public void loadTable() {
         ValidationUtils validationUtils = ValidationUtils.getInstance();
+
+        // Tạo số thứ tự
         tlb_col_index.setCellFactory(column -> new TableCell<>() {
             @Override
             protected void updateItem(String item, boolean empty) {
@@ -104,23 +106,30 @@ public class ImportProductController {
                 }
             }
         });
+
+        // Đổ dữ liệu các cột
         tlb_col_productName.setCellValueFactory(new PropertyValueFactory<>("name"));
-        tlb_col_quantity.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getQuantity())));
+        tlb_col_quantity.setCellValueFactory(cellData ->
+                new SimpleStringProperty(String.valueOf(cellData.getValue().getQuantity())));
         tlb_col_price.setCellValueFactory(cellData ->
                 new SimpleStringProperty(validationUtils.formatCurrency(cellData.getValue().getPrice())));
         tlb_col_sellingPrice.setCellValueFactory(cellData ->
                 new SimpleStringProperty(validationUtils.formatCurrency(cellData.getValue().getSellingPrice())));
         tlb_col_totalPrice.setCellValueFactory(cellData ->
                 new SimpleStringProperty(validationUtils.formatCurrency(cellData.getValue().getTotalPrice())));
+
+        // Set Items
         tbvDetailImportProduct.setItems(FXCollections.observableArrayList(arrTempDetailImport));
         tbvDetailImportProduct.getSelectionModel().clearSelection();
 
-        UiUtils.gI().addTooltipToColumn(tlb_col_productName, 10);
-        UiUtils.gI().addTooltipToColumn(tlb_col_quantity, 10);
-        UiUtils.gI().addTooltipToColumn(tlb_col_price, 10);
-        UiUtils.gI().addTooltipToColumn(tlb_col_sellingPrice, 10);
-        UiUtils.gI().addTooltipToColumn(tlb_col_totalPrice, 10);
+        tlb_col_index.setPrefWidth(50);          // STT
+        tlb_col_productName.setPrefWidth(150);    // Tên sản phẩm
+        tlb_col_quantity.setPrefWidth(80);        // Số lượng
+        tlb_col_price.setPrefWidth(100);          // Giá nhập
+        tlb_col_sellingPrice.setPrefWidth(100);   // Giá bán
+        tlb_col_totalPrice.setPrefWidth(120);     // Thành tiền
     }
+
 
     // Set click Event
     private void setOnMouseClicked() {
@@ -366,16 +375,23 @@ public class ImportProductController {
 
     private void onMouseClickedClear() {
         arrTempDetailImport.clear();
-        tbvDetailImportProduct.setMouseTransparent(false);
-        tbvDetailImportProduct.setFocusTraversable(true);
         addEventClickForProduct(tbvDetailImportProduct, gpShowProductWrapper);
         loadCaculatedTotalImportPrice();
         loadProductWrapper();
+        changeLabelContent();
         loadTable();
         NotificationUtils.showInfoAlert("Xóa toàn bộ chi tiết phiếu nhập thành công.", "Thông báo");
+        selectedSupplier = null;
         txtSupplierId.setText("");
         txtSupplierName.setText("");
-        makeEditableForButton(btnSubmitImport);
+        makeEditable(btnSubmitImport);
+        makeEditable(btnGetSupInfo);
+        makeEditable(btnImportListProductEdit);
+        makeEditable(btnImportListProductRemove);
+        ObservableList<Node> listNode = gpShowProductWrapper.getChildren();
+        for (Node node : listNode) {
+            makeEditable(node);
+        }
     }
 
     private HBox createInfoRow(Label label, Label value) {
@@ -451,18 +467,6 @@ public class ImportProductController {
                 return;
             }
         }
-
-//        // Nếu chưa có sản phẩm trong bảng thì thêm mới
-//        TempDetailImportDTO tempDetailImport = new TempDetailImportDTO(
-//                0,
-//                product.getId(),
-//                product.getName(),
-//                1,
-//                BigDecimal.ZERO, // hoặc product.getImportPrice() nếu bạn muốn
-//                BigDecimal.ZERO,
-//                BigDecimal.ZERO
-//        );
-//        arrTempDetailImport.add(tempDetailImport);
         loadTable();
     }
 
@@ -500,9 +504,10 @@ public class ImportProductController {
         }
         ImportDTO temp = new ImportDTO(Integer.parseInt(txtImportId.getText().trim()), null, Integer.parseInt(txtEmployeeId.getText().trim()),
                 Integer.parseInt(txtSupplierId.getText().trim()), totalImportPrice);
-
-        boolean submit =  NotificationUtils.showConfirmAlert("Xác nhận phiếu nhập", arrTempDetailImport, "Thông Báo");
+        String extra = "Tổng tiền nhập: " + ValidationUtils.getInstance().formatCurrency(totalImportPrice) + " Đ";
+        boolean submit =  NotificationUtils.showConfirmAlert("Xác nhận phiếu nhập", arrTempDetailImport, "Thông Báo", extra);
         // khong xac nhan khong nhap
+
         if (!submit) return;
 
         boolean result = ImportService.getInstance().createImportWithDetailImport(temp, ses.employeeRoleId(),list , ses.employeeLoginId());
@@ -510,16 +515,15 @@ public class ImportProductController {
         // Sau đó tăng số lượng sản phẩm và set lại giá
         if (result && ProductBUS.getInstance().updateQuantitySellingPriceListProduct(listProduct, true)) {
             NotificationUtils.showInfoAlert("Nhập hàng thành công.", "Thông báo");
-//            arrTempDetailImport.clear();
             loadProductWrapper();
-//            selectedSupplier =null;
-//            txtSupplierId.setText("");
-//            txtSupplierName.setText("");
-//            loadTable();
-//            loadCaculatedTotalImportPrice();
-            tbvDetailImportProduct.setMouseTransparent(true);
-            tbvDetailImportProduct.setFocusTraversable(false);
             makeReadOnly(btnSubmitImport);
+            makeReadOnly(btnGetSupInfo);
+            makeReadOnly(btnImportListProductEdit);
+            makeReadOnly(btnImportListProductRemove);
+            ObservableList<Node> listNode = gpShowProductWrapper.getChildren();
+            for (Node node : listNode) {
+                makeReadOnly(node);
+            }
         }
     }
 
@@ -527,7 +531,6 @@ public class ImportProductController {
         node.setDisable(false); // Cho phép hiện bình thường
         node.setMouseTransparent(true); // Không cho tương tác
         node.setFocusTraversable(false); // Không cho focus
-        node.setStyle("-fx-background-color: #999999; -fx-opacity: 0.75;");
 
         if (node instanceof TextInputControl textInput) {
             textInput.setEditable(false);
@@ -556,10 +559,15 @@ public class ImportProductController {
     }
 
     // Hàm mới để "mở khóa" button
-    private void makeEditableForButton(Button button) {
-        button.setDisable(false);
-        button.setMouseTransparent(false);
-        button.setFocusTraversable(true);
-        button.setStyle(""); // Reset style
+    private void makeEditable(Node node) {
+        node.setDisable(false);
+        node.setMouseTransparent(false);
+        node.setFocusTraversable(true);
+
+        if (node instanceof Button) {
+            node.setStyle(""); // Chỉ reset style nếu là Button
+        }
     }
+
+
 }
