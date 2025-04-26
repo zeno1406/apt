@@ -1,0 +1,142 @@
+HBox, VBox {
+    -fx-start-margin: 0;
+    -fx-end-margin: 0;
+}
+
+.pProductSearchAndFilter,
+.pExitBtnContainer {
+    -fx-pref-height:42px;
+}
+
+/*selling show product header*/
+.pProductSearchAndFilter {
+    -fx-pref-width: 692px;
+    -fx-background-color: #d8dee9;
+    -fx-border-style: solid;
+    -fx-border-color: #e5e9f0;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+}
+
+.txtSellingProductNameSearch,
+.cbxListProductFilter {
+    -fx-border-color: transparent;
+    -fx-background-color: white;
+    -fx-background-radius: 6px;
+}
+
+.cbxListProductFilter {
+    -fx-text-fill: black;
+    -fx-font: 14px System;
+    -fx-cursor: hand;
+}
+
+.btnSearchProduct {
+    -fx-background-color: #8fb6de;
+    -fx-background-radius: 6px;
+    -fx-text-fill: white;
+    -fx-font: 14px System;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+}
+
+.btnSearchProduct:hover {
+    -fx-background-color: #6b86a1;
+}
+
+.pDetailInvoice,
+.pListProduct {
+    -fx-background-color: #e5e9f0;
+    -fx-background-radius: 6px;
+}
+
+.vbCreateInvoiceDetail {
+    -fx-pref-height: 642px;
+}
+
+/*Main SHow*/
+.spShowProductContainer {
+    -fx-pref-width: 692px;
+    -fx-background-color: transparent;
+    -fx-pref-height: inherit;
+    -fx-border-color: transparent;
+    -fx-padding: 5px;
+}
+
+.gpShowProductWrapper {
+    -fx-hgap: 8px;
+    -fx-padding: 8px 0px 8px 0px;
+}
+
+.hbMainSellingShowProduct {
+    -fx-pref-height: inherit;
+    -fx-pref-width: 200px;
+}
+
+.imgSellingProduct {
+    -fx-pref-width: 131px;
+    -fx-pref-height: 131px;
+}
+
+.txtFieldTempSellingInvoice {
+    -fx-background-color: white;
+}
+
+.pShowDetailInvoiceProductContainer {
+    -fx-background-color: #e5e9f0;
+}
+
+.pShowOtherInvoiceProduct {
+    -fx-pref-height: 182px;
+}
+
+.txtFieldShowInvoiceSaleValue,
+.txtFieldShowInvoiceSaleCode {
+    -fx-pref-height: 20px;
+    -fx-pref-width: 120px;
+    -fx-background-color: #fcf7f8;
+    -fx-opacity: 0.8;
+}
+
+.lbTotalSellingInvoice {
+    -fx-text-fill: red;
+}
+
+.lbTotalSellingInvoice,
+.lbTotalInvoicePrice {
+    -fx-font: 18px System;
+    -fx-font-weight: bold;
+}
+
+.btnSubmitIInvoice {
+    padding: 8px;
+    -fx-background-color: #8fb6de;
+    -fx-background-radius: 6px;
+    -fx-cursor: hand;
+}
+
+.btnSubmitIInvoice:hover {
+    -fx-background-color: #6b86a1;
+}
+
+.btnGetCusInfo, .btnAddCustomer {
+    -fx-background-color: white;
+    -fx-border-color: #8fb6de;
+    -fx-background-radius:4px;
+    -fx-border-radius: 4px;
+    -fx-pref-width: 25px;
+    -fx-pref-height: 25px;
+}
+
+.acSellingCustomerContainer {
+    -fx-border-color: black;
+}
+
+.txtSearchCustomer {
+    -fx-background-color: #e3eeff;
+    -fx-pref-height: 28px;
+}
+
+.txt-child-form {
+    -fx-background-color: #e3eeff;
+}

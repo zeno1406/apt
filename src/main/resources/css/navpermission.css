@@ -1,0 +1,31 @@
+.acPermissionRoot {
+    -fx-background-color: white;
+    -fx-pref-width: 620px;
+    -fx-pref-height: 280px;
+}
+
+.pNavExitPermissionForm {
+    -fx-pref-width: 600px;
+    -fx-pref-height: 42px;
+}
+
+.pListPermissionContainer {
+    -fx-pref-width: 600px;
+    -fx-pref-height: 228px;
+}
+
+.gpListPermission {
+    -fx-hgap: 10px;
+    -fx-vgap: 10px;
+    -fx-pref-height: 228px;
+}
+
+.imgPermission {
+    -fx-fit-to-width: 200px;
+    -fx-fit-to-height: 200px;
+}
+
+.pPermissionItemWrapper {
+    -fx-background-color: #C9CDD3;
+    -fx-background-radius: 6px;
+}

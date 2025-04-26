@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon?>
+<?import java.lang.String?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="650.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.RoleController">
+    <children>
+        <BorderPane prefHeight="600.0" prefWidth="880.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <top>
+                <AnchorPane prefHeight="50.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                    <children>
+                        <AnchorPane prefHeight="50.0" prefWidth="880.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                            <children>
+                                <FontAwesomeIcon fill="#58c9c9" glyphName="SEARCH" layoutX="169.0" layoutY="32.0" size="1.8em" text="" AnchorPane.topAnchor="15.0" />
+                                <Line endX="79.0" endY="-3.814697265625E-6" layoutX="111.0" layoutY="38.0" startX="-100.0" stroke="#58c9c9" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="45.0" />
+                                <TextField fx:id="txtSearch" layoutX="10.0" layoutY="10.0" prefHeight="26.0" prefWidth="145.6" promptText="Nhập để tìm kiếm" styleClass="textfield" stylesheets="@../css/base.css" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="15.0" />
+                                  <ComboBox fx:id="cbSearchBy" layoutX="206.39999389648438" layoutY="13.59999942779541" prefHeight="26.0" prefWidth="117.0" styleClass="combo-box" stylesheets="@../css/base.css" AnchorPane.leftAnchor="200.0" AnchorPane.topAnchor="13.59999942779541" />
+                        <Button fx:id="authorizeBtn" layoutX="796.0" layoutY="13.0" mnemonicParsing="false" styleClass="action-btn" stylesheets="@../css/base.css" text="Phân quyền" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="13.0">
+                           <graphic>
+                              <FontAwesomeIcon glyphName="COGS" size="1.2em" styleClass="action-icon" />
+                           </graphic>
+                        </Button>
+                            </children>
+                        </AnchorPane>
+                    </children>
+                </AnchorPane>
+            </top>
+            <center>
+                <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                    <children>
+                        <AnchorPane layoutX="10.0" layoutY="9.0" prefHeight="286.0" prefWidth="858.0" stylesheets="@../css/base.css" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="5.0">
+                            <styleClass>
+                                <String fx:value="white-bg" />
+                                <String fx:value="shadow" />
+                            </styleClass>
+                            <children>
+                                <TableView fx:id="tblRole" editable="true" prefHeight="444.0" prefWidth="859.2" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                    <columns>
+                                        <TableColumn fx:id="tlb_col_id" prefWidth="93.59997606277466" text="Mã chức vụ" />
+                                        <TableColumn fx:id="tlb_col_name" prefWidth="214.4000015258789" text="Tên chức vụ" />
+                                        <TableColumn fx:id="tlb_col_description" prefWidth="411.20001220703125" text="Mô tả" />
+                                        <TableColumn fx:id="tlb_col_salaryCoefficient" prefWidth="132.0" text="Hệ số lương" />
+                                    </columns>
+                                    <columnResizePolicy>
+                                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                    </columnResizePolicy>
+                                </TableView>
+                            </children>
+                        </AnchorPane>
+                    </children>
+                </AnchorPane>
+            </center>
+            <bottom>
+                <AnchorPane prefHeight="50.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                    <children>
+                        <AnchorPane prefHeight="50.0" prefWidth="880.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                            <children>
+                                <HBox fx:id="functionBtns" alignment="CENTER_RIGHT" layoutX="680.0" layoutY="2.0" prefHeight="46.0" prefWidth="315.0" spacing="10.0" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="9.5" AnchorPane.topAnchor="0.0">
+                                    <children>
+                                        <Button fx:id="addBtn" mnemonicParsing="false" prefHeight="34.0" prefWidth="92.0" styleClass="action-btn" stylesheets="@../css/base.css" text="Thêm">
+                                            <graphic>
+                                                <FontAwesomeIcon glyphName="PLUS_SQUARE" size="1.2em" styleClass="action-icon" />
+                                            </graphic>
+                                            <font>
+                                                <Font size="14.0" />
+                                            </font>
+                                        </Button>
+                                        <Button fx:id="editBtn" mnemonicParsing="false" prefWidth="92.0" styleClass="action-btn" stylesheets="@../css/base.css" text="Sửa">
+                                            <graphic>
+                                                <FontAwesomeIcon glyphName="PENCIL" size="1.2em" styleClass="action-icon" />
+                                            </graphic>
+                                            <font>
+                                                <Font size="14.0" />
+                                            </font>
+                                        </Button>
+                                        <Button fx:id="deleteBtn" mnemonicParsing="false" prefWidth="92.0" styleClass="action-btn" stylesheets="@../css/base.css" text="Xóa">
+                                            <graphic>
+                                                <FontAwesomeIcon glyphName="TRASH" size="1.2em" styleClass="action-icon" />
+                                            </graphic>
+                                            <font>
+                                                <Font size="14.0" />
+                                            </font>
+                                        </Button>
+                                    </children>
+                                </HBox>
+                                <Button fx:id="refreshBtn" layoutX="14.0" layoutY="5.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="108.0" styleClass="action-btn" stylesheets="@../css/base.css" text="Làm mới" AnchorPane.bottomAnchor="11.000000000000007" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="758.8" AnchorPane.topAnchor="5.0">
+                                    <font>
+                                        <Font size="14.0" />
+                                    </font>
+                                    <graphic>
+                                        <FontAwesomeIcon glyphName="REFRESH" size="1.2em" styleClass="action-icon" />
+                                    </graphic>
+                                </Button>
+                            </children>
+                        </AnchorPane>
+                    </children>
+                </AnchorPane>
+            </bottom>
+        </BorderPane>
+    </children>
+</AnchorPane>

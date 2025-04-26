@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon?>
+<?import java.lang.String?>
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="acImportingRoot" minHeight="-Infinity" prefHeight="0.0" prefWidth="1110.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.ImportProductController">
+   <children>
+      <VBox fx:id="vbImportingContainer" prefHeight="200.0" prefWidth="100.0" stylesheets="@../css/sellingform.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <Pane fx:id="pImportingHeader" minHeight="-Infinity" prefHeight="50.0" prefWidth="1084.0" styleClass="top-form" stylesheets="@../css/main.css">
+               <children>
+                  <Pane fx:id="pExitBtnContainer" layoutX="1041.0" prefHeight="50.0" prefWidth="80.0" styleClass="pExitBtnContainer">
+                     <children>
+                        <Button fx:id="btnExitImportingForm" layoutX="4.0" layoutY="11.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="55.0" styleClass="close" stylesheets="@../css/main.css">
+                           <graphic>
+                              <FontAwesomeIcon glyphName="CLOSE" selectionFill="BLACK" size="1.4em" styleClass="close-icon" />
+                           </graphic>
+                        </Button>
+                     </children>
+                  </Pane>
+                  <ImageView fitHeight="45.0" fitWidth="45.0" layoutX="10.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/icon/Truck.png" />
+                     </image>
+                  </ImageView>
+               </children>
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+            </Pane>
+            <HBox fx:id="hbImportingMainContentContainer" prefWidth="200.0" styleClass="hbMainContentContainer">
+               <children>
+                  <Pane fx:id="pListProduct" maxHeight="628.0" minHeight="628.0" minWidth="-Infinity" prefHeight="628.0" prefWidth="692.0" styleClass="pDetailInvoice">
+                     <children>
+                        <Pane fx:id="pProductSearchAndFilter" minHeight="-Infinity" prefHeight="35.0" prefWidth="700.0" styleClass="pProductSearchAndFilter">
+                           <children>
+                              <Pane fx:id="pProductSearch" layoutY="-4.0" prefHeight="50.0" prefWidth="400.0">
+                                 <children>
+                                    <TextField fx:id="txtProductNameSearch" layoutX="14.0" layoutY="10.0" prefHeight="30.0" prefWidth="250.0" promptText="Tìm kiếm theo tên sản phẩm" styleClass="txtSellingProductNameSearch">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font></TextField>
+                                    <Pane fx:id="pSearchProductBtnContainer" layoutX="279.0" layoutY="10.0" prefHeight="30.0" prefWidth="80.0">
+                                       <children>
+                                          <Button fx:id="btnSearchProduct" alignment="CENTER" mnemonicParsing="false" prefHeight="30.0" prefWidth="80.0" styleClass="btnSearchProduct" text="Tìm Kiếm">
+                                             <padding>
+                                                <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+                                             </padding>
+                                          </Button>
+                                       </children>
+                                    </Pane>
+                                 </children>
+                              </Pane>
+                              <Button fx:id="btnClearProduct" alignment="CENTER" layoutX="607.0" layoutY="6.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="80.0" styleClass="btnSearchProduct" text="Làm mới">
+                                 <padding>
+                                    <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+                                 </padding>
+                              </Button>
+                           </children>
+                           <padding>
+                              <Insets bottom="8.0" />
+                           </padding>
+                        </Pane>
+                        <ScrollPane fx:id="spShowProductContainer" fitToWidth="true" hbarPolicy="NEVER" layoutY="42.0" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="585.0" prefWidth="669.0" styleClass="spShowProductContainer">
+                           <content>
+                              <GridPane fx:id="gpShowProductWrapper" alignment="CENTER" prefHeight="43.0" prefWidth="692.0" styleClass="gpShowProductWrapper">
+                                 <columnConstraints>
+                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                 </columnConstraints>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                              </GridPane>
+                           </content>
+                        </ScrollPane>
+                     </children>
+                     <HBox.margin>
+                        <Insets right="8.0" />
+                     </HBox.margin>
+                  </Pane>
+                  <Pane fx:id="pDetailInvoice" maxHeight="628.0" minHeight="628.0" minWidth="-Infinity" prefHeight="628.0" prefWidth="384.0" styleClass="pDetailInvoice" stylesheets="@../css/sellingform.css">
+                     <children>
+                        <VBox fx:id="vbCreateInvoiceDetail" maxHeight="620.0" minHeight="608.0" prefHeight="608.0" prefWidth="384.0" style="-fx-alignment: center;" styleClass="vbCreateInvoiceDetail">
+                           <children>
+                              <Pane prefHeight="40.0" prefWidth="384.0">
+                                 <children>
+                                    <Label fx:id="lbHeaderImportingDetail" layoutX="90.0" prefHeight="40.0" styleClass="ocean-color" text="Phiếu Nhập Hàng">
+                                       <font>
+                                          <Font name="System Bold" size="24.0" />
+                                       </font>
+                                    </Label>
+                                 </children>
+                              </Pane>
+                              <Pane fx:id="pImortingDetail" prefHeight="120.0" prefWidth="384.0">
+                                 <children>
+                                    <VBox alignment="CENTER" maxHeight="120.0" maxWidth="192.0" minHeight="120.0" minWidth="192.0" prefHeight="120.0" prefWidth="192.0" spacing="5.0">
+                                       <children>
+                                          <HBox alignment="CENTER" maxHeight="30.0" minHeight="30.0" prefHeight="30.0" prefWidth="200.0" spacing="10.0">
+                                             <children>
+                                                <Label prefWidth="68.0" text="Mã PN" textFill="#30bac4">
+                                                   <font>
+                                                      <Font name="Arial Bold" size="16.0" />
+                                                   </font>
+                                                </Label>
+                                                <Label text=":" textFill="#30bac4">
+                                                   <font>
+                                                      <Font name="Arial Bold" size="18.0" />
+                                                   </font>
+                                                </Label>
+                                                <TextField fx:id="txtImportId" editable="false" prefWidth="75.0" />
+                                             </children>
+                                          </HBox>
+                                          <HBox alignment="CENTER" layoutX="10.0" layoutY="10.0" maxHeight="30.0" minHeight="30.0" prefHeight="30.0" prefWidth="200.0" spacing="10.0">
+                                             <children>
+                                                <Label prefWidth="68.0" text="Mã NV" textFill="#30bac4">
+                                                   <font>
+                                                      <Font name="Arial Bold" size="16.0" />
+                                                   </font>
+                                                </Label>
+                                                <Label text=":" textFill="#30bac4">
+                                                   <font>
+                                                      <Font name="Arial Bold" size="18.0" />
+                                                   </font>
+                                                </Label>
+                                                <TextField fx:id="txtEmployeeId" editable="false" prefWidth="75.0" />
+                                             </children>
+                                          </HBox>
+                                          <HBox alignment="CENTER" layoutX="10.0" layoutY="50.0" maxHeight="30.0" minHeight="30.0" prefHeight="30.0" prefWidth="200.0" spacing="10.0">
+                                             <children>
+                                                <Label prefWidth="68.0" text="Tên NV" textFill="#30bac4">
+                                                   <font>
+                                                      <Font name="Arial Bold" size="16.0" />
+                                                   </font>
+                                                </Label>
+                                                <Label text=":" textFill="#30bac4">
+                                                   <font>
+                                                      <Font name="Arial Bold" size="18.0" />
+                                                   </font>
+                                                </Label>
+                                                <TextField fx:id="txtEmployeeFullName" editable="false" prefWidth="75.0" />
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="CENTER" layoutX="192.0" maxHeight="120.0" maxWidth="192.0" minHeight="120.0" minWidth="192.0" prefHeight="120.0" prefWidth="192.0" spacing="5.0">
+                                       <children>
+                                          <HBox alignment="CENTER" maxHeight="30.0" minHeight="30.0" prefHeight="30.0" prefWidth="200.0" spacing="10.0">
+                                             <children>
+                                                <Label prefWidth="68.0" text="Ngày lập" textFill="#30bac4">
+                                                   <font>
+                                                      <Font name="Arial Bold" size="16.0" />
+                                                   </font>
+                                                </Label>
+                                                <Label text=":" textFill="#30bac4">
+                                                   <font>
+                                                      <Font name="Arial Bold" size="18.0" />
+                                                   </font>
+                                                </Label>
+                                                <TextField fx:id="txtCreateDate" editable="false" prefWidth="75.0" />
+                                             </children>
+                                          </HBox>
+                                          <HBox alignment="CENTER" layoutX="10.0" layoutY="10.0" maxHeight="30.0" minHeight="30.0" prefHeight="30.0" prefWidth="200.0" spacing="10.0">
+                                             <children>
+                                                <Label prefWidth="68.0" text="Mã NCC" textFill="#30bac4">
+                                                   <font>
+                                                      <Font name="Arial Bold" size="16.0" />
+                                                   </font>
+                                                </Label>
+                                                <Label text=":" textFill="#30bac4">
+                                                   <font>
+                                                      <Font name="Arial Bold" size="18.0" />
+                                                   </font>
+                                                </Label>
+                                                <HBox maxWidth="75.2" minWidth="75.2" prefWidth="75.2" spacing="2.0">
+                                                   <children>
+                                                      <TextField fx:id="txtSupplierId" editable="false" prefWidth="75.0" />
+                                                      <Button fx:id="btnGetSupInfo" mnemonicParsing="false" text="..." />
+                                                   </children>
+                                                </HBox>
+                                             </children>
+                                          </HBox>
+                                          <HBox alignment="CENTER" layoutX="10.0" layoutY="50.0" maxHeight="30.0" minHeight="30.0" prefHeight="30.0" prefWidth="200.0" spacing="10.0">
+                                             <children>
+                                                <Label prefWidth="68.0" text="Tên NCC" textFill="#30bac4">
+                                                   <font>
+                                                      <Font name="Arial Bold" size="16.0" />
+                                                   </font>
+                                                </Label>
+                                                <Label text=":" textFill="#30bac4">
+                                                   <font>
+                                                      <Font name="Arial Bold" size="18.0" />
+                                                   </font>
+                                                </Label>
+                                                <TextField fx:id="txtSupplierName" editable="false" prefWidth="75.0" />
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </Pane>
+                              <Pane fx:id="pShowDetailImportProductContainer" prefHeight="340.0" prefWidth="200.0">
+                                 <children>
+                                    <TableView fx:id="tbvDetailImportProduct" layoutX="4.0" prefHeight="340.0" prefWidth="376.0" styleClass="tbvDetailProduct" stylesheets="@../css/base.css">
+                                       <columns>
+                                          <TableColumn fx:id="tlb_col_index" prefWidth="36.0" text="STT" />
+                                          <TableColumn fx:id="tlb_col_productName" prefWidth="61.5999755859375" text="Tên SP" />
+                                          <TableColumn fx:id="tlb_col_quantity" prefWidth="40.7999267578125" text="SL" />
+                                          <TableColumn fx:id="tlb_col_price" minWidth="5.5999755859375" prefWidth="93.60003662109375" text="Giá nhập" />
+                                          <TableColumn fx:id="tlb_col_sellingPrice" minWidth="0.0" prefWidth="69.5999755859375" text="Giá bán" />
+                                          <TableColumn fx:id="tlb_col_totalPrice" prefWidth="79.2000732421875" text="T.Tiền" />
+                                       </columns>
+                                       <padding>
+                                          <Insets bottom="8.0" />
+                                       </padding>
+                                       <cursor>
+                                          <Cursor fx:constant="HAND" />
+                                       </cursor>
+                                    </TableView>
+                                 </children>
+                                 <styleClass>
+                                    <String fx:value="pShowDetailProductContainer" />
+                                    <String fx:value="pShowDetailImportProductContainer" />
+                                 </styleClass>
+                              </Pane>
+                              <Pane fx:id="pShowOtherImportProduct" maxHeight="140.0" minHeight="140.0" prefHeight="140.0" prefWidth="200.0" styleClass="pShowOtherImportProduct">
+                                 <children>
+                                    <VBox fx:id="vbOtherSellingFuncs" prefHeight="160.0" prefWidth="384.0">
+                                       <children>
+                                          <HBox alignment="CENTER_RIGHT" minWidth="100.0" prefHeight="34.0" prefWidth="100.0" spacing="10.0">
+                                             <children>
+                                                <Button fx:id="btnImportListProductClear" alignment="CENTER" layoutX="219.0" layoutY="10.0" mnemonicParsing="false" styleClass="btnFunctionForm" text="Nhập Mới">
+                                                   <padding>
+                                                      <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+                                                   </padding>
+                                                   <HBox.margin>
+                                                      <Insets right="113.0" />
+                                                   </HBox.margin>
+                                                </Button>
+                                                <Button fx:id="btnImportListProductEdit" alignment="CENTER" mnemonicParsing="false" styleClass="btnFunctionForm" text="Chỉnh Sửa">
+                                                   <padding>
+                                                      <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+                                                   </padding>
+                                                </Button>
+                                                <Button fx:id="btnImportListProductRemove" alignment="CENTER" mnemonicParsing="false" styleClass="btnFunctionForm" text="Xóa">
+                                                   <padding>
+                                                      <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+                                                   </padding>
+                                                </Button>
+                                             </children>
+                                             <VBox.margin>
+                                                <Insets right="5.0" top="5.0" />
+                                             </VBox.margin>
+                                          </HBox>
+                                          <Pane fx:id="pShowImportTotalPrice" maxHeight="50.0" minHeight="50.0" prefHeight="50.0" prefWidth="384.0" styleClass="pShowImportTotalPrice">
+                                             <children>
+                                                <Label fx:id="lbTotalImportInvoice" layoutY="6.0" prefHeight="32.0" prefWidth="80.0" styleClass="lbTotalImportInvoice" text="TỔNG : " textFill="RED">
+                                                   <padding>
+                                                      <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+                                                   </padding>
+                                                   <font>
+                                                      <Font name="System Bold" size="18.0" />
+                                                   </font>
+                                                </Label>
+                                                <Label fx:id="lbTotalImportPrice" layoutX="90.0" maxWidth="180.0" minWidth="180.0" prefHeight="50.0" prefWidth="180.0" styleClass="lbTotalImportPrice" text="0 Đ">
+                                                   <padding>
+                                                      <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+                                                   </padding>
+                                                   <font>
+                                                      <Font size="18.0" />
+                                                   </font>
+                                                </Label>
+                                             </children>
+                                          </Pane>
+                                          <Pane fx:id="pSubmitInvoiceBtnContainer" maxHeight="80.0" minHeight="80.0" prefHeight="80.0" prefWidth="384.0" styleClass="pSubmitImportBtnContainer">
+                                             <children>
+                                                <Button fx:id="btnSubmitImport" alignment="CENTER" layoutX="111.0" layoutY="19.0" minHeight="-Infinity" mnemonicParsing="false" prefHeight="42.0" prefWidth="162.0" styleClass="btnSubmitIInvoice" text="Nhập hàng">
+                                                   <padding>
+                                                      <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+                                                   </padding>
+                                                   <font>
+                                                      <Font name="System Bold" size="20.0" />
+                                                   </font>
+                                                </Button>
+                                             </children>
+                                          </Pane>
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </Pane>
+                           </children>
+                        </VBox>
+                     </children>
+                     <HBox.margin>
+                        <Insets left="8.0" />
+                     </HBox.margin>
+                  </Pane>
+               </children>
+               <VBox.margin>
+                  <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+               </VBox.margin>
+            </HBox>
+         </children>
+         <styleClass>
+            <String fx:value="main-pane-container" />
+            <String fx:value="vbContainerRoot" />
+         </styleClass>
+      </VBox>
+   </children>
+   <stylesheets>
+      <URL value="@../css/base.css" />
+      <URL value="@../css/importing.css" />
+   </stylesheets>
+   <styleClass>
+      <String fx:value="main-pane-container" />
+      <String fx:value="acContainerRoot" />
+   </styleClass>
+</AnchorPane>

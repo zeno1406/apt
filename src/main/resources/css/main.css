@@ -1,0 +1,91 @@
+.top-form {
+    -fx-background-color: linear-gradient(to bottom, #006A71, #48A6A7);
+
+}
+
+.close {
+    -fx-background-color: transparent;
+    -fx-cursor: hand;
+}
+
+.close:hover {
+    -fx-background-color: #ff3547;
+}
+
+.close-icon {
+    -fx-fill: white;
+    -fx-transition: fill 0.3s ease-in-out;
+}
+
+.close:hover .close-icon {
+    -fx-fill: black;
+}
+
+.minimize {
+    -fx-background-color: transparent;
+    -fx-cursor: hand;
+}
+
+.minimize:hover {
+    -fx-background-color: #ddd;
+}
+
+.minimize-icon {
+    -fx-fill: white;
+    -fx-transition: fill 0.3s ease-in-out;
+}
+
+.minimize:hover .minimize-icon {
+    -fx-fill: black;
+}
+
+.nav-form {
+/*-fx-background-color: #0b99a9;*/
+    -fx-border-color: transparent black transparent transparent; /* Chỉ viền bên phải */
+    -fx-border-width: 0 1px 0 0; /* Độ dày viền phải */
+}
+
+.nav-btn {
+    -fx-background-color: transparent;
+    -fx-cursor: hand;
+    -fx-font-size:18px;
+    -fx-font-family:"Times New Roman";
+    -fx-text-fill:#000;
+    -fx-alignment:CENTER-LEFT;
+    -fx-font-weight: 500;
+}
+
+.nav-btn:hover {
+    -fx-background-color:#58C9C9;
+    -fx-fill: black;
+}
+
+.nav-btn-selected {
+    -fx-background-color: #4CAF50; /* Màu khi nút được chọn */
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+
+.logout{
+    -fx-background-color: transparent;
+    -fx-background-radius:10px;
+    -fx-cursor: hand;
+}
+
+.logout:hover {
+    -fx-background-color: #58C9C9;
+}
+
+.shadow {
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.5), 6, 0, 0, 0);
+}
+
+.icon {
+    -fx-fit-width: 27px;
+    -fx-fit-height: 27px;
+}
+
+.nav-btn-active {
+    -fx-background-color: linear-gradient(to bottom, #1F7D84, #3AE2F4);
+}

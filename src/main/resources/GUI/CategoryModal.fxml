@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="300.0" prefWidth="400.0" styleClass="white-bg" stylesheets="@../css/base.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.CategoryModalController">
+    <children>
+        <BorderPane prefHeight="300.0" prefWidth="400.0" style="-fx-border-color: #30bac4; -fx-border-width: 2px;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <top>
+                <AnchorPane prefHeight="60.0" prefWidth="550.0" BorderPane.alignment="CENTER">
+                    <children>
+                        <Label fx:id="modalName" alignment="CENTER" layoutX="80.0" layoutY="10.0" prefHeight="40.0" prefWidth="240.0" textFill="#30bac4">
+                            <font>
+                                <Font name="Arial Bold" size="20.0" />
+                            </font>
+                        </Label>
+                    </children>
+                </AnchorPane>
+            </top>
+            <center>
+                <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                    <children>
+                        <VBox layoutX="18.0" prefHeight="180.0" prefWidth="360.0" spacing="20.0" stylesheets="@../css/base.css">
+                            <children>
+                                <HBox alignment="CENTER" prefHeight="50.0" prefWidth="360.0" spacing="10.0">
+                                    <children>
+                                        <Label prefHeight="22.0" prefWidth="100.0" text="Mã thể loại" textFill="#30bac4">
+                                            <font>
+                                                <Font name="Arial Bold" size="18.0" />
+                                            </font>
+                                        </Label>
+                                        <Label text=":" textFill="#30bac4">
+                                            <font>
+                                                <Font size="20.0" />
+                                            </font>
+                                        </Label>
+                                        <TextField fx:id="txtCategoryId" editable="false" focusTraversable="false" mouseTransparent="true" opacity="0.75" prefHeight="31.2" prefWidth="200.0" style="-fx-background-color: #999999;" styleClass="textfield-1">
+                                            <cursor>
+                                                <Cursor fx:constant="DEFAULT" />
+                                            </cursor>
+                                        </TextField>
+                                    </children>
+                                </HBox>
+                                <HBox alignment="CENTER" prefHeight="50.0" prefWidth="360.0" spacing="10.0">
+                                    <children>
+                                        <Label prefHeight="22.0" prefWidth="100.0" text="Tên thể loại" textFill="#30bac4">
+                                            <font>
+                                                <Font name="Arial Bold" size="18.0" />
+                                            </font>
+                                        </Label>
+                                        <Label text=":" textFill="#30bac4">
+                                            <font>
+                                                <Font size="20.0" />
+                                            </font>
+                                        </Label>
+                                        <TextField fx:id="txtCategoryName" prefWidth="200.0" promptText="Nhập tên thể loại" styleClass="textfield-1">
+                                            <font>
+                                                <Font size="16.0" />
+                                            </font>
+                                        </TextField>
+                                    </children>
+                                </HBox>
+                                <HBox alignment="CENTER" prefHeight="50.0" prefWidth="360.0" spacing="10.0">
+                                    <children>
+                                        <Label prefHeight="22.0" prefWidth="100.0" text="Trạng thái" textFill="#30bac4">
+                                            <font>
+                                                <Font name="Arial Bold" size="18.0" />
+                                            </font>
+                                        </Label>
+                                        <Label text=":" textFill="#30bac4">
+                                            <font>
+                                                <Font size="20.0" />
+                                            </font>
+                                        </Label>
+                                        <ComboBox fx:id="cbSelectStatus" prefHeight="31.2" prefWidth="200.0" />
+                                    </children>
+                                </HBox>
+                            </children>
+                        </VBox>
+                    </children>
+                </AnchorPane>
+            </center>
+            <bottom>
+                <AnchorPane prefHeight="60.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+                    <children>
+                        <HBox alignment="CENTER" layoutX="57.0" prefHeight="60.0" prefWidth="286.0" spacing="60.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="57.0" AnchorPane.rightAnchor="57.0" AnchorPane.topAnchor="0.0">
+                            <children>
+                                <Button fx:id="closeBtn" mnemonicParsing="false" prefHeight="26.0" prefWidth="140.0" styleClass="action-btn" stylesheets="@../css/base.css" text="Thoát" />
+                                <Button fx:id="saveBtn" mnemonicParsing="false" prefHeight="26.0" prefWidth="140.0" styleClass="action-btn" stylesheets="@../css/base.css" text="Lưu" />
+                            </children>
+                        </HBox>
+                    </children>
+                </AnchorPane>
+            </bottom>
+        </BorderPane>
+    </children>
+</AnchorPane>

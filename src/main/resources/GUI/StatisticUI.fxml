@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="650.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.StatisticController">
+    <children>
+        <TabPane prefHeight="650.0" prefWidth="900.0" styleClass="textarea" stylesheets="@../css/base.css" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <tabs>
+                <Tab fx:id="tab1" closable="false" text="Thống kê">
+                    <content>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="582.0" prefWidth="900.0" styleClass="shadow" stylesheets="@../css/main.css">
+                            <children>
+                                <AnchorPane layoutX="14.0" layoutY="14.0" prefHeight="553.0" prefWidth="835.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+                                    <styleClass>
+                                        <String fx:value="shadow" />
+                                        <String fx:value="white-bg" />
+                                    </styleClass>
+                                    <children>
+                                        <BorderPane layoutX="166.0" layoutY="80.0" prefHeight="600.8000000000001" prefWidth="879.2" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+                                            <right>
+                                                <VBox prefHeight="542.0" prefWidth="219.0" BorderPane.alignment="CENTER">
+                                                    <BorderPane.margin>
+                                                        <Insets right="5.0" />
+                                                    </BorderPane.margin>
+                                                    <children>
+                                                        <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                                             <children>
+                                                <Label fx:id="lbTotalStatistic" layoutX="82.0" layoutY="14.0" text="TỔNG" textFill="RED">
+                                                   <font>
+                                                      <Font name="System Bold" size="25.0" />
+                                                   </font>
+                                                </Label>
+                                                <Label fx:id="lbTotalPricesStatistic" layoutX="96.0" layoutY="90.0" text="Label" />
+                                             </children>
+                                                        </AnchorPane>
+                                                        <AnchorPane prefHeight="200.0" prefWidth="200.0" />
+                                                        <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                                             <children>
+                                                <DatePicker layoutX="57.0" layoutY="131.0" prefHeight="27.0" prefWidth="70.0" />
+                                                <Label layoutX="57.0" layoutY="4.0" text="THỐNG KÊ THEO">
+                                                   <font>
+                                                      <Font size="14.0" />
+                                                   </font>
+                                                </Label>
+                                                <ComboBox fx:id="cbxTypStatistic" layoutX="22.0" layoutY="35.0" prefHeight="28.0" prefWidth="176.0" />
+                                                <DatePicker layoutX="57.0" layoutY="165.0" prefHeight="27.0" prefWidth="70.0" />
+                                                <Label layoutX="12.0" layoutY="136.0" text="Từ :" />
+                                                <Label layoutX="8.0" layoutY="175.0" text="Đến :" />
+                                             </children></AnchorPane>
+                                                    </children>
+                                                </VBox>
+                                            </right>
+                                 <center>
+                                    <TableView fx:id="tbvStatisticProducts" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                                      <columns>
+                                        <TableColumn fx:id="tbcProducts" prefWidth="75.0" text="C1" />
+                                      </columns>
+                                    </TableView>
+                                 </center>
+                                        </BorderPane>
+                                    </children>
+                                </AnchorPane>
+                            </children>
+                        </AnchorPane>
+                    </content>
+                </Tab>
+            </tabs>
+        </TabPane>
+    </children>
+</AnchorPane>

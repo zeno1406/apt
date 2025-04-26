@@ -1,0 +1,70 @@
+.left-form {
+    -fx-background-color: linear-gradient(to bottom, #006A71, #48A6A7);
+}
+
+.right-form {
+    -fx-background-color: #fff;
+}
+
+.close {
+    -fx-background-color: transparent;
+    -fx-cursor: hand;
+}
+
+.close:hover {
+    -fx-background-color: #ff3547;
+}
+
+.close-icon {
+    -fx-fill: black;
+    -fx-transition: fill 0.3s ease-in-out;
+}
+
+.close:hover .close-icon {
+    -fx-fill: #fff;
+}
+
+.textfield {
+    -fx-background-color: linear-gradient(to bottom, #efefef, #eeeeee);
+    -fx-border-radius: 10px;
+    -fx-background-radius: 10px;
+    -fx-border-color: #000;
+    -fx-border-width: .4px;
+    -fx-font-family: "Arial";
+    -fx-font-size:14px;
+}
+
+.textfield:focused {
+    -fx-background-color: #fff;
+    -fx-border-color: linear-gradient(to bottom, #004e64, #217d89);
+    -fx-border-width: .8px;
+}
+
+.login-btn {
+    -fx-background-color: linear-gradient(to bottom, #006A71, #9ACBD0);
+    -fx-font-family: "Arial";
+    -fx-font-size:16px;
+    -fx-cursor: hand;
+    -fx-text-fill: #bceff5;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+}
+
+.login-btn:hover {
+    -fx-background-color: linear-gradient(to bottom, #1F7D84, #3AE2F4);
+    -fx-text-fill: #fff;
+}
+
+.check-box {
+    -fx-font-family: "Arial";
+    -fx-font-size: 14px;
+    -fx-font-weight: bold; /* Để chữ in đậm */
+    -fx-font-style: italic; /* Để chữ nghiêng */
+    -fx-cursor: hand;
+    -fx-text-fill: #1f7d84;
+}
+
+.hlkNavToSignUpForm {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
