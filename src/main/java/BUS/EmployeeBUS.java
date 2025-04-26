@@ -88,7 +88,7 @@ public class EmployeeBUS extends BaseBUS <EmployeeDTO, Integer> {
 
         // Kh+�ng c+� quy�+�n 3 th+� kh+�ng ch�+�nh ch+�nh m+�nh hay ng���+�i kh+�c
         if (!AuthorizationService.getInstance().hasPermission(employeeLoginId, employee_roleId, 3)) {
-            return 2;
+            return 3;
         }
 
         // Ng-�n chߦ+n cߦ�p nhߦ�t nh+�n vi+�n g�+�c nߦ+u kh+�ng phߦ�i ch+�nh n+�
@@ -120,7 +120,7 @@ public class EmployeeBUS extends BaseBUS <EmployeeDTO, Integer> {
             if (!EmployeeDAL.getInstance().updateBasic(obj, false)) return 7;
         } else {
             // Nߦ+u cߦ�p nhߦ�t ng���+�i kh+�c, ch�+� -榦�+�c ph+�p nߦ+u ng���+�i -�+� c+� quy�+�n thߦ�p h��n
-            if (AuthorizationService.getInstance().hasPermission(obj.getId(), obj.getRoleId(), 3)) return 6;
+            if (AuthorizationService.getInstance().hasPermission(obj.getId(), getByIdLocal(obj.getId()).getRoleId(), 3)) return 6;
             if (isInvalidEmployeeUpdate(obj, true, false)) return 4;
             if (isDuplicateEmployee(obj)) return 1;
             if (!EmployeeDAL.getInstance().updateBasic(obj, true)) return 7;
@@ -146,7 +146,6 @@ public class EmployeeBUS extends BaseBUS <EmployeeDTO, Integer> {
         }
 
         if (!AvailableUtils.getInstance().isValidRole(obj.getRoleId())) {
-//            System.err.println("Kh+�ng th�+� cߦ�p nhߦ�t: RoleId kh+�ng t�+�n tߦ�i!");
             return false;
         }
 
@@ -168,11 +167,9 @@ public class EmployeeBUS extends BaseBUS <EmployeeDTO, Integer> {
 
         if (allowAdvanceChange && obj.getRoleId() <= 0) return true;
         if (!AvailableUtils.getInstance().isValidRole(obj.getRoleId())) {
-//            System.err.println("Kh+�ng th�+� cߦ�p nhߦ�t: RoleId kh+�ng t�+�n tߦ�i!");
             return true;
         }
 
-        // Phߦ�i c+� c+�i n+�y -��+� khi nh+�n vi+�n mߦ�t role c+�n udpate -榦�+�c
         obj.setDateOfBirth(obj.getDateOfBirth() != null ? obj.getDateOfBirth() : null);
 
 
@@ -234,11 +231,11 @@ public class EmployeeBUS extends BaseBUS <EmployeeDTO, Integer> {
 
     private boolean isDuplicateEmployee(EmployeeDTO obj) {
         EmployeeDTO existingEm = getByIdLocal(obj.getId());
-
+        ValidationUtils validate = ValidationUtils.getInstance();
         // Ki�+�m tra xem t+�n, m+� tߦ�, v+� h�+� s�+� l����ng c+� tr+�ng kh+�ng
         return existingEm != null &&
-                Objects.equals(existingEm.getFirstName(), obj.getFirstName()) &&
-                Objects.equals(existingEm.getLastName(), obj.getLastName()) &&
+                Objects.equals(existingEm.getFirstName(), validate.normalizeWhiteSpace(obj.getFirstName())) &&
+                Objects.equals(existingEm.getLastName(), validate.normalizeWhiteSpace(obj.getLastName())) &&
                 Objects.equals(existingEm.getSalary(), obj.getSalary()) &&
                 Objects.equals(existingEm.getDateOfBirth(), obj.getDateOfBirth()) &&
                 Objects.equals(existingEm.isStatus(), obj.isStatus()) &&

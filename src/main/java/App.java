@@ -1,13 +1,12 @@
 
-import BUS.EmployeeBUS;
-import BUS.RoleBUS;
+import BUS.*;
 import DAL.RoleDAL;
 import DTO.EmployeeDTO;
 import DTO.RoleDTO;
+import SERVICE.AuthorizationService;
 import SERVICE.SessionManagerService;
 import UTILS.PasswordUtils;
 import UTILS.UiUtils;
-import BUS.AccountBUS;
 import DTO.AccountDTO;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -38,7 +37,7 @@ public class App extends Application {
 
 
     public static void main(String[] args) {
-//        System.out.println(PasswordUtils.getInstance().hashPassword("TLANG1234"));
+//        System.out.println(PasswordUtils.getInstance().hashPassword("123456"));
         launch(args);
     }
 }

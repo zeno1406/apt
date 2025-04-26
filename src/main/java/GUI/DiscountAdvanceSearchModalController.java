@@ -40,7 +40,7 @@ public class DiscountAdvanceSearchModalController {
     }
 
     private void loadComboBox() {
-        cbTypeDiscount.getItems().addAll("Phߦ�n tr-�m", "Giߦ�m c�+�ng");
+        cbTypeDiscount.getItems().addAll("Phần trăm", "Giảm cứng");
         cbTypeDiscount.getSelectionModel().selectFirst();
     }
 
@@ -51,22 +51,22 @@ public class DiscountAdvanceSearchModalController {
 
     private void handleSave() {
         this.discountName = txtDiscountName.getText();
-        this.type = cbTypeDiscount.getValue().equals("Phߦ�n tr-�m") ? 0 : 1;
+        this.type = cbTypeDiscount.getValue().equals("Phần trăm") ? 0 : 1;
         this.startDate = dpStartDate.getValue();
         this.endDate = dpEndDate.getValue();
         if (startDate != null && endDate != null && startDate.isAfter(endDate)) {
-            NotificationUtils.showErrorAlert("Ng+�y bߦ�t -�ߦ�u kh+�ng -榦�+�c l�+�n h��n ng+�y kߦ+t th+�c.", "Th+�ng b+�o");
+            NotificationUtils.showErrorAlert("Ngày bắt đầu không được lớn hơn ngày kết thúc.", "Thông báo");
             return;
         }
 
         filteredDiscounts = DiscountBUS.getInstance().filterDiscountsAdvance(discountName, type, startDate, endDate);
         int numResult = filteredDiscounts.size();
         if (numResult != 0) {
-            NotificationUtils.showErrorAlert("T+�m thߦ�y " + numResult + " kߦ+t quߦ� ph+� h�+�p.", "Th+�ng b+�o");
+            NotificationUtils.showErrorAlert("Tìm thấy " + numResult + " kết quả phù hợp.", "Thông báo");
             this.isSaved = true;
             handleClose();
         } else {
-            NotificationUtils.showErrorAlert("Kh+�ng t+�m thߦ�y kߦ+t quߦ� ph+� h�+�p.", "Th+�ng b+�o");
+            NotificationUtils.showErrorAlert("Không tìm thấy kết quả phù hợp.", "Thông báo");
         }
     }
 

@@ -61,6 +61,9 @@ public class RoleBUS extends BaseBUS<RoleDTO, Integer> {
         if (codeAccess != ServiceAccessCode.ROLE_PERMISSION_SERVICE || obj == null) return 2;
         if (!AuthorizationService.getInstance().hasPermission(employeeLoginId, employee_roleId, 23)) return 3;
         if (isNotValidRoleInput(obj) || isDuplicateRoleName(-1, obj.getName())) return 4;
+        ValidationUtils validate = ValidationUtils.getInstance();
+        obj.setName(validate.normalizeWhiteSpace(obj.getName()));
+        obj.setDescription(validate.normalizeWhiteSpace(obj.getDescription()));
         if (!RoleDAL.getInstance().insert(obj)) return 5;
 
         arrLocal.add(new RoleDTO(obj));
@@ -75,7 +78,7 @@ public class RoleBUS extends BaseBUS<RoleDTO, Integer> {
         boolean isAdmin = (employee_roleId == 1);
         // Không có quyền 25 thì không chỉnh chính role của mình hay người khác
         if (!AuthorizationService.getInstance().hasPermission(employeeLoginId, employee_roleId, 25)) return 3;
-
+        ValidationUtils validate = ValidationUtils.getInstance();
         // Trường hợp role 1 (admin) có quyền cao nhất
         if (isAdmin) {
             // Tự cập nhật bản thân thì truyền id role vào để k kiểm tra trùng lập trên chính tên role đang cập nhật
@@ -84,6 +87,8 @@ public class RoleBUS extends BaseBUS<RoleDTO, Integer> {
             if (isDuplicateRole(obj)) {
                 return 1;
             }
+            obj.setName(validate.normalizeWhiteSpace(obj.getName()));
+            obj.setDescription(validate.normalizeWhiteSpace(obj.getDescription()));
             return updateRole(obj) ? 1 : 7;
         }
 
@@ -97,6 +102,8 @@ public class RoleBUS extends BaseBUS<RoleDTO, Integer> {
         if (isDuplicateRole(obj)) {
             return 1;
         }
+        obj.setName(validate.normalizeWhiteSpace(obj.getName()));
+        obj.setDescription(validate.normalizeWhiteSpace(obj.getDescription()));
         return updateRoleBasic(obj) ? 1 : 7;
     }
 
@@ -123,8 +130,10 @@ public class RoleBUS extends BaseBUS<RoleDTO, Integer> {
 
     private boolean isDuplicateRoleName(int id, String name) {
         if (name == null) return false;
+        ValidationUtils validate = ValidationUtils.getInstance();
+        name = validate.normalizeWhiteSpace(name);
         for (RoleDTO role : arrLocal) {
-            if (!Objects.equals(role.getId(), id) && role.getName().trim().equalsIgnoreCase(name)) {
+            if (!Objects.equals(role.getId(), id) && role.getName().equalsIgnoreCase(name)) {
                 return true;
             }
         }
@@ -170,11 +179,11 @@ public class RoleBUS extends BaseBUS<RoleDTO, Integer> {
 
     private boolean isDuplicateRole(RoleDTO obj) {
         RoleDTO existingRole = getByIdLocal(obj.getId());
-
+        ValidationUtils validate = ValidationUtils.getInstance();
         // Kiểm tra xem tên, mô tả, và hệ số lương có trùng không
         return existingRole != null &&
-                Objects.equals(existingRole.getName(), obj.getName()) &&
-                Objects.equals(existingRole.getDescription(), obj.getDescription()) &&
+                Objects.equals(existingRole.getName(), validate.normalizeWhiteSpace(obj.getName())) &&
+                Objects.equals(existingRole.getDescription(), validate.normalizeWhiteSpace(obj.getDescription())) &&
                 Objects.equals(existingRole.getSalaryCoefficient(), obj.getSalaryCoefficient());
     }
 

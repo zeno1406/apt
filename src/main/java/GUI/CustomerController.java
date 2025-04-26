@@ -5,8 +5,8 @@ import BUS.CustomerBUS;
 import BUS.EmployeeBUS;
 import BUS.RoleBUS;
 import DTO.CustomerDTO;
-import DTO.EmployeeDTO;
 import INTERFACE.IController;
+import SERVICE.ExcelService;
 import SERVICE.SessionManagerService;
 import UTILS.NotificationUtils;
 import UTILS.UiUtils;
@@ -17,35 +17,34 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.HBox;
+
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.HashMap;
 
 public class CustomerController implements IController {
-    @FXML
-    private TableView<CustomerDTO> tblCustomer;
-    @FXML
-    private TableColumn<CustomerDTO, Integer> tlb_col_id;
-    @FXML
-    private TableColumn<CustomerDTO, String> tlb_col_firstName;
-    @FXML
-    private TableColumn<CustomerDTO, String> tlb_col_lastName;
-    @FXML
-    private TableColumn<CustomerDTO, String> tlb_col_dateOfBirth;
-    @FXML
-    private TableColumn<CustomerDTO, String> tlb_col_phone;
-    @FXML
-    private TableColumn<CustomerDTO, String> tlb_col_address;
-    @FXML
-    private TableColumn<CustomerDTO, String> tlb_col_status;
-    @FXML
-    private Button addBtn, editBtn, deleteBtn, refreshBtn;
-    @FXML
-    private TextField txtSearch;
-    @FXML
-    private CheckBox ckbStatusFilter;
-    @FXML
-    private ComboBox<String> cbSearchBy;
-    private String keyword = "";
+    // FXML Controls - Table
+    @FXML private TableView<CustomerDTO> tblCustomer;
+    @FXML private TableColumn<CustomerDTO, Integer> tlb_col_id;
+    @FXML private TableColumn<CustomerDTO, String> tlb_col_firstName;
+    @FXML private TableColumn<CustomerDTO, String> tlb_col_lastName;
+    @FXML private TableColumn<CustomerDTO, String> tlb_col_dateOfBirth;
+    @FXML private TableColumn<CustomerDTO, String> tlb_col_phone;
+    @FXML private TableColumn<CustomerDTO, String> tlb_col_address;
+    @FXML private TableColumn<CustomerDTO, String> tlb_col_status;
+    @FXML private HBox functionBtns;
+    // FXML Controls - Buttons and Filters
+    @FXML private Button addBtn, editBtn, deleteBtn, refreshBtn, exportExcel;
+    @FXML private TextField txtSearch;
+    @FXML private CheckBox ckbStatusFilter;
+    @FXML private ComboBox<String> cbSearchBy;
+
+    // Filter state
     private String searchBy = "Mã khách hàng";
+    private String keyword = "";
     private int statusFilter = 1;
+    private CustomerDTO selectedCustomer;
 
     @FXML
     public void initialize() {
@@ -64,13 +63,12 @@ public class CustomerController implements IController {
     @Override
     public void loadTable() {
         ValidationUtils validationUtils = ValidationUtils.getInstance();
-        CustomerBUS cusBus = CustomerBUS.getInstance();
+        CustomerBUS customerBus = CustomerBUS.getInstance();
 
         tlb_col_id.setCellValueFactory(new PropertyValueFactory<>("id"));
         tlb_col_firstName.setCellValueFactory(new PropertyValueFactory<>("firstName"));
         tlb_col_lastName.setCellValueFactory(new PropertyValueFactory<>("lastName"));
-        tlb_col_dateOfBirth.setCellValueFactory(cellData ->
-                formatCell(validationUtils.formatDateTime(cellData.getValue().getDateOfBirth())));
+        tlb_col_dateOfBirth.setCellValueFactory(cellData -> formatCell(validationUtils.formatDateTime(cellData.getValue().getDateOfBirth())));
 
         tlb_col_phone.setCellValueFactory(new PropertyValueFactory<>("phone"));
         tlb_col_address.setCellValueFactory(new PropertyValueFactory<>("address"));
@@ -78,27 +76,48 @@ public class CustomerController implements IController {
                 formatCell(cellData.getValue().isStatus() ? "Hoạt động" : "Ngưng hoạt động"));
 
         UiUtils.gI().addTooltipToColumn(tlb_col_address, 10);
-        tblCustomer.setItems(FXCollections.observableArrayList(cusBus.getAllLocal()));
+        tblCustomer.setItems(FXCollections.observableArrayList(customerBus.getAllLocal()));
     }
 
-    private SimpleStringProperty formatCell(String value) {
-        return new SimpleStringProperty(value);
-    }
+//    private SimpleStringProperty formatCell(String value) {
+//        return new SimpleStringProperty(value);
+//    }
 
     private void loadComboBox() {
-        cbSearchBy.getItems().addAll("Mã khách hàng", "Họ đệm", "Tên");
+        cbSearchBy.getItems().addAll(
+                "Mã khách hàng",
+                "Họ đệm",
+                "Tên",
+                "Số điện thoại"
+        );
+
+        //default selection
         cbSearchBy.getSelectionModel().selectFirst();
         ckbStatusFilter.setSelected(false);
     }
 
     @Override
     public void setupListeners() {
+        //Search and Filter Controls
         cbSearchBy.setOnAction(event -> handleSearchByChange());
         ckbStatusFilter.setOnAction(event -> handleStatusFilterChange());
         txtSearch.textProperty().addListener((observable, oldValue, newValue) -> handleKeywordChange());
-        refreshBtn.setOnAction(event -> resetFilters());
+        refreshBtn.setOnAction(event -> {
+            resetFilters();
+            NotificationUtils.showInfoAlert("Làm mới thành công", "Thông báo");
+        });
+
+        addBtn.setOnAction(event -> handleAddBtn());
+        editBtn.setOnAction(event -> handleEditBtn());
+        deleteBtn.setOnAction(event -> handleDeleteBtn());
     }
 
+    private void handleStatusFilterChange() {
+        statusFilter = ckbStatusFilter.isSelected() ? -1 : 1;
+        applyFilters();
+    }
+
+    //searchbar
     private void handleSearchByChange() {
         searchBy = cbSearchBy.getValue();
         applyFilters();
@@ -109,48 +128,118 @@ public class CustomerController implements IController {
         applyFilters();
     }
 
-    private void handleStatusFilterChange() {
-        statusFilter = ckbStatusFilter.isSelected() ? -1 : 1;
-        applyFilters();
-    }
-
-
     @Override
     public void applyFilters() {
-        CustomerBUS cusBus = CustomerBUS.getInstance();
+        CustomerBUS customerBUS = CustomerBUS.getInstance();
         tblCustomer.setItems(FXCollections.observableArrayList(
-                cusBus.filterCustomers(searchBy, keyword, statusFilter)
+                customerBUS.filterCustomers(searchBy, keyword, statusFilter)
         ));
         tblCustomer.getSelectionModel().clearSelection();
     }
+    //searchbar
 
     @Override
     public void resetFilters() {
-        cbSearchBy.getSelectionModel().selectFirst();
-        ckbStatusFilter.setSelected(false); // Mặc định lọc Active
-        txtSearch.clear();
+        cbSearchBy.getSelectionModel().selectFirst();//Chon gia tri dau tien
+        ckbStatusFilter.setSelected(false);// Uncheck filter checkbox
+        txtSearch.clear();//Clear search text field
 
         searchBy = "Mã khách hàng";
         keyword = "";
-        statusFilter = 1;
-        applyFilters();
+        statusFilter = 1;//chon active status
 
-        NotificationUtils.showInfoAlert("Làm mới thành công", "Thông báo");
+        applyFilters();//Reset filter
+    }
+
+    private SimpleStringProperty formatCell(String value) {
+        return new SimpleStringProperty(value);
     }
 
     @Override
     public void hideButtonWithoutPermission() {
-        boolean canAdd = SessionManagerService.getInstance().hasPermission(4);
-        boolean canEdit = SessionManagerService.getInstance().hasPermission(6);
-        boolean canDelete = SessionManagerService.getInstance().hasPermission(5);
+        boolean canAdd = SessionManagerService.getInstance().hasPermission(1);
+        boolean canEdit = SessionManagerService.getInstance().hasPermission(3);
+        boolean canDelete = SessionManagerService.getInstance().hasPermission(2);
 
-        addBtn.setVisible(canAdd);
-        addBtn.setManaged(canAdd);
+        if (!canAdd) functionBtns.getChildren().remove(addBtn);
+        if (!canEdit) functionBtns.getChildren().remove(editBtn);
+        if (!canDelete) functionBtns.getChildren().remove(deleteBtn);
+    }
 
-        editBtn.setVisible(canEdit);
-        editBtn.setManaged(canEdit);
+    private void handleAddBtn() {
+//        System.out.println("Dang o handle add");
+        CustomerModalController modalController = UiUtils.gI().openStageWithController(
+                "/GUI/CustomerModal.fxml",
+                controller -> controller.setTypeModal(0),
+                "Thêm khách hàng"
+        );
+        if (modalController != null && modalController.isSaved()) {
+            NotificationUtils.showInfoAlert("Thêm khách hàng thành công", "Thông báo");
+            applyFilters();
+        }
+    }
 
-        deleteBtn.setVisible(canDelete);
-        deleteBtn.setManaged(canDelete);
+    private void handleDeleteBtn() {
+        System.out.println("Dang o handle delete");
+        if (isNotSelectedCustomer()) {
+            NotificationUtils.showErrorAlert("Vui lòng chọn khách hàng cần xóa", "Lỗi");
+            return;
+        }
+
+        int deleteResult = CustomerBUS.getInstance().delete(
+                selectedCustomer.getId(),
+                SessionManagerService.getInstance().employeeRoleId(),
+                SessionManagerService.getInstance().employeeLoginId()
+        );
+
+        switch (deleteResult) {
+            case 1 -> {
+                NotificationUtils.showInfoAlert("Xóa khách hàng thành công", "Thông báo");
+                resetFilters();
+            }
+            case 2 -> NotificationUtils.showErrorAlert("Có lỗi khi xóa khách hàng. Vui lòng thử lại.", "Thông báo");
+            case 3 -> NotificationUtils.showErrorAlert("Khách hàng đang có đơn hàng không thể xóa", "Thông báo");
+            case 4 -> NotificationUtils.showErrorAlert("Bạn không có quyền xóa khách hàng", "Thông báo");
+            case 5 -> NotificationUtils.showErrorAlert("Khách hàng không tồn tại hoặc đã bị xóa", "Thông báo");
+            case 6 -> NotificationUtils.showErrorAlert("Xoá khách hàng thất bại. Vui lòng thử lại.", "Thông báo");
+            default -> NotificationUtils.showErrorAlert("Lỗi không xác định", "Thông báo");
+        }
+    }
+
+    private void handleEditBtn() {
+        CustomerDTO selectedCustomer = tblCustomer.getSelectionModel().getSelectedItem();
+        if (selectedCustomer == null) {
+            NotificationUtils.showErrorAlert("Vui lòng chọn khách hàng cần sửa", "Lỗi");
+            return;
+        }
+
+        CustomerModalController modalController = UiUtils.gI().openStageWithController(
+                "/GUI/CustomerModal.fxml",
+                controller -> {
+                    controller.setTypeModal(1);
+                    controller.setCustomer(selectedCustomer);
+                },
+                "Sửa khách hàng"
+        );
+        if (modalController != null && modalController.isSaved()) {
+            NotificationUtils.showInfoAlert("Sửa khách hàng thành công", "Thông báo");
+            applyFilters();
+        }
+    }
+
+    //done
+    private void handleExportExcel() throws IOException {
+//        System.out.println("Dang o handle export excel");
+//        try {
+//            ExcelService.getInstance().exportToFileExcel("customer");
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+    }
+
+    //done
+    private boolean isNotSelectedCustomer() {
+        selectedCustomer = tblCustomer.getSelectionModel().getSelectedItem();
+        return selectedCustomer == null;
     }
 }

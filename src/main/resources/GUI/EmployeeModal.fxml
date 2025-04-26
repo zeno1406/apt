@@ -34,7 +34,7 @@
                             <children>
                                 <HBox alignment="CENTER" layoutX="10.0" layoutY="10.0" prefHeight="61.0" prefWidth="422.0" spacing="10.0">
                                     <children>
-                                        <Label prefHeight="22.0" prefWidth="130.0" text="M+� nh+�n vi+�n" textFill="#30bac4">
+                                        <Label prefHeight="22.0" prefWidth="130.0" text="Mã nhân viên" textFill="#30bac4">
                                             <font>
                                                 <Font name="Arial Bold" size="18.0" />
                                             </font>
@@ -53,7 +53,7 @@
                                 </HBox>
                                 <HBox alignment="CENTER" prefHeight="61.0" prefWidth="422.0" spacing="10.0">
                                     <children>
-                                        <Label prefHeight="22.0" prefWidth="130.0" text="H�+� -��+�m" textFill="#30bac4">
+                                        <Label prefHeight="22.0" prefWidth="130.0" text="Họ Đệm" textFill="#30bac4">
                                             <font>
                                                 <Font name="Arial Bold" size="18.0" />
                                             </font>
@@ -63,7 +63,7 @@
                                                 <Font size="20.0" />
                                             </font>
                                         </Label>
-                                        <TextField fx:id="txtFirstName" prefWidth="220.0" promptText="Nhߦ�p h�+� -�+�m nh+�n vi+�n" styleClass="textfield-">
+                                        <TextField fx:id="txtFirstName" prefWidth="220.0" promptText="Nhập họ đệm" styleClass="textfield-">
                                             <font>
                                                 <Font size="16.0" />
                                             </font>
@@ -72,7 +72,7 @@
                                 </HBox>
                                 <HBox alignment="CENTER" layoutX="10.0" layoutY="49.0" prefHeight="61.0" prefWidth="422.0" spacing="10.0">
                                     <children>
-                                        <Label prefHeight="22.0" prefWidth="130.0" text="T+�n" textFill="#30bac4">
+                                        <Label prefHeight="22.0" prefWidth="130.0" text="Tên" textFill="#30bac4">
                                             <font>
                                                 <Font name="Arial Bold" size="18.0" />
                                             </font>
@@ -82,7 +82,7 @@
                                                 <Font size="20.0" />
                                             </font>
                                         </Label>
-                                        <TextField fx:id="txtLastName" prefWidth="220.0" promptText="Nhߦ�p t+�n nh+�n vi+�n" styleClass="textfield-1">
+                                        <TextField fx:id="txtLastName" prefWidth="220.0" promptText="Nhập tên" styleClass="textfield-1">
                                             <font>
                                                 <Font size="16.0" />
                                             </font>
@@ -91,7 +91,7 @@
                                 </HBox>
                                 <HBox alignment="CENTER" layoutX="10.0" layoutY="101.0" prefHeight="61.0" prefWidth="422.0" spacing="10.0">
                                     <children>
-                                        <Label prefHeight="22.0" prefWidth="130.0" text="Ng+�y sinh" textFill="#30bac4">
+                                        <Label prefHeight="22.0" prefWidth="130.0" text="Ngày sinh" textFill="#30bac4">
                                             <font>
                                                 <Font name="Arial Bold" size="18.0" />
                                             </font>
@@ -106,7 +106,7 @@
                                 </HBox>
                                 <HBox alignment="CENTER" layoutX="10.0" layoutY="133.0" prefHeight="61.0" prefWidth="422.0" spacing="10.0">
                                     <children>
-                                        <Label prefHeight="22.0" prefWidth="130.0" text="Ch�+�c v�+�" textFill="#30bac4">
+                                        <Label prefHeight="22.0" prefWidth="130.0" text="Chức vụ" textFill="#30bac4">
                                             <font>
                                                 <Font name="Arial Bold" size="18.0" />
                                             </font>
@@ -118,7 +118,7 @@
                                         </Label>
                                         <HBox alignment="CENTER" maxHeight="31.2" maxWidth="200.8" minWidth="220.0" prefHeight="38.0" prefWidth="220.0" spacing="5.0">
                                             <children>
-                                                <ComboBox fx:id="cbSelectRole" prefHeight="31.2" prefWidth="200.8" promptText="Ch�+�n ch�+�c v�+�" />
+                                                <ComboBox fx:id="cbSelectRole" prefHeight="31.2" prefWidth="200.8" promptText="Chọn chức vụ" />
                                                 <Button fx:id="addRoleSubBtn" maxHeight="31.2" minWidth="32.0" mnemonicParsing="false" prefHeight="31.2" styleClass="action-btn-sub">
                                                     <graphic>
                                                         <FontAwesomeIcon glyphName="PLUS" size="1.2em" styleClass="action-icon-sub" />
@@ -130,7 +130,7 @@
                                 </HBox>
                                 <HBox alignment="CENTER" layoutX="10.0" layoutY="195.0" prefHeight="61.0" prefWidth="422.0" spacing="10.0">
                                     <children>
-                                        <Label prefHeight="22.0" prefWidth="130.0" text="L����ng c�� bߦ�n" textFill="#30bac4">
+                                        <Label prefHeight="22.0" prefWidth="130.0" text="Lương cơ bản" textFill="#30bac4">
                                             <font>
                                                 <Font name="Arial Bold" size="18.0" />
                                             </font>
@@ -140,7 +140,7 @@
                                                 <Font size="20.0" />
                                             </font>
                                         </Label>
-                                        <TextField fx:id="txtSalary" prefWidth="220.0" promptText="Nhߦ�p l����ng c�� bߦ�n" styleClass="textfield-1">
+                                        <TextField fx:id="txtSalary" prefWidth="220.0" promptText=" Nhập lương cơ bản" styleClass="textfield-1">
                                             <font>
                                                 <Font size="16.0" />
                                             </font>
@@ -149,7 +149,7 @@
                                 </HBox>
                                 <HBox alignment="CENTER" layoutX="10.0" layoutY="231.0" prefHeight="61.0" prefWidth="422.0" spacing="10.0">
                                     <children>
-                                        <Label prefHeight="22.0" prefWidth="130.0" text="Trߦ�ng th+�i" textFill="#30bac4">
+                                        <Label prefHeight="22.0" prefWidth="130.0" text="Trạng thái" textFill="#30bac4">
                                             <font>
                                                 <Font name="Arial Bold" size="18.0" />
                                             </font>
@@ -172,8 +172,8 @@
                     <children>
                         <HBox alignment="CENTER" layoutX="80.0" prefHeight="60.0" prefWidth="286.0" spacing="60.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="80.0" AnchorPane.rightAnchor="80.79999999999995" AnchorPane.topAnchor="0.0">
                             <children>
-                                <Button fx:id="closeBtn" mnemonicParsing="false" prefHeight="26.0" prefWidth="140.0" styleClass="action-btn" stylesheets="@../css/base.css" text="Tho+�t" />
-                                <Button fx:id="saveBtn" mnemonicParsing="false" prefHeight="26.0" prefWidth="140.0" styleClass="action-btn" stylesheets="@../css/base.css" text="L��u" />
+                                <Button fx:id="closeBtn" mnemonicParsing="false" prefHeight="26.0" prefWidth="140.0" styleClass="action-btn" stylesheets="@../css/base.css" text="Thoát" />
+                                <Button fx:id="saveBtn" mnemonicParsing="false" prefHeight="26.0" prefWidth="140.0" styleClass="action-btn" stylesheets="@../css/base.css" text="Lưu" />
                             </children>
                         </HBox>
                     </children>

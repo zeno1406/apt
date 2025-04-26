@@ -14,8 +14,11 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TableView;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.Month;
 import java.util.ArrayList;
+import java.util.Map;
 
 public class StatisticController {
     @FXML
@@ -26,6 +29,11 @@ public class StatisticController {
 
     @FXML
     private NumberAxis y1;
+
+    Map<LocalDate, BigDecimal> doanhThuTheoNgay;
+    Map<Month, BigDecimal> doanhThuTheoThang;
+    Map<Integer, BigDecimal> doanhThuTheoNam;
+
 
     @FXML
     public void initialize() {
@@ -40,16 +48,16 @@ public class StatisticController {
 
 
     public void drawRevenueCostProfitChart(ArrayList<StatisticRevenue> data) {
-        chart1.setTitle("T�+�ng thu, T�+�ng chi v+� L�+�i nhuߦ�n");
+        chart1.setTitle("Tổng thu, tổng chi và lợi nhuận");
 
         XYChart.Series<String, Number> revenueSeries = new XYChart.Series<>();
-        revenueSeries.setName("T�+�ng thu");
+        revenueSeries.setName("Tổng thu");
 
         XYChart.Series<String, Number> costSeries = new XYChart.Series<>();
-        costSeries.setName("T�+�ng chi");
+        costSeries.setName("Tổng chi");
 
         XYChart.Series<String, Number> profitSeries = new XYChart.Series<>();
-        profitSeries.setName("L�+�i nhuߦ�n");
+        profitSeries.setName("Lợi nhuận");
 
         for (StatisticRevenue stat : data) {
             String time = stat.getTime();

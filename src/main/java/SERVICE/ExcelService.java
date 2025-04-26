@@ -7,16 +7,27 @@ import BUS.RoleBUS;
 import DTO.EmployeeDTO;
 import DTO.ProductDTO;
 import DTO.RoleDTO;
+import UTILS.AvailableUtils;
 import UTILS.NotificationUtils;
 import UTILS.UiUtils;
 import UTILS.ValidationUtils;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.io.*;
 import java.nio.channels.FileChannel;
+import java.math.BigDecimal;
+import java.time.DateTimeException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ExcelService {
     private static final ExcelService INSTANCE = new ExcelService();
@@ -122,4 +133,165 @@ public class ExcelService {
         }
         return sheet;
     }
+
+    public void ImportSheet(String importData, Stage stage) throws IOException {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Chọn file Excel để nhập dữ liệu");
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("Excel Files", "*.xlsx")
+        );
+
+        File file = fileChooser.showOpenDialog(stage);
+
+        if (file == null) {
+            return; // Người dùng không chọn file
+        }
+
+        // Kiểm tra đúng định dạng
+        if (!file.getName().toLowerCase().endsWith(".xlsx")) {
+            NotificationUtils.showErrorAlert("Vui lòng chọn file Excel (.xlsx)", "Thông báo");
+            return;
+        }
+
+        try (FileInputStream fis = new FileInputStream(file);
+             Workbook workbook = new XSSFWorkbook(fis)) {
+
+            Sheet sheet = workbook.getSheetAt(0);
+
+            if (importData.equalsIgnoreCase("products")) {
+                importToProducts(sheet);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            NotificationUtils.showErrorAlert("Không thể mở file Excel: " + e.getMessage(), "Lỗi");
+        }
+    }
+
+
+    private void importToProducts(Sheet sheet) {
+        ArrayList<ProductDTO> list = returnListProduct(sheet, new ArrayList<>());
+
+        if (list.isEmpty()) {
+            return;
+        }
+
+        if (UiUtils.gI().showConfirmAlert("Bạn chắc chắn muốn thêm sản phẩm bằng Excel?", "Thông báo")) {
+            int deleteResult = ProductBUS.getInstance().insertListProductExcel(list);
+            switch (deleteResult) {
+                case 1 -> NotificationUtils.showInfoAlert("Thêm sản phẩm thành công.", "Thông báo");
+                case 2 -> NotificationUtils.showErrorAlert("Danh sách rỗng.", "Thông báo");
+                case 3 -> NotificationUtils.showErrorAlert("Dữ liệu đầu vào không hợp lệ.", "Thông báo");
+                case 4 -> NotificationUtils.showErrorAlert("Thể loại không hợp lệ hoặc đã bị xóa.", "Thông báo");
+                case 5 -> NotificationUtils.showErrorAlert("Tên sản phẩm trong hệ thống đã tồn tại.", "Thông báo");
+                case 6 -> NotificationUtils.showErrorAlert("Có lỗi khi thêm danh sách sản phẩm qua Excel.", "Thông báo");
+                case 7 -> NotificationUtils.showErrorAlert("Lỗi cơ sở dữ liệu khi insert.", "Thông báo");
+                default -> NotificationUtils.showErrorAlert("Lỗi không xác định, vui lòng thử lại sau.", "Thông báo");
+            }
+        }
+
+    }
+
+//    VALIDATE ON PRODUCT BUS
+    private ArrayList<ProductDTO> returnListProduct(Sheet sheet, ArrayList<ProductDTO> list) {
+        if (list == null) return new ArrayList<>();
+        if (!list.isEmpty()) list.clear();
+
+        ArrayList<ProductDTO> tempList = new ArrayList<>();
+        StringBuilder errorMessages = new StringBuilder();
+        int errorCount = 0; // Đếm số lỗi
+
+            for (Row row : sheet) {
+                if (row.getRowNum() == 0) continue; // Bỏ qua dòng tiêu đề
+                boolean isEmpty = true;
+                for (Cell cell : row) {
+                    if (cell != null && cell.getCellType() != CellType.BLANK && !cell.toString().trim().isEmpty()) {
+                        isEmpty = false;
+                        break;
+                    }
+                }
+                if (isEmpty) continue;
+                try {
+                    String name = row.getCell(1).getStringCellValue().trim();
+                    String description = row.getCell(2) != null ? row.getCell(2).getStringCellValue().trim() : null;
+
+                    Cell categoryCell = row.getCell(3);
+                    Cell statusCell = row.getCell(4);
+
+                    // Kiểm tra và chuyển đổi categoryId
+                    int categoryId;
+                    try {
+                        categoryId = (int) categoryCell.getNumericCellValue();
+                    } catch (Exception e) {
+                        errorMessages.append("Dòng ").append(row.getRowNum() + 1)
+                            .append(": Thể loại không hợp lệ (phải là số).\n");
+                    errorCount++;
+                    if (errorCount >= 20) break; // Dừng lại khi đã đủ 20 lỗi
+                    continue;
+                }
+
+                // Kiểm tra và chuyển đổi status
+                int statusInt;
+                try {
+                    statusInt = (int) statusCell.getNumericCellValue();
+                } catch (Exception e) {
+                    errorMessages.append("Dòng ").append(row.getRowNum() + 1)
+                            .append(": Trạng thái không hợp lệ (phải là 0 hoặc 1).\n");
+                    errorCount++;
+                    if (errorCount >= 20) break; // Dừng lại khi đã đủ 20 lỗi
+                    continue;
+                }
+
+                if (name.isEmpty()) {
+                    errorMessages.append("Dòng ").append(row.getRowNum() + 1)
+                            .append(": Tên sản phẩm không được để trống.\n");
+                    errorCount++;
+                    if (errorCount >= 20) break; // Dừng lại khi đã đủ 20 lỗi
+                    continue;
+                }
+
+                if (categoryId < 0 || !AvailableUtils.getInstance().isValidCategory(categoryId)) {
+                    errorMessages.append("Dòng ").append(row.getRowNum() + 1)
+                            .append(": Thể loại không hợp lệ hoặc đã bị xóa.\n");
+                    errorCount++;
+                    if (errorCount >= 20) break; // Dừng lại khi đã đủ 20 lỗi
+                    continue;
+                }
+
+                if (statusInt != 0 && statusInt != 1) {
+                    errorMessages.append("Dòng ").append(row.getRowNum() + 1)
+                            .append(": Trạng thái chỉ được là 0 hoặc 1.\n");
+                    errorCount++;
+                    if (errorCount >= 20) break; // Dừng lại khi đã đủ 20 lỗi
+                    continue;
+                }
+
+                ProductDTO product = new ProductDTO(
+                        null, name, 0, null, statusInt == 1, description, null, categoryId
+                );
+                tempList.add(product);
+
+            } catch (Exception e) {
+                errorMessages.append("Dòng ").append(row.getRowNum() + 1)
+                        .append(": Lỗi không xác định: ").append(e.getMessage()).append("\n");
+                errorCount++;
+                if (errorCount >= 20) break; // Dừng lại khi đã đủ 20 lỗi
+            }
+        }
+
+        if (errorMessages.length() > 0) {
+            // Nếu có hơn 20 lỗi, chỉ hiển thị 20 dòng đầu tiên
+            if (errorCount > 20) {
+                errorMessages.append("Và " + (errorCount - 20) + " lỗi khác không thể hiển thị.\n");
+            }
+            NotificationUtils.showErrorAlert(errorMessages.toString(), "Thông báo");
+            return new ArrayList<>(); // Trả về rỗng nếu có lỗi
+        }
+
+        list.addAll(tempList);
+        return list;
+    }
+
+
+
 }

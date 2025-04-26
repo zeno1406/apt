@@ -31,7 +31,7 @@ public class EmployeeDAL extends BaseDAL<EmployeeDTO, Integer> {
 
     @Override
     protected String getInsertQuery() {
-        return "(first_name, last_name, salary, date_of_birth, role_id, status) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        return "(first_name, last_name, salary, date_of_birth, role_id, status) VALUES (?, ?, ?, ?, ?, ?)";
     }
 
     @Override

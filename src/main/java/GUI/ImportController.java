@@ -70,7 +70,7 @@ public class ImportController implements IController {
         if (ImportBUS.getInstance().isLocalEmpty()) ImportBUS.getInstance().loadLocal();
         if (DetailImportBUS.getInstance().isLocalEmpty()) DetailImportBUS.getInstance().loadLocal();
         tblImport.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
-        tblDetailImport.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
+//        tblDetailImport.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
         Platform.runLater(() -> tblImport.getSelectionModel().clearSelection());
         Platform.runLater(() -> tblDetailImport.getSelectionModel().clearSelection());
 
@@ -109,9 +109,9 @@ public class ImportController implements IController {
                 formatCell(validationUtils.formatCurrency(cellData.getValue().getPrice())));
         tlb_col_totalPriceP.setCellValueFactory(cellData ->
                 formatCell(validationUtils.formatCurrency(cellData.getValue().getTotalPrice())));
-        UiUtils.gI().addTooltipToColumn(tlb_col_productId, 10);
-        UiUtils.gI().addTooltipToColumn(tlb_col_price, 10);
-        UiUtils.gI().addTooltipToColumn(tlb_col_totalPriceP, 10);
+//        UiUtils.gI().addTooltipToColumn(tlb_col_productId, 3);
+//        UiUtils.gI().addTooltipToColumn(tlb_col_price, 3);
+//        UiUtils.gI().addTooltipToColumn(tlb_col_totalPriceP, 3);
         tblDetailImport.setItems(FXCollections.observableArrayList(DetailImportBUS.getInstance().getAllDetailImportByImportIdLocal(importId)));
         tblDetailImport.getSelectionModel().clearSelection();
     }
@@ -133,7 +133,7 @@ public class ImportController implements IController {
         txtSearch.textProperty().addListener((observable, oldValue, newValue) -> handleKeywordChange());
         refreshBtn.setOnAction(event -> {
             resetFilters();
-            NotificationUtils.showInfoAlert("L+�m m�+�i th+�nh c+�ng", "Th+�ng b+�o");
+            NotificationUtils.showInfoAlert("Làm mới thành công.", "Thông báo");
         });
     }
 

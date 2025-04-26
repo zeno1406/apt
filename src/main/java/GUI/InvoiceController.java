@@ -84,7 +84,7 @@ public class InvoiceController implements IController  {
         if (InvoiceBUS.getInstance().isLocalEmpty()) InvoiceBUS.getInstance().loadLocal();
         if (DetailInvoiceBUS.getInstance().isLocalEmpty()) DetailInvoiceBUS.getInstance().loadLocal();
         tblInvoice.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
-        tblDetailInvoice.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
+//        tblDetailInvoice.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
         Platform.runLater(() -> tblInvoice.getSelectionModel().clearSelection());
         Platform.runLater(() -> tblDetailInvoice.getSelectionModel().clearSelection());
 
@@ -120,7 +120,7 @@ public class InvoiceController implements IController  {
         this.createDate.setText(validationUtils.formatDateTime(selectedInvoice.getCreateDate()));
         this.employeeId.setText(String.valueOf(selectedInvoice.getEmployeeId()));
         this.customerId.setText(String.valueOf(selectedInvoice.getCustomerId()));
-        this.discountCode.setText(selectedInvoice.getDiscountCode() != null ? selectedInvoice.getDiscountCode() : "Kh+�ng c+�");
+        this.discountCode.setText(selectedInvoice.getDiscountCode() != null ? selectedInvoice.getDiscountCode() : "Không có");
         this.discountAmount.setText(validationUtils.formatCurrency(selectedInvoice.getDiscountAmount()));
         this.totalPrice.setText(validationUtils.formatCurrency(selectedInvoice.getTotalPrice()));
 

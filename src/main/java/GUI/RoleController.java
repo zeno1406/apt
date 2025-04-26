@@ -60,7 +60,7 @@ public class RoleController implements IController {
     public void loadTable() {
         tlb_col_id.setCellValueFactory(new PropertyValueFactory<>("id"));
         tlb_col_name.setCellValueFactory(new PropertyValueFactory<>("name"));
-        tlb_col_description.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDescription() == null ? "Không có" : cellData.getValue().getDescription()));
+        tlb_col_description.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDescription() == null ? "" : cellData.getValue().getDescription()));
         tlb_col_salaryCoefficient.setCellValueFactory(cellData ->
                 new SimpleStringProperty(ValidationUtils.getInstance().formatCurrency(cellData.getValue().getSalaryCoefficient())));
         tblRole.setItems(FXCollections.observableArrayList(RoleBUS.getInstance().getAllLocal()));

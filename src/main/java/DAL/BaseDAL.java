@@ -26,9 +26,8 @@ public abstract class BaseDAL<T, K> implements IDAL<T, K> {
              PreparedStatement statement = connection.prepareStatement(query);
              ResultSet resultSet = statement.executeQuery()) {
 
-            while (resultSet.next()) {
+            while (resultSet.next())
                 list.add(mapResultSetToObject(resultSet));
-            }
         } catch (SQLException e) {
             System.err.println("Error retrieving " + table + ": " + e.getMessage());
         }
@@ -44,9 +43,8 @@ public abstract class BaseDAL<T, K> implements IDAL<T, K> {
             setIdParameter(statement, id, 1);
 
             try (ResultSet resultSet = statement.executeQuery()) {
-                if (resultSet.next()) {
+                if (resultSet.next())
                     return mapResultSetToObject(resultSet);
-                }
             }
         } catch (SQLException e) {
             System.err.println("Error retrieving " + table + " by ID: " + e.getMessage());
@@ -59,9 +57,8 @@ public abstract class BaseDAL<T, K> implements IDAL<T, K> {
     @Override
     public boolean insert(T obj) {
         final String query = "INSERT INTO " + table + " " + getInsertQuery();
-        if (query.isEmpty()) {
+        if (query.isEmpty())
             throw new UnsupportedOperationException("Insert operation not supported for " + table);
-        }
 
         try (Connection connection = connectionFactory.newConnection();
              PreparedStatement statement = shouldUseGeneratedKeys() ?
@@ -71,13 +68,11 @@ public abstract class BaseDAL<T, K> implements IDAL<T, K> {
             setInsertParameters(statement, obj);
             int affectedRows = statement.executeUpdate();
 
-            if (affectedRows > 0) {
-                if (shouldUseGeneratedKeys()) {
+            if (affectedRows > 0)
+                if (shouldUseGeneratedKeys())
                     try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
-                            setGeneratedKey(obj, generatedKeys);
+                        setGeneratedKey(obj, generatedKeys);
                     }
-                }
-            }
 
             return affectedRows > 0;
         } catch (SQLException e) {
@@ -105,13 +100,10 @@ public abstract class BaseDAL<T, K> implements IDAL<T, K> {
     @Override
     public boolean update(T obj) {
         final String query = "UPDATE " + table + " " + getUpdateQuery();
-        if (query.isEmpty()) {
+        if (query.isEmpty())
             throw new UnsupportedOperationException("Update operation not supported for " + table);
-        }
-
         try (Connection connection = connectionFactory.newConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
-
             setUpdateParameters(statement, obj);
             return statement.executeUpdate() > 0;
         } catch (SQLException e) {

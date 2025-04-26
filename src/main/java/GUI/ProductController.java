@@ -4,6 +4,7 @@ import BUS.CategoryBUS;
 import BUS.ProductBUS;
 import DTO.*;
 import INTERFACE.IController;
+import SERVICE.ExcelService;
 import SERVICE.SessionManagerService;
 import UTILS.NotificationUtils;
 import UTILS.UiUtils;
@@ -13,13 +14,17 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.stage.Stage;
 
+import java.awt.event.ActionEvent;
 import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.util.HashMap;
@@ -46,7 +51,7 @@ public class ProductController implements IController {
     @FXML
     private HBox functionBtns;
     @FXML
-    private Button addBtn, editBtn, deleteBtn, refreshBtn;
+    private Button addBtn, editBtn, deleteBtn, refreshBtn, btnImportExcel;
     @FXML
     private TextField txtSearch;
     @FXML
@@ -176,6 +181,11 @@ public class ProductController implements IController {
         addBtn.setOnAction(e -> handleAdd());
         editBtn.setOnAction(e -> handleEdit());
         deleteBtn.setOnAction(e -> handleDelete());
+        btnImportExcel.setOnMouseClicked(event -> {
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            importProductExcel(stage);
+        });
+
     }
 
     private void handlePriceChange() {
@@ -186,7 +196,7 @@ public class ProductController implements IController {
             } else {
                 startPrice = null;
             }
-            System.out.println(startPrice);
+//            System.out.println(startPrice);
 
             String endText = txtEndPrice.getText().trim();
             if (!endText.isEmpty()) {
@@ -194,7 +204,7 @@ public class ProductController implements IController {
             } else {
                 endPrice = null;
             }
-            System.out.println(endPrice);
+//            System.out.println(endPrice);
 
             applyFilters();
         } catch (NumberFormatException e) {
@@ -293,7 +303,7 @@ public class ProductController implements IController {
             case 5 ->
                     NotificationUtils.showErrorAlert("Sản sản phẩm còn hàng tồn, không thể xóa!", "Thông báo");
             default ->
-                    NotificationUtils.showErrorAlert("Lỗi không xác định, vui lòng thử lại sau.", "Thông báo");
+                    NotificationUtils.showErrorAlert("Lỗi không xác định. Vui lòng thử lại sau.", "Thông báo");
         }
     }
 
@@ -333,4 +343,15 @@ public class ProductController implements IController {
         selectedProduct = tblProduct.getSelectionModel().getSelectedItem();
         return selectedProduct == null;
     }
+
+    public void importProductExcel(Stage stage) {
+        try {
+            ExcelService.getInstance().ImportSheet("products", stage);
+            applyFilters();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 }

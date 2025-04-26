@@ -90,11 +90,11 @@ public class ProductModalController {
         if (type != 0 && type != 1) handleClose();
         typeModal = type;
         if (typeModal == 0) {
-            modalName.setText("Thêm tài khoản");
+            modalName.setText("Thêm sản phẩm");
             txtProductId.setText(ProductBUS.getInstance().autoId());
         } else {
             if (product == null) handleClose();
-            modalName.setText("Sửa tài khoản");
+            modalName.setText("Sửa sản phẩm");
         }
     }
 
@@ -262,13 +262,11 @@ public class ProductModalController {
 
     private void updateProduct() throws IOException {
         ProductBUS proBus = ProductBUS.getInstance();
-
         if (isValidInput()) {
             String newImgUrl = product.getImageUrl();
             if (imageUrl != null && !imageUrl.equals(product.getImageUrl())) {
                 newImgUrl = ImageService.gI().saveProductImage(txtProductId.getText().trim(), imageUrl);
             }
-            System.out.println(newImgUrl);
 
             ProductDTO temp = new ProductDTO(txtProductId.getText().trim(), txtProductName.getText().trim(), 0, new BigDecimal(txtSellingPrice.getText().trim()),
                     cbSelectStatus.getValue().equals("Hoạt động"), txtDescription.getText().trim(),
@@ -287,7 +285,7 @@ public class ProductModalController {
                     NotificationUtils.showErrorAlert("Tên sản phẩm đã tồn tại trong hệ thống.", "Thông báo");
                     focus(txtProductName);
                 }
-                case 6 -> NotificationUtils.showErrorAlert("Cập nhật tài khoản thất bại. Vui lòng thử lại sau.", "Thông báo");
+                case 6 -> NotificationUtils.showErrorAlert("Cập nhật sản phẩm thất bại. Vui lòng thử lại sau.", "Thông báo");
                 default -> NotificationUtils.showErrorAlert("Lỗi không xác định, vui lòng thử lại sau.", "Thông báo");
             }
         }

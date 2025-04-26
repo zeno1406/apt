@@ -7,8 +7,6 @@
     import DTO.RoleDTO;
     import INTERFACE.IController;
     import SERVICE.ExcelService;
-    import SERVICE.PrintService;
-    import SERVICE.RolePermissionService;
     import SERVICE.SessionManagerService;
     import UTILS.NotificationUtils;
     import UTILS.UiUtils;
@@ -217,83 +215,77 @@ public class EmployeeController implements IController {
 
     @Override
     public void hideButtonWithoutPermission() {
-        boolean canAdd = SessionManagerService.getInstance().hasPermission(1);
-        boolean canEdit = SessionManagerService.getInstance().hasPermission(3);
-        boolean canDelete = SessionManagerService.getInstance().hasPermission(2);
-
-        if (!canAdd) functionBtns.getChildren().remove(addBtn);
-        if (!canEdit) functionBtns.getChildren().remove(editBtn);
-        if (!canDelete) functionBtns.getChildren().remove(deleteBtn);
+//        boolean canAdd = SessionManagerService.getInstance().hasPermission(1);
+//        boolean canEdit = SessionManagerService.getInstance().hasPermission(3);
+//        boolean canDelete = SessionManagerService.getInstance().hasPermission(2);
+//
+//        if (!canAdd) functionBtns.getChildren().remove(addBtn);
+//        if (!canEdit) functionBtns.getChildren().remove(editBtn);
+//        if (!canDelete) functionBtns.getChildren().remove(deleteBtn);
     }
 
     public void handleAddBtn() {
         EmployeeModalController modalController = UiUtils.gI().openStageWithController(
                 "/GUI/EmployeeModal.fxml",
                 controller -> controller.setTypeModal(0),
-                "Th+�m nh+�n vi+�n"
+                "Thêm nhân viên"
         );
         if (modalController != null && modalController.isSaved()) {
-            NotificationUtils.showInfoAlert("Th+�m nh+�n vi+�n th+�nh c+�ng", "Th+�ng b+�o");
+            NotificationUtils.showInfoAlert("Thêm nhân viên thành công.", "Thông báo");
             resetFilters();
         }
     }
 
     public void handleDeleteBtn() {
         if (isNotSelectedEmployee()) {
-            NotificationUtils.showErrorAlert("Vui l+�ng ch�+�n nh+�n vi+�n", "Th+�ng b+�o");
+            NotificationUtils.showErrorAlert("Vui lòng chọn nhân viên.", "Thông báo");
             return;
         }
         if (selectedEmployee.getId() == SessionManagerService.getInstance().employeeLoginId()) {
-            NotificationUtils.showErrorAlert("Bߦ�n kh+�ng th�+� x+�a th+�ng tin c�+�a ch+�nh m+�nh.", "Th+�ng b+�o");
+            NotificationUtils.showErrorAlert("Bạn không thể xóa thông tin của chính mình.", "Thông báo");
             return;
         }
         if(selectedEmployee.getId() == 1)
         {
-            NotificationUtils.showErrorAlert("Kh+�ng th�+� x+�a nh+�n vi+�n g�+�c.", "Th+�ng b+�o");
+            NotificationUtils.showErrorAlert("Không thể xóa nhân viên gốc.", "Thông báo");
             return;
         }
-
-//        int numEmployeeHasRole = EmployeeBUS.getInstance().numEmployeeHasRoleId(selectedRole.getId());
-//        if (numEmployeeHasRole != 0) {
-//            String ask = "Hi�+�n c+� " + numEmployeeHasRole + " nh+�n vi+�n s�+� h�+�u ch�+�c v�+� n+�y!";
-//            if (!UiUtils.gI().showConfirmAlert("Bߦ�n chߦ�c mu�+�n x+�a ch�+�c v�+� n+�y? " + ask, "Th+�ng b+�o x+�c nhߦ�n")) return;
-//        }
 
         int deleteResult = EmployeeBUS.getInstance().delete(selectedEmployee.getId(),SessionManagerService.getInstance().employeeRoleId(), SessionManagerService.getInstance().employeeLoginId());
 
         switch (deleteResult) {
             case 1 ->
             {
-                NotificationUtils.showInfoAlert("X+�a nh+�n vi+�n th+�nh c+�ng.", "Th+�ng b+�o");
+                NotificationUtils.showInfoAlert("Xóa nhân viên thành cồng.", "Thông báo");
                 resetFilters();
             }
             case 2 ->
-                    NotificationUtils.showErrorAlert("C+� l�+�i khi x+�a nh+�n vi+�n. Vui l+�ng th�+� lߦ�i.", "Th+�ng b+�o");
+                    NotificationUtils.showErrorAlert("Có lỗi khi xóa nhân viên. Vui lòng thử lại.", "Thông báo");
             case 3 ->
-                    NotificationUtils.showErrorAlert("Bߦ�n kh+�ng th�+� x+�a th+�ng tin c�+�a ch+�nh m+�nh.", "Th+�ng b+�o");
+                    NotificationUtils.showErrorAlert("Bạn không thể xóa thông tin của chính mình.", "Thông báo");
             case 4 ->
-                    NotificationUtils.showErrorAlert("Bߦ�n kh+�ng c+� quy�+�n \"X+�a nh+�n vi+�n\" -��+� th�+�c hi�+�n thao t+�c n+�y.", "Th+�ng b+�o");
+                    NotificationUtils.showErrorAlert("Bạn không có quyền \"Xóa nhân viên\" để thực hiện thao tác này.", "Thông báo");
             case 5 ->
-                    NotificationUtils.showErrorAlert("Bߦ�n kh+�ng th�+� x+�a nh+�n vi+�n ngang quy�+�n", "Th+�ng b+�o");
+                    NotificationUtils.showErrorAlert("Bạn không thể xóa nhân viên ngang quyền.", "Thông báo");
             case 6 ->
-                    NotificationUtils.showErrorAlert("X+�a nh+�n vi+�n thߦ�t bߦ�i. Vui l+�ng th�+� lߦ�i sau.", "Th+�ng b+�o");
+                    NotificationUtils.showErrorAlert("Xóa nhân viên thất bại. Vui lòng thử lại.", "Thông báo");
             case 7 ->
-                    NotificationUtils.showErrorAlert("Nh+�n vi+�n kh+�ng h�+�p l�+� hoߦ+c -�+� b�+� x+�a.", "Th+�ng b+�o");
+                    NotificationUtils.showErrorAlert("Nhân viên không hợp lệ hoặc đã bị xóa.", "Thông báo");
             case 8 ->
-                    NotificationUtils.showErrorAlert("Kh+�ng th�+� x+�a nh+�n vi+�n g�+�c.", "Th+�ng b+�o");
+                    NotificationUtils.showErrorAlert("Không thể xóa nhân viên gốc.", "Thông báo");
             default ->
-                    NotificationUtils.showErrorAlert("L�+�i kh+�ng x+�c -��+�nh, vui l+�ng th�+� lߦ�i sau.", "Th+�ng b+�o");
+                    NotificationUtils.showErrorAlert("Lỗi không xác định. Vui lòng thử lại.", "Thông báo");
         }
     }
 
     public void handleEditBtn() {
         if (isNotSelectedEmployee()) {
-            NotificationUtils.showErrorAlert("Vui l+�ng ch�+�n nh+�n vi+�n", "Th+�ng b+�o");
+            NotificationUtils.showErrorAlert("Vui lòng chọn nhân viên.", "Thông báo");
             return;
         }
         if(selectedEmployee.getId() == 1 && SessionManagerService.getInstance().employeeLoginId() != 1)
         {
-            NotificationUtils.showErrorAlert("Kh+�ng th�+� s�+�a nh+�n vi+�n g�+�c.", "Th+�ng b+�o");
+            NotificationUtils.showErrorAlert("Không thể sửa nhân viên gốc.", "Thông báo");
             return;
         }
         EmployeeModalController modalController = UiUtils.gI().openStageWithController(
@@ -302,10 +294,10 @@ public class EmployeeController implements IController {
                     controller.setTypeModal(1);
                     controller.setEmployee(selectedEmployee);
                 },
-                "S�+�a nh+�n vi+�n"
+                "Sửa nhân viên"
         );
         if (modalController != null && modalController.isSaved()) {
-            NotificationUtils.showInfoAlert("S�+�a nh+�n vi+�n th+�nh c+�ng", "Th+�ng b+�o");
+            NotificationUtils.showInfoAlert("Sửa nhân viên thành công.", "Thông báo");
             applyFilters();
         }
     }

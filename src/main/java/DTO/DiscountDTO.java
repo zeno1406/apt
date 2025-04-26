@@ -1,7 +1,10 @@
 package DTO;
 
+import lombok.ToString;
+
 import java.time.LocalDateTime;
 
+@ToString
 public class DiscountDTO {
     private String code;
     private String name;

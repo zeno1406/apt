@@ -15,16 +15,9 @@ public class DiscountDAL extends BaseDAL<DiscountDTO, String> {
 
     @Override
     protected DiscountDTO mapResultSetToObject(ResultSet resultSet) throws SQLException {
-        return new DiscountDTO(
-                resultSet.getString("code"),
-                resultSet.getString("name"),
-                resultSet.getInt("type"),
-                resultSet.getDate("startDate") != null
-                        ? resultSet.getDate("startDate").toLocalDate().atStartOfDay()
-                        : null,
-                resultSet.getDate("endDate") != null
-                        ? resultSet.getDate("endDate").toLocalDate().atStartOfDay()
-                        : null
+        return new DiscountDTO(resultSet.getString("code"), resultSet.getString("name"), resultSet.getInt("type"),
+                resultSet.getDate("startDate") != null ? resultSet.getDate("startDate").toLocalDate().atStartOfDay() : null,
+                resultSet.getDate("endDate") != null ? resultSet.getDate("endDate").toLocalDate().atStartOfDay() : null
         );
     }
 
@@ -54,29 +47,5 @@ public class DiscountDAL extends BaseDAL<DiscountDTO, String> {
         statement.setDate(3, obj.getStartDate() != null ? java.sql.Date.valueOf(obj.getStartDate().toLocalDate()) : null);
         statement.setDate(4, obj.getEndDate() != null ? java.sql.Date.valueOf(obj.getEndDate().toLocalDate()) : null);
         statement.setString(5, obj.getCode());
-    }
-
-    public boolean updateCode(DiscountDTO obj, String newCode) {
-        if (newCode == null || newCode.trim().isEmpty()) {
-            System.err.println("Error: newCode cannot be null or empty.");
-            return false;
-        }
-
-        final String query = "UPDATE discount SET code = ?, name = ?, type = ?, startDate = ?, endDate = ? WHERE code = ?";
-        try (Connection connection = connectionFactory.newConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
-
-            statement.setString(1, newCode);
-            statement.setString(2, obj.getName());
-            statement.setInt(3, obj.getType());
-            statement.setDate(3, obj.getStartDate() != null ? java.sql.Date.valueOf(obj.getStartDate().toLocalDate()) : null);
-            statement.setDate(4, obj.getEndDate() != null ? java.sql.Date.valueOf(obj.getEndDate().toLocalDate()) : null);
-            statement.setString(6, obj.getCode());
-
-            return statement.executeUpdate() > 0;
-        } catch (SQLException e) {
-            System.err.println("Error updating discount code: " + e.getMessage());
-            return false;
-        }
     }
 }

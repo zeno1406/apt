@@ -60,6 +60,7 @@ HBox, VBox {
     -fx-background-color: transparent;
     -fx-pref-height: inherit;
     -fx-border-color: transparent;
+    -fx-padding: 5px;
 }
 
 .gpShowProductWrapper {

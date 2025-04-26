@@ -1,6 +1,7 @@
 package DAL;
 
 import DTO.DetailDiscountDTO;
+import DTO.DetailImportDTO;
 import DTO.RolePermissionDTO;
 
 import java.sql.*;
@@ -58,27 +59,65 @@ public class DetailDiscountDAL extends BaseDAL<DetailDiscountDTO, String> {
         statement.setBigDecimal(2, obj.getDiscountAmount());
         statement.setString(3, obj.getDiscountCode());
     }
+    public boolean insertAllDetailDiscountByDiscountCode(String discountCode, ArrayList<DetailDiscountDTO> list) {
+        final String query = "INSERT INTO detail_discount (discount_code, total_price_invoice, discount_amount) VALUES (?, ?, ?)";
 
-    public boolean insertListRolePermission(ArrayList<RolePermissionDTO> rolePermission) {
-        final String query = "INSERT INTO role_permission (role_id, permission_id, status) VALUES (?, ?, ?)";
         try (Connection connection = connectionFactory.newConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
 
-            boolean success = true;
-            for (RolePermissionDTO permission : rolePermission) {
-                statement.setInt(1, permission.getRoleId());
-                statement.setInt(2, permission.getPermissionId());
-                statement.setBoolean(3, permission.isStatus());
+            for (DetailDiscountDTO obj : list) {
+                statement.setString(1, discountCode);
+                statement.setBigDecimal(2, obj.getTotalPriceInvoice());
+                statement.setBigDecimal(3, obj.getDiscountAmount());
+                statement.addBatch();
+            }
 
-                if (statement.executeUpdate() <= 0) {
-                    success = false; // Nếu có bản ghi nào không chèn được thì đánh dấu thất bại
+            int[] results = statement.executeBatch();
+
+            for (int result : results) {
+                if (result < 0) {
+                    return false;
                 }
             }
-            return success;
+
+            return true;
+
         } catch (SQLException e) {
-            System.err.println("Error roll back role permissions: " + e.getMessage());
+            System.err.println("Error inserting detail discount: " + e.getMessage());
             return false;
         }
+    }
+
+    public boolean deleteAllDetailDiscountByDiscountCode(String discountCode) {
+        final String query = "DELETE FROM detail_discount WHERE discount_code = ?";
+        try (Connection connection = connectionFactory.newConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setString(1, discountCode);
+            return statement.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.err.println("Error deleting from " + table + ": " + e.getMessage());
+            return false;
+        }
+    }
+
+    public ArrayList<DetailDiscountDTO> getAllDetailDiscountByDiscountCode(String discountCode) {
+        final String query = "SELECT * FROM detail_discount WHERE discount_code = ?";
+        ArrayList<DetailDiscountDTO> list = new ArrayList<>();
+
+        try (Connection connection = connectionFactory.newConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setString(1, discountCode);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    list.add(mapResultSetToObject(resultSet));
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error retrieving " + table + ": " + e.getMessage());
+        }
+        return list;
     }
 
 }
