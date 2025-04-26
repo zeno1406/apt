@@ -78,6 +78,8 @@ public class SellingProductController {
     @FXML
     private Label lbTotalInvoicePrice, lbDiscountPrice;
     @FXML
+    private Label lbFinalTotalInvoicePrice;
+    @FXML
     private ComboBox<String> cbCategoryFilter;
     private final HashMap<String, Integer> categoryMap = new HashMap<>();
     @FXML
@@ -97,7 +99,9 @@ public class SellingProductController {
     private TempDetailInvoiceDTO selectedTempDetailInvoice;
     private CustomerDTO selectedCustomer = null;
     private DiscountDTO selectedDiscount = null;
-    private BigDecimal discountPrice;
+    private BigDecimal discountPrice = BigDecimal.ZERO;
+    private BigDecimal totalPriceInvoice = BigDecimal.ZERO;
+    private String discountPercent = "";
 
     @FXML
     public void initialize()
@@ -137,11 +141,15 @@ public class SellingProductController {
                 new SimpleStringProperty(validationUtils.formatCurrency(cellData.getValue().getPrice())));
         tlb_col_totalPrice.setCellValueFactory(cellData ->
                 new SimpleStringProperty(validationUtils.formatCurrency(cellData.getValue().getTotalPrice())));
-        UiUtils.gI().addTooltipToColumn(tlb_col_quantity, 10);
-        UiUtils.gI().addTooltipToColumn(tlb_col_price, 10);
-        UiUtils.gI().addTooltipToColumn(tlb_col_totalPrice, 10);
+
         tbvDetailInvoiceProduct.setItems(FXCollections.observableArrayList(arrTempDetailInvoice));
         tbvDetailInvoiceProduct.getSelectionModel().clearSelection();
+
+        tlb_col_index.setPrefWidth(50);
+        tlb_col_productName.setPrefWidth(150);
+        tlb_col_quantity.setPrefWidth(80);
+        tlb_col_price.setPrefWidth(100);
+        tlb_col_totalPrice.setPrefWidth(120);
     }
 
     // Set click Event
@@ -378,36 +386,36 @@ public class SellingProductController {
         arrTempDetailInvoice.remove(selectedTempDetailInvoice);
         addEventClickForProduct(tbvDetailInvoiceProduct, gpShowProductWrapper);
         loadCaculatedTotalImportPrice();
-        System.out.println("2: " + arrTempDetailInvoice.getFirst().getTotalPrice());
         loadTable();
 
         NotificationUtils.showInfoAlert("Xóa sản phẩm khỏi đơn hàng thành công.", "Thông báo");
     }
 
-    private void loadCaculatedTotalImportPrice() {
-        BigDecimal totalImportPrice = BigDecimal.ZERO;
-
-        for (TempDetailInvoiceDTO detail : arrTempDetailInvoice) {
-            totalImportPrice = totalImportPrice.add(detail.getTotalPrice());
-        }
-        lbTotalInvoicePrice.setText(ValidationUtils.getInstance().formatCurrency(totalImportPrice) + " Đ");
-    }
-
     private void onMouseClickedClear() {
         arrTempDetailInvoice.clear();
-        tbvDetailInvoiceProduct.setMouseTransparent(false);
-        tbvDetailInvoiceProduct.setFocusTraversable(true);
         addEventClickForProduct(tbvDetailInvoiceProduct, gpShowProductWrapper);
-        loadCaculatedTotalImportPrice();
         loadProductWrapper();
+        changeLabelContent();
         loadTable();
         NotificationUtils.showInfoAlert("Xóa toàn bộ thành công.", "Thông báo");
+        selectedDiscount = null;
+        selectedCustomer = null;
         txtCodeDiscount.setText("");
-        lbDiscountPrice.setText("");
         txtCustomerId.setText("");
         txtCustomerName.setText("");
-
-        makeEditableForButton(btnSubmitInvoice);
+        discountPercent = "";
+        discountPrice = BigDecimal.ZERO;
+        totalPriceInvoice = BigDecimal.ZERO;
+        loadCaculatedTotalImportPrice();
+        makeEditable(btnSubmitInvoice);
+        makeEditable(btnGetCusInfo);
+        makeEditable(btnGetDiscount);
+        makeEditable(btnInvoiceListProductEdit);
+        makeEditable(btnInvoiceListProductRemove);
+        ObservableList<Node> listNode = gpShowProductWrapper.getChildren();
+        for (Node node : listNode) {
+            makeEditable(node);
+        }
     }
 
     private HBox createInfoRow(Label label, Label value) {
@@ -481,10 +489,24 @@ public class SellingProductController {
             selectedDiscount = new DiscountDTO(modalController.getSelectedDiscount());
             txtCodeDiscount.setText(String.valueOf(selectedDiscount.getCode()));
             this.discountPrice = modalController.getPrice().subtract(modalController.getDiscountPrice());
+            this.totalPriceInvoice = modalController.getTotalPriceInvoice();
+            this.discountPercent = ValidationUtils.getInstance().formatCurrency(modalController.getDiscountPercent()) + "%";
             lbDiscountPrice.setText(ValidationUtils.getInstance().formatCurrency(discountPrice) + " Đ");
-            lbTotalInvoicePrice.setText(ValidationUtils.getInstance().formatCurrency(modalController.getDiscountPrice()) + " Đ");
-            NotificationUtils.showInfoAlert("Chọn khách khuyến mãi thành công.", "Thông báo");
+            loadCaculatedTotalImportPrice();
+            NotificationUtils.showInfoAlert("Chọn  khuyến mãi thành công.", "Thông báo");
         }
+    }
+
+    private void loadCaculatedTotalImportPrice() {
+        BigDecimal totalImportPrice = BigDecimal.ZERO;
+        ValidationUtils validate = ValidationUtils.getInstance();
+        for (TempDetailInvoiceDTO detail : arrTempDetailInvoice) {
+            totalImportPrice = totalImportPrice.add(detail.getTotalPrice());
+        }
+        totalPriceInvoice = totalImportPrice;
+        lbFinalTotalInvoicePrice.setText(validate.formatCurrency(totalPriceInvoice.subtract(discountPrice)) + " Đ");
+        lbDiscountPrice.setText(validate.formatCurrency(discountPrice) + " Đ");
+        lbTotalInvoicePrice.setText(ValidationUtils.getInstance().formatCurrency(totalPriceInvoice) + " Đ");
     }
 
     private void addProductToTable(String productId) {
@@ -508,17 +530,6 @@ public class SellingProductController {
                 return;
             }
         }
-
-        // Nếu chưa có sản phẩm trong bảng thì thêm mới
-//        TempDetailInvoiceDTO TempDetailInvoice = new TempDetailInvoiceDTO(
-//                0,
-//                product.getId(),
-//                product.getName(),
-//                1,
-//                product.getSellingPrice(),
-//                BigDecimal.ZERO
-//        );
-//        arrTempDetailInvoice.add(TempDetailInvoice);
         loadTable();
     }
 
@@ -580,25 +591,41 @@ public class SellingProductController {
             listProduct.add(p);
             totalInvoicePrice = totalInvoicePrice.add(t.getTotalPrice());
         }
+
+        // Kiem tra lai tranh truong hop ap dung giam dung moc thanh cong nhung sau do xao bot khien gia k con du ap dung
+        if (selectedDiscount != null && (totalInvoicePrice.compareTo(this.totalPriceInvoice) < 0)) {
+            NotificationUtils.showErrorAlert("Giá trị đơn hàng của bàn không còn đủ để áp dụng khuyến mãi này.", "Thông báo");
+            selectedDiscount = null;
+            txtCodeDiscount.setText("");
+            discountPrice = BigDecimal.ZERO;
+            loadCaculatedTotalImportPrice();
+            return;
+        }
+
         InvoiceDTO temp = new InvoiceDTO(Integer.parseInt(txtInvoiceId.getText().trim()), null, Integer.parseInt(txtEmployeeId.getText().trim()),
-                Integer.parseInt(txtCustomerId.getText().trim()), selectedDiscount == null ? null:txtCodeDiscount.getText().trim(), discountPrice != null ? discountPrice : BigDecimal.ZERO, totalInvoicePrice);
-        boolean submit =  NotificationUtils.showConfirmAlert("Xác nhận phiếu bán", arrTempDetailInvoice, "Thông Báo");
+                Integer.parseInt(txtCustomerId.getText().trim()), selectedDiscount == null ? null:txtCodeDiscount.getText().trim(), discountPrice != null ? discountPrice : BigDecimal.ZERO, totalInvoicePrice.subtract(discountPrice));
+        ValidationUtils validate = ValidationUtils.getInstance();
+        String extra =  "Thành tiền: " + validate.formatCurrency(totalInvoicePrice) + " Đ" +
+                        "\nMã khuyến mãi: " + (selectedDiscount == null ? "Không có":txtCodeDiscount.getText().trim()) +
+                        "\nGiảm giá: " + (discountPrice != null ? validate.formatCurrency(discountPrice) : BigDecimal.ZERO) + " Đ" + (!discountPercent.isEmpty() ? " - " + discountPercent: "") +
+                        "\nTổng tiền hóa đơn: " + validate.formatCurrency(totalInvoicePrice.subtract(discountPrice)) + " Đ";
+        boolean submit =  NotificationUtils.showConfirmAlert("Xác nhận phiếu bán", arrTempDetailInvoice, "Thông Báo", extra);
         // khong xac nhan khong nhap
         if (!submit) return;
         boolean result = InvoiceService.getInstance().createInvoiceWithDetailInvoice(temp, ses.employeeRoleId(), list, ses.employeeLoginId());
         // Sau đó tăng số lượng sản phẩm và set lại giá
         if (result && ProductBUS.getInstance().updateQuantitySellingPriceListProduct(listProduct, false)) {
             NotificationUtils.showInfoAlert("Tạo hóa đơn thành công.", "Thông báo");
-//            arrTempDetailInvoice.clear();
             loadProductWrapper();
-//            selectedCustomer =null;
-//            txtCustomerId.setText("");
-//            txtCustomerName.setText("");
-//            loadTable();
-//            loadCaculatedTotalImportPrice();
-            tbvDetailInvoiceProduct.setMouseTransparent(true);
-            tbvDetailInvoiceProduct.setFocusTraversable(false);
             makeReadOnly(btnSubmitInvoice);
+            makeReadOnly(btnGetCusInfo);
+            makeReadOnly(btnGetDiscount);
+            makeReadOnly(btnInvoiceListProductEdit);
+            makeReadOnly(btnInvoiceListProductRemove);
+            ObservableList<Node> listNode = gpShowProductWrapper.getChildren();
+            for (Node node : listNode) {
+                makeReadOnly(node);
+            }
         }
     }
 
@@ -606,7 +633,6 @@ public class SellingProductController {
         node.setDisable(false); // Cho phép hiện bình thường
         node.setMouseTransparent(true); // Không cho tương tác
         node.setFocusTraversable(false); // Không cho focus
-        node.setStyle("-fx-background-color: #999999; -fx-opacity: 0.75;");
 
         if (node instanceof TextInputControl textInput) {
             textInput.setEditable(false);
@@ -635,10 +661,13 @@ public class SellingProductController {
     }
 
     // Hàm mới để "mở khóa" button
-    private void makeEditableForButton(Button button) {
-        button.setDisable(false);
-        button.setMouseTransparent(false);
-        button.setFocusTraversable(true);
-        button.setStyle(""); // Reset style
+    private void makeEditable(Node node) {
+        node.setDisable(false);
+        node.setMouseTransparent(false);
+        node.setFocusTraversable(true);
+
+        if (node instanceof Button) {
+            node.setStyle(""); // Chỉ reset style nếu là Button
+        }
     }
 }

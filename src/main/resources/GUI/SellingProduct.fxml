@@ -248,7 +248,7 @@
                                                     <children>
                                                         <HBox alignment="CENTER_RIGHT" minWidth="100.0" prefHeight="34.0" prefWidth="100.0" spacing="10.0">
                                                             <children>
-                                                                <Button fx:id="btnInvoiceListProductClear" alignment="CENTER" layoutX="219.0" layoutY="10.0" mnemonicParsing="false" styleClass="btnFunctionForm" text="Nhập Mới">
+                                                                <Button fx:id="btnInvoiceListProductClear" alignment="CENTER" layoutX="219.0" layoutY="10.0" mnemonicParsing="false" styleClass="btnFunctionForm" text="Bán mới">
                                                                     <padding>
                                                                         <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
                                                                     </padding>
@@ -271,50 +271,90 @@
                                                                 <Insets right="5.0" top="5.0" />
                                                             </VBox.margin>
                                                         </HBox>
-                                                        <Pane fx:id="pShowImportTotalPrice" maxHeight="50.0" minHeight="50.0" prefHeight="50.0" prefWidth="384.0" styleClass="pShowImportTotalPrice">
-                                                            <children>
-                                                                <Label fx:id="lbTotalImportInvoice" layoutY="6.0" prefHeight="32.0" prefWidth="80.0" styleClass="lbTotalImportInvoice" text="TỔNG : " textFill="RED">
-                                                                    <padding>
-                                                                        <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
-                                                                    </padding>
-                                                                    <font>
-                                                                        <Font name="System Bold" size="18.0" />
-                                                                    </font>
-                                                                </Label>
-                                                                <Label fx:id="lbTotalInvoicePrice" layoutX="76.0" maxWidth="180.0" minWidth="151.0" prefHeight="50.0" prefWidth="151.0" styleClass="lbTotalImportPrice" text="0 Đ">
-                                                                    <padding>
-                                                                        <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
-                                                                    </padding>
-                                                                    <font>
-                                                                        <Font name="System Bold" size="16.0" />
-                                                                    </font>
-                                                                </Label>
-                                                <HBox alignment="CENTER" layoutX="221.0" layoutY="10.0" maxHeight="30.0" maxWidth="-Infinity" minHeight="30.0" prefHeight="30.0" prefWidth="143.0" spacing="10.0">
+                                          <HBox>
+                                             <children>
+                                                <VBox maxHeight="70.4" minHeight="70.4" prefHeight="70.4" prefWidth="192.0">
                                                    <children>
-                                                      <HBox maxWidth="75.2" minWidth="53.0" prefHeight="30.0" prefWidth="53.0">
+                                                      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0">
                                                          <children>
-                                                            <Label alignment="CENTER" prefHeight="30.0" prefWidth="55.0" text="Mã KM :" textAlignment="CENTER" textFill="#30bac4">
+                                                            <Label prefWidth="81.0" text="Thành tiền" textFill="#30bac4">
                                                                <font>
-                                                                  <Font name="Arial Bold" size="12.0" />
+                                                                  <Font name="Arial Bold" size="16.0" />
+                                                               </font>
+                                                            </Label>
+                                                            <Label text=":" textFill="#30bac4">
+                                                               <font>
+                                                                  <Font size="16.0" />
+                                                               </font>
+                                                            </Label>
+                                                            <Label fx:id="lbTotalInvoicePrice" prefWidth="75.0" text="0 Đ">
+                                                               <font>
+                                                                  <Font size="16.0" />
                                                                </font>
                                                             </Label>
                                                          </children>
                                                       </HBox>
-                                                      <AnchorPane maxWidth="-Infinity" prefHeight="30.0" prefWidth="70.0">
+                                                      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0">
                                                          <children>
-                                                            <TextField fx:id="txtCodeDiscount" editable="false" layoutX="14.0" layoutY="4.0" prefHeight="25.0" prefWidth="53.0" />
-                                                            <Button fx:id="btnGetDiscount" layoutX="76.0" layoutY="4.0" mnemonicParsing="false" text="..." />
+                                                            <Label prefWidth="81.0" text="Giảm giá" textFill="#30bac4">
+                                                               <font>
+                                                                  <Font name="Arial Bold" size="16.0" />
+                                                               </font>
+                                                            </Label>
+                                                            <Label text=":" textFill="#30bac4">
+                                                               <font>
+                                                                  <Font size="16.0" />
+                                                               </font>
+                                                            </Label>
+                                                            <Label fx:id="lbDiscountPrice" prefWidth="75.0" text="0 Đ">
+                                                               <font>
+                                                                  <Font size="16.0" />
+                                                               </font>
+                                                            </Label>
                                                          </children>
-                                                      </AnchorPane>
+                                                      </HBox>
+                                                      <HBox alignment="CENTER" layoutX="10.0" layoutY="45.0" prefHeight="100.0" prefWidth="200.0" spacing="10.0">
+                                                         <children>
+                                                            <Label prefWidth="81.0" text="Tổng" textFill="#30bac4">
+                                                               <font>
+                                                                  <Font name="Arial Bold" size="16.0" />
+                                                               </font>
+                                                            </Label>
+                                                            <Label text=":" textFill="#30bac4">
+                                                               <font>
+                                                                  <Font size="16.0" />
+                                                               </font>
+                                                            </Label>
+                                                            <Label fx:id="lbFinalTotalInvoicePrice" prefWidth="75.0" text="0 Đ">
+                                                               <font>
+                                                                  <Font size="16.0" />
+                                                               </font>
+                                                            </Label>
+                                                         </children>
+                                                      </HBox>
                                                    </children>
-                                                </HBox>
-                                                <Label layoutX="27.0" layoutY="36.0" text="GIẢM :" textFill="#363636" />
-                                                <Label fx:id="lbDiscountPrice" layoutX="76.0" layoutY="36.0" />
-                                                            </children>
-                                                        </Pane>
-                                                        <Pane fx:id="pSubmitInvoiceBtnContainer" maxHeight="80.0" minHeight="80.0" prefHeight="80.0" prefWidth="384.0" styleClass="pSubmitImportBtnContainer">
+                                                </VBox>
+                                                <VBox maxHeight="70.4" minHeight="70.4" prefHeight="70.4" prefWidth="192.0">
+                                                   <children>
+                                                      <HBox alignment="CENTER" maxHeight="30.0" maxWidth="-Infinity" minHeight="30.0" prefHeight="30.0" prefWidth="192.0" spacing="10.0">
+                                                         <children>
+                                                            <Label alignment="CENTER" prefHeight="30.0" prefWidth="65.0" text="Mã KM :" textAlignment="CENTER" textFill="#30bac4">
+                                                               <font>
+                                                                  <Font name="Arial Bold" size="16.0" />
+                                                               </font>
+                                                            </Label>
+                                                            <TextField fx:id="txtCodeDiscount" editable="false" prefHeight="25.0" prefWidth="70.0" />
+                                                            <Button fx:id="btnGetDiscount" mnemonicParsing="false" text="..." />
+                                                         </children>
+                                                      </HBox>
+                                                      <HBox prefHeight="100.0" prefWidth="200.0" />
+                                                   </children>
+                                                </VBox>
+                                             </children>
+                                          </HBox>
+                                                        <Pane fx:id="pSubmitInvoiceBtnContainer" maxHeight="50.0" minHeight="50.0" prefHeight="50.0" prefWidth="384.0" styleClass="pSubmitImportBtnContainer">
                                                             <children>
-                                                                <Button fx:id="btnSubmitInvoice" alignment="CENTER" layoutX="111.0" layoutY="19.0" minHeight="-Infinity" mnemonicParsing="false" prefHeight="42.0" prefWidth="162.0" styleClass="btnSubmitIInvoice" text="Tạo hóa đơn">
+                                                                <Button fx:id="btnSubmitInvoice" alignment="CENTER" layoutX="112.0" layoutY="5.0" maxHeight="40.0" minHeight="40.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="159.0" styleClass="btnSubmitIInvoice" text="Tạo hóa đơn">
                                                                     <padding>
                                                                         <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
                                                                     </padding>

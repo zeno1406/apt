@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="acRootInput" prefHeight="350.0" prefWidth="400.0" styleClass="white-bg" stylesheets="@../css/base.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.ImportProductModalController">
+<AnchorPane fx:id="acRootInput" prefHeight="300.0" prefWidth="400.0" styleClass="white-bg" stylesheets="@../css/base.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.ImportProductModalController">
     <children>
         <BorderPane prefHeight="425.0" prefWidth="600.0" style="-fx-border-color: #30bac4; -fx-border-width: 2px;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <top>
@@ -79,25 +79,6 @@
                                             </font>
                                         </Label>
                                         <TextField fx:id="txtPrice" prefWidth="150.0" promptText="Nhập giá nhập" styleClass="textfield-1">
-                                            <font>
-                                                <Font size="16.0" />
-                                            </font>
-                                        </TextField>
-                                    </children>
-                                </HBox>
-                                <HBox fx:id="hbInputSellingPrice" alignment="CENTER" layoutX="10.0" layoutY="10.0" prefHeight="61.0" prefWidth="422.0" spacing="10.0">
-                                    <children>
-                                        <Label prefHeight="22.0" prefWidth="125.0" text="Giá bán" textFill="#30bac4">
-                                            <font>
-                                                <Font name="Arial Bold" size="18.0" />
-                                            </font>
-                                        </Label>
-                                        <Label text=":" textFill="#30bac4">
-                                            <font>
-                                                <Font size="20.0" />
-                                            </font>
-                                        </Label>
-                                        <TextField fx:id="txtSellingPrice" prefWidth="150.0" promptText="Nhập giá bán" styleClass="textfield-1">
                                             <font>
                                                 <Font size="16.0" />
                                             </font>

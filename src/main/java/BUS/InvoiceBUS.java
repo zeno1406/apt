@@ -85,59 +85,69 @@ public class InvoiceBUS extends BaseBUS<InvoiceDTO, Integer>{
         for (InvoiceDTO invoice : arrLocal) {
             LocalDate invoiceDate = invoice.getCreateDate().toLocalDate();
 
-            // --- Kiểm tra ngày ---
+            // --- Kiểm tra ngày bắt buộc ---
             boolean matchesDate = true;
-            if (startDate != null && endDate != null) {
-                matchesDate = !invoiceDate.isBefore(startDate) && !invoiceDate.isAfter(endDate);
-            } else if (startDate != null) {
-                matchesDate = !invoiceDate.isBefore(startDate);
-            } else if (endDate != null) {
-                matchesDate = !invoiceDate.isAfter(endDate);
+            if (startDate != null && invoiceDate.isBefore(startDate)) {
+                matchesDate = false;
+            }
+            if (endDate != null && invoiceDate.isAfter(endDate)) {
+                matchesDate = false;
+            }
+            if (!matchesDate) {
+                continue; // Ngày không hợp lệ thì bỏ qua
             }
 
-            // --- Kiểm tra điều kiện còn lại ---
-            boolean matchEmployee = true;
+            // --- Kiểm tra các điều kiện còn lại ---
+            boolean matchesAnyCondition = false;
+
             if (employeeId != null && !employeeId.isEmpty()) {
-                matchEmployee = String.valueOf(invoice.getEmployeeId()).contains(employeeId);
+                if (String.valueOf(invoice.getEmployeeId()).equalsIgnoreCase(employeeId)) {
+                    matchesAnyCondition = true;
+                }
             }
 
-            boolean matchCustomer = true;
             if (customerId != null && !customerId.isEmpty()) {
-                matchCustomer = String.valueOf(invoice.getCustomerId()).contains(customerId);
+                if (String.valueOf(invoice.getCustomerId()).equalsIgnoreCase(customerId)) {
+                    matchesAnyCondition = true;
+                }
             }
 
-            boolean matchDiscount = true;
             if (discountCode != null && !discountCode.isEmpty()) {
-                matchDiscount = invoice.getDiscountCode() != null && invoice.getDiscountCode().equals(discountCode);
+                if (invoice.getDiscountCode() != null && invoice.getDiscountCode().equalsIgnoreCase(discountCode)) {
+                    matchesAnyCondition = true;
+                }
             }
 
-            boolean matchPrice = true;
-            if (startTotalPrice != null && endTotalPrice != null) {
-                matchPrice = invoice.getTotalPrice().compareTo(startTotalPrice) >= 0 &&
-                        invoice.getTotalPrice().compareTo(endTotalPrice) <= 0;
-            } else if (startTotalPrice != null) {
-                matchPrice = invoice.getTotalPrice().compareTo(startTotalPrice) >= 0;
-            } else if (endTotalPrice != null) {
-                matchPrice = invoice.getTotalPrice().compareTo(endTotalPrice) <= 0;
+            if (startTotalPrice != null || endTotalPrice != null) {
+                BigDecimal totalPrice = invoice.getTotalPrice();
+                boolean matchPrice = true;
+                if (startTotalPrice != null && totalPrice.compareTo(startTotalPrice) < 0) {
+                    matchPrice = false;
+                }
+                if (endTotalPrice != null && totalPrice.compareTo(endTotalPrice) > 0) {
+                    matchPrice = false;
+                }
+                if (matchPrice) {
+                    matchesAnyCondition = true;
+                }
             }
 
-            // --- Có điều kiện nào khác không ---
-            boolean hasOtherConditions = (employeeId != null && !employeeId.isEmpty()) ||
-                    (customerId != null && !customerId.isEmpty()) ||
-                    (discountCode != null && !discountCode.isEmpty()) ||
-                    startTotalPrice != null ||
-                    endTotalPrice != null;
+            // Nếu không nhập gì cả, thì mặc định là "thỏa"
+            boolean hasAnyCondition =
+                    (employeeId != null && !employeeId.isEmpty()) ||
+                            (customerId != null && !customerId.isEmpty()) ||
+                            (discountCode != null && !discountCode.isEmpty()) ||
+                            (startTotalPrice != null) || (endTotalPrice != null);
 
-            boolean matchesOther = !hasOtherConditions || (matchEmployee || matchCustomer || matchDiscount || matchPrice);
-
-            // --- Nếu thỏa điều kiện ngày và ít nhất 1 điều kiện còn lại ---
-            if (matchesDate && matchesOther) {
+            if (!hasAnyCondition || matchesAnyCondition) {
                 filteredList.add(new InvoiceDTO(invoice));
             }
         }
 
         return filteredList;
     }
+
+
 
     public ArrayList<InvoiceDTO> filterInvoicesByDiscountCode(String discountCode) {
         ArrayList<InvoiceDTO> result = new ArrayList<>();
