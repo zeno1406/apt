@@ -101,6 +101,7 @@ public class SellingProductController {
     private DiscountDTO selectedDiscount = null;
     private BigDecimal discountPrice = BigDecimal.ZERO;
     private BigDecimal totalPriceInvoice = BigDecimal.ZERO;
+    private BigDecimal totalPriceInvoiceForDiscount = BigDecimal.ZERO;
     private String discountPercent = "";
 
     @FXML
@@ -406,6 +407,7 @@ public class SellingProductController {
         discountPercent = "";
         discountPrice = BigDecimal.ZERO;
         totalPriceInvoice = BigDecimal.ZERO;
+        totalPriceInvoiceForDiscount = BigDecimal.ZERO;
         loadCaculatedTotalImportPrice();
         makeEditable(btnSubmitInvoice);
         makeEditable(btnGetCusInfo);
@@ -489,7 +491,7 @@ public class SellingProductController {
             selectedDiscount = new DiscountDTO(modalController.getSelectedDiscount());
             txtCodeDiscount.setText(String.valueOf(selectedDiscount.getCode()));
             this.discountPrice = modalController.getPrice().subtract(modalController.getDiscountPrice());
-            this.totalPriceInvoice = modalController.getTotalPriceInvoice();
+            this.totalPriceInvoiceForDiscount = modalController.getTotalPriceInvoice();
             this.discountPercent = ValidationUtils.getInstance().formatCurrency(modalController.getDiscountPercent()) + "%";
             lbDiscountPrice.setText(ValidationUtils.getInstance().formatCurrency(discountPrice) + " Đ");
             loadCaculatedTotalImportPrice();
@@ -593,11 +595,13 @@ public class SellingProductController {
         }
 
         // Kiem tra lai tranh truong hop ap dung giam dung moc thanh cong nhung sau do xao bot khien gia k con du ap dung
-        if (selectedDiscount != null && (totalInvoicePrice.compareTo(this.totalPriceInvoice) < 0)) {
-            NotificationUtils.showErrorAlert("Giá trị đơn hàng của bàn không còn đủ để áp dụng khuyến mãi này.", "Thông báo");
+        if (selectedDiscount != null && (totalInvoicePrice.compareTo(this.totalPriceInvoiceForDiscount) < 0)) {
+            NotificationUtils.showErrorAlert("Giá trị đơn hàng của bạn không còn đủ để áp dụng khuyến mãi này.", "Thông báo");
             selectedDiscount = null;
             txtCodeDiscount.setText("");
             discountPrice = BigDecimal.ZERO;
+            totalPriceInvoiceForDiscount= BigDecimal.ZERO;
+            discountPercent = "";
             loadCaculatedTotalImportPrice();
             return;
         }
