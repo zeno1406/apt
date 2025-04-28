@@ -1,0 +1,416 @@
+.search {
+}
+
+.main-content {
+    -fx-pref-width: 900px;
+    -fx-pref-height: 650px;
+    -fx-background-color: white;
+}
+
+.main-pane-container {
+    -fx-pref-width: 1100px;
+    -fx-pref-height: 800px;
+    -fx-background-color: white;
+
+}
+
+.ocean-color {
+    -fx-text-fill: #00b0d4;
+}
+
+.font-bold {
+    -fx-font-weight: bold;
+}
+
+.background-silver {
+    -fx-background-color: #fcfdfc;
+}
+
+.textfield {
+    -fx-background-color: linear-gradient(to bottom, #efefef, #eeeeee);
+    -fx-border-color: none;
+    -fx-font-family: "Arial";
+    -fx-font-size:14px;
+}
+
+.white-bg {
+    -fx-background-color: #fff;
+    -fx-background-radius:8px;
+}
+
+.shadow {
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.5), 6, 0, 0, 0);
+}
+
+.action-btn {
+    -fx-background-color: linear-gradient(to bottom, #006A71, #9ACBD0);
+    -fx-font-family: "Arial";
+    -fx-font-size:16px;
+    -fx-cursor: hand;
+    -fx-text-fill: #bceff5;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+}
+
+.action-btn:hover {
+    -fx-background-color: linear-gradient(to bottom, #1F7D84, #3AE2F4);
+    -fx-text-fill: #fff;
+}
+
+.action-icon {
+    -fx-fill: #bceff5;
+    -fx-transition: fill 0.3s ease-in-out;
+}
+
+.action-btn:hover .action-icon {
+    -fx-fill: #fff;
+}
+
+.table-view {
+    -fx-background-color: rgba(255, 255, 255, 0.1);
+    -fx-border-color: #fff;
+    -fx-border-width: 2px;
+}
+
+.table-view .table-column {
+    -fx-alignment: CENTER;
+    -fx-padding: 5px;
+}
+
+/* Làm rõ đường viền giữa các cột */
+.table-view .table-cell {
+    -fx-border-color: #ddd;
+    -fx-border-width: 0 1px 0 0;
+    -fx-padding: 5px;
+}
+
+.table-view .column-header {
+    -fx-background-color: linear-gradient(to bottom, #1F7D84, #3AE2F4);
+    -fx-pref-height: 35px;
+    -fx-border-color: #ffffff;
+    -fx-border-width: 0 1px 2px 0;
+}
+
+.table-view .column-header .label {
+    -fx-font-family: "Arial";
+    -fx-font-size: 13px;
+    -fx-text-fill: #fff;
+    -fx-font-weight: bold;
+}
+
+.table-view .table-row-cell {
+    -fx-font-size: 16px;
+}
+
+/* Khi một dòng được chọn */
+.table-view .table-row-cell:selected {
+    -fx-background-color: #279FA5;
+    -fx-text-fill: white;
+
+}
+
+/* Khi hover vào một dòng */
+.table-view .table-row-cell:hover {
+    -fx-background-color: #3AE2F4; /* Màu khi di chuột */
+    -fx-text-fill: white; /* Màu chữ */
+    -fx-cursor: hand;
+}
+
+/* Khi dòng có focus (có thể chỉnh nếu cần) */
+.table-view .table-row-cell:focused {
+    -fx-background-color: #279FA5;
+    -fx-text-fill: white;
+}
+
+.combo-box {
+    -fx-border-color: #58c9c9;
+    -fx-font-family: "Arial";
+    -fx-font-size:14px;
+    -fx-cursor: hand;
+}
+
+.combo-box .list-view {
+    -fx-background-color: white; /* Màu nền */
+    -fx-border-color: #58c9c9;  /* Viền */
+
+}
+
+.combo-box .list-cell:hover {
+    -fx-background-color: #58c9c9; /* Màu nền khi hover */
+    -fx-text-fill: white; /* Màu chữ khi hover */
+}
+
+.combo-box .list-view .list-cell:selected {
+    -fx-background-color: #279FA5; /* Màu nền khi lựa chọn */
+    -fx-text-fill: white; /* Màu chữ khi lựa chọn */
+}
+
+.combo-box .arrow-button {
+    -fx-background-color: linear-gradient(to bottom, #1F7D84, #3AE2F4);
+}
+.combo-box .arrow-button:hover {
+    -fx-background-color: #3a9d9d;
+}
+
+.combo-box .arrow {
+    -fx-background-color: white;
+}
+
+.combo-box .combo-box-base {
+    -fx-background-color: white;
+    -fx-border-color: #58c9c9;
+    -fx-text-fill: black;
+}
+
+.check-box {
+    -fx-font-family: "Arial";
+    -fx-font-size:14px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-text-fill: #1f7d84;
+}
+
+.check-box .box {
+   -fx-background-color: #ffffff; /* Màu nền cho ô checkbox */
+   -fx-border-color: #1f7d84; /* Màu viền */
+   -fx-border-width: 1px; /* Độ dày viền */
+   -fx-border-radius: 6px;
+   -fx-font-size:12px;
+}
+
+.check-box:selected .box {
+    -fx-background-color: #eeeeee;
+    -fx-background-radius: 6px;
+}
+
+.check-box:selected .box .mark {
+    -fx-background-color: #3AE2F4; /* Màu của dấu tích */
+}
+
+
+.check-box-m {
+    -fx-font-family: "Arial";
+    -fx-font-size:14px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-text-fill: black;
+}
+
+.check-box-m .box {
+   -fx-background-color: #ffffff; /* Màu nền cho ô checkbox */
+   -fx-border-color: #1f7d84; /* Màu viền */
+   -fx-border-width: 1px; /* Độ dày viền */
+   -fx-border-radius: 6px;
+   -fx-font-size:12px;
+}
+
+.check-box-m:selected .box {
+    -fx-background-color: #eeeeee;
+    -fx-background-radius: 6px;
+}
+
+.check-box-m:selected .box .mark {
+    -fx-background-color: #3AE2F4; /* Màu của dấu tích */
+}
+
+
+.check-box-s {
+    -fx-font-family: "Arial";
+    -fx-font-size:16px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-text-fill: #1f7d84;
+}
+
+.check-box-s .box {
+    -fx-background-color: #ffffff; /* Màu nền cho ô checkbox */
+    -fx-border-color: #1f7d84; /* Màu viền */
+    -fx-border-width: 1px; /* Độ dày viền */
+    -fx-border-radius: 6px;
+    -fx-font-size:14px;
+}
+
+.check-box-s:selected .box {
+    -fx-background-color: #eeeeee;
+    -fx-background-radius: 6px;
+}
+
+.check-box-s:selected .box .mark {
+    -fx-background-color: #3AE2F4; /* Màu của dấu tích */
+}
+
+/* Định dạng cho DatePicker */
+.date-picker {
+    -fx-font-size: 12px; /* Kích thước phông chữ */
+    -fx-border-color: #58c9c9;
+}
+
+.date-picker .arrow-button {
+    -fx-background-color: linear-gradient(to bottom, #1F7D84, #3AE2F4);
+    -fx-cursor: hand;
+}
+
+.date-picker .arrow {
+    -fx-background-color: white;
+}
+
+.date-picker .arrow-button:hover {
+        -fx-cursor: hand;
+}
+
+/* Định dạng cho popup calendar */
+.date-picker .popup-content {
+}
+
+/* Định dạng cho ngày hiện tại */
+.date-picker .day-cell {
+-fx-cursor: hand;
+}
+
+/* Định dạng cho ngày được chọn */
+.date-picker .day-cell:selected {
+}
+
+/* Định dạng cho ngày hiện tại */
+.date-picker .day-cell {
+}
+
+/* Định dạng cho ngày không khả dụng */
+.date-picker .day-cell:disabled {
+}
+
+.spinner {
+    -fx-font-family: "Arial";
+    -fx-font-size: 14px;
+    -fx-background-color: linear-gradient(to bottom, #efefef, #eeeeee);
+    -fx-border-color: none;
+}
+
+.spinner .arrow-button {
+    -fx-background-color: linear-gradient(to bottom, #1F7D84, #3AE2F4);
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-pref-width: 30px;
+    -fx-pref-height: 30px;
+}
+
+/* Tùy chỉnh khi di chuột lên nút */
+.spinner .arrow-button:hover {
+    -fx-background-color: linear-gradient(to bottom, #1F7D84, #3AE2F4);
+}
+
+/* Tùy chỉnh khi nút bị nhấn */
+.spinner .arrow-button:pressed {
+    -fx-background-color: linear-gradient(to bottom, #3AE2F4, #1F7D84);
+}
+
+.textfield-1 {
+    -fx-background-color: linear-gradient(to bottom, #efefef, #eeeeee);
+    -fx-border-color: none;
+    -fx-font-family: "Arial";
+    -fx-font-size:16px;
+}
+
+.textarea-1 {
+    -fx-background-color: linear-gradient(to bottom, #efefef, #eeeeee);
+    -fx-border-color: none;
+    -fx-font-family: "Arial";
+    -fx-font-size: 16px;
+}
+
+.pExitBtnContainer,
+.btnExitForm {
+    -fx-pref-width: 60px;
+    -fx-pref-height: 42px;
+    -fx-background-color: transparent;
+    -fx-font: 16px System;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+}
+
+.pBtnSubmitDetailEdit,
+.btnSubmitDetailEdit {
+    -fx-pref-width: 90px;
+    -fx-pref-height: 42px;
+    -fx-background-color: transparent;
+    -fx-font: 16px System;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+}
+
+.acContainerRoot,
+.vbContainerRoot {
+    -fx-pref-width: 1100px;
+    -fx-pref-height: 700px;
+    -fx-background-color: white;
+}
+
+.pContainerHeader {
+    -fx-background-color: #d8dee9;
+    -fx-pref-height: 42px;
+}
+
+.hbMainContentContainer {
+    -fx-pref-width: inherit;
+    -fx-pref-height: 642px;
+}
+
+.tbvDetailProduct,
+.pShowDetailProductContainer {
+    -fx-background-color: #c0d9ee;
+    -fx-pref-height: 292px;
+
+}
+
+.tbvDetailImportProduct .cell {
+    -fx-text-fill: black;
+}
+
+.tbvDetailImportProduct .column-header {
+    -fx-background-color: #0077cc;
+    -fx-text-fill: white;
+}
+
+.btnFunctionForm {
+    -fx-padding: 8px;
+    -fx-background-color: #0b304d;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 6px;
+    -fx-cursor: hand;
+    -fx-pref-width: 80px;
+    -fx-alignment: center;
+}
+
+.btnFunctionForm:hover {
+    -fx-background-color: #b1b9cc;
+}
+
+.action-btn-sub {
+    -fx-background-color: #efefef;
+    -fx-font-family: "Arial";
+    -fx-font-size:12px;
+    -fx-cursor: hand;
+    -fx-text-fill: #bceff5;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+    -fx-border-color: #1F7D84;
+}
+
+.action-btn-sub:hover {
+    -fx-background-color: linear-gradient(to bottom, #1F7D84, #3AE2F4);
+    -fx-text-fill: #fff;
+}
+
+.action-icon-sub {
+    -fx-transition: fill 0.3s ease-in-out;
+}
+
+.action-btn-sub:hover .action-icon-sub {
+    -fx-fill: white;
+}
+
+.child-container-root {
+    -fx-pref-width: 500px;
+    -fx-pref-height: 700px;
+}

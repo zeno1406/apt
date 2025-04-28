@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="250.0" prefWidth="700.0" styleClass="white-bg" stylesheets="@../css/base.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.DiscountAdvanceSearchModalController">
+    <children>
+        <BorderPane prefHeight="425.0" prefWidth="600.0" style="-fx-border-color: #30bac4; -fx-border-width: 2px;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <top>
+                <AnchorPane prefHeight="60.0" prefWidth="550.0" BorderPane.alignment="CENTER">
+                    <children>
+                        <Label fx:id="modalName" alignment="CENTER" layoutX="247.0" layoutY="18.0" prefHeight="23.0" prefWidth="202.0" text="Tìm kiếm nâng cao" textFill="#30bac4">
+                            <font>
+                                <Font name="Arial Bold" size="20.0" />
+                            </font>
+                        </Label>
+                    </children>
+                </AnchorPane>
+            </top>
+            <center>
+                <AnchorPane prefHeight="362.0" prefWidth="589.0" BorderPane.alignment="CENTER">
+                    <children>
+                        <VBox prefHeight="201.0" prefWidth="696.0" stylesheets="@../css/base.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                            <children>
+                                <HBox>
+                                    <children>
+                                        <HBox alignment="CENTER" prefHeight="61.0" prefWidth="350.0" spacing="10.0">
+                                            <children>
+                                                <Label prefHeight="22.0" prefWidth="150.0" text="Tên khuyến mãi" textFill="#30bac4">
+                                                    <font>
+                                                        <Font name="Arial Bold" size="18.0" />
+                                                    </font>
+                                                </Label>
+                                                <Label text=":" textFill="#30bac4">
+                                                    <font>
+                                                        <Font size="20.0" />
+                                                    </font>
+                                                </Label>
+                                                <TextField fx:id="txtDiscountName" maxHeight="31.2" minHeight="31.2" prefHeight="31.2" prefWidth="140.0" promptText="Tên khuyến mãi" styleClass="textfield-1">
+                                                    <font>
+                                                        <Font size="16.0" />
+                                                    </font>
+                                                </TextField>
+                                            </children>
+                                        </HBox>
+                                        <HBox alignment="CENTER" prefHeight="61.0" prefWidth="350.0" spacing="10.0">
+                                            <children>
+                                                <Label prefHeight="22.0" prefWidth="150.0" text="Kiểu khuyến mãi" textFill="#30bac4">
+                                                    <font>
+                                                        <Font name="Arial Bold" size="18.0" />
+                                                    </font>
+                                                </Label>
+                                                <Label text=":" textFill="#30bac4">
+                                                    <font>
+                                                        <Font size="20.0" />
+                                                    </font>
+                                                </Label>
+                                                <ComboBox fx:id="cbTypeDiscount" prefHeight="31.2" prefWidth="140.0" />
+                                            </children>
+                                        </HBox>
+                                    </children>
+                                </HBox>
+                                <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="10.0" spacing="10.0">
+                                    <children>
+                                        <Label prefHeight="22.0" prefWidth="150.0" text="Thời gian" textFill="#30bac4">
+                                            <font>
+                                                <Font name="Arial Bold" size="18.0" />
+                                            </font>
+                                        </Label>
+                                        <Label text=":" textFill="#30bac4">
+                                            <font>
+                                                <Font size="20.0" />
+                                            </font>
+                                        </Label>
+                                        <HBox alignment="CENTER" prefHeight="62.0" prefWidth="250.0">
+                                            <children>
+                                                <DatePicker fx:id="dpStartDate" prefHeight="31.2" prefWidth="140.0" styleClass="date-picker" />
+                                                <Label alignment="CENTER" contentDisplay="TOP" text="-" textFill="#30bac4">
+                                                    <font>
+                                                        <Font size="40.0" />
+                                                    </font>
+                                                </Label>
+                                                <DatePicker fx:id="dpEndDate" layoutX="13.0" layoutY="28.0" prefHeight="31.0" prefWidth="140.0" styleClass="date-picker" />
+                                            </children>
+                                        </HBox>
+                                    </children>
+                                    <VBox.margin>
+                                        <Insets left="15.0" />
+                                    </VBox.margin>
+                                </HBox>
+                            </children>
+                        </VBox>
+                    </children>
+                </AnchorPane>
+            </center>
+            <bottom>
+                <AnchorPane prefHeight="60.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+                    <children>
+                        <HBox alignment="CENTER" layoutX="80.0" prefHeight="60.0" prefWidth="286.0" spacing="60.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="80.0" AnchorPane.rightAnchor="80.80000000000001" AnchorPane.topAnchor="0.0">
+                            <children>
+                                <Button fx:id="closeBtn" mnemonicParsing="false" prefHeight="26.0" prefWidth="140.0" styleClass="action-btn" stylesheets="@../css/base.css" text="Thoát" />
+                                <Button fx:id="saveBtn" mnemonicParsing="false" prefHeight="26.0" prefWidth="140.0" styleClass="action-btn" stylesheets="@../css/base.css" text="Lưu" />
+                            </children>
+                        </HBox>
+                    </children>
+                </AnchorPane>
+            </bottom>
+        </BorderPane>
+    </children>
+</AnchorPane>

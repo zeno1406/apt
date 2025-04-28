@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="main_form" prefHeight="300.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.LoginController">
+   <children>
+      <AnchorPane prefHeight="350.0" prefWidth="300.0" styleClass="left-form" stylesheets="@../css/login.css" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <ImageView fitHeight="251.0" fitWidth="300.0" pickOnBounds="true">
+               <image>
+                  <Image url="@../images/icon/stotelogo.png" />
+               </image>
+            </ImageView>
+            <Label layoutX="42.0" layoutY="150.0" prefHeight="53.0" prefWidth="220.0" text="Lego Store Application" textFill="WHITE" AnchorPane.bottomAnchor="96.4" AnchorPane.leftAnchor="42.0" AnchorPane.rightAnchor="43.599999999999966">
+               <font>
+                  <Font name="System Bold Italic" size="20.0" />
+               </font>
+            </Label>
+         </children>
+      </AnchorPane>
+      <AnchorPane layoutX="301.0" layoutY="1.0" prefHeight="350.0" prefWidth="300.0" styleClass="right-form" stylesheets="@../css/login.css" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <Label alignment="CENTER" layoutX="107.0" layoutY="39.0" prefHeight="54.0" prefWidth="85.0" text="LOGIN">
+               <font>
+                  <Font name="System Bold" size="20.0" />
+               </font>
+            </Label>
+            <TextField fx:id="txtUsername" layoutX="47.0" layoutY="94.0" prefHeight="30.0" prefWidth="220.0" promptText="Username" styleClass="textfield" stylesheets="@../css/login.css" />
+            <PasswordField fx:id="txtPassword" layoutX="47.0" layoutY="144.0" prefHeight="30.0" prefWidth="220.0" promptText="Password" styleClass="textfield" stylesheets="@../css/login.css" />
+            <Button fx:id="loginBtn" layoutX="47.0" layoutY="221.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="220.0" styleClass="login-btn" stylesheets="@../css/login.css" text="LOGIN" />
+            <Button fx:id="closeBtn" layoutX="248.0" layoutY="4.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="40.0" styleClass="close" stylesheets="@../css/login.css" AnchorPane.rightAnchor="2.0">
+               <graphic>
+                  <FontAwesomeIcon glyphName="CLOSE" size="1.4em" styleClass="close-icon" text="" />
+               </graphic>
+            </Button>
+            <FontAwesomeIcon glyphName="USER" layoutX="14.0" layoutY="118.0" size="2em" />
+            <FontAwesomeIcon glyphName="LOCK" layoutX="15.0" layoutY="167.0" size="2em" />
+            <CheckBox fx:id="ckbRememberMe" layoutX="15.0" layoutY="188.0" mnemonicParsing="false" opacity="0.8" stylesheets="@../css/login.css" text="Nhớ tài khoản">
+               <font>
+                  <Font name="System Bold Italic" size="14.0" />
+               </font>
+            </CheckBox>
+         </children>
+         <padding>
+            <Insets top="10.0" />
+         </padding>
+      </AnchorPane>
+   </children>
+</AnchorPane>

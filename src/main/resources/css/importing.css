@@ -1,0 +1,55 @@
+.pShowOtherImportProduct {
+    -fx-pref-height: 182px;
+}
+
+.pShowDetailImportProductContainer {
+    -fx-background-color: #e5e9f0;
+}
+
+.pShowImportTotalPrice {
+    -fx-pref-height: 70px;
+}
+.pSubmitImportBtnContainer {
+    -fx-pref-height: 45px;
+}
+
+.lbTotalImportInvoice,
+.lbTotalImportPrice {
+    -fx-font: 20px System;
+    -fx-font-weight: bold;
+    -fx-pref-width: 90px;
+}
+
+.hbMoreEditImportProduct {
+    -fx-background-color: white;
+    -fx-border-color: black;
+    -fx-pref-width: 620px;
+    -fx-pref-height: 300px;
+    /*visibility: hidden;*/
+}
+
+.gpDetailEditProduct {
+    -fx-pref-width: 620px;
+    -fx-pref-height: 194px;
+}
+
+.pMoreEditProductWrapper {
+    -fx-background-color: snow;
+}
+
+.gpDetailEditProduct Pane {
+    -fx-border-style: solid;
+}
+
+.showProductPane {
+    -fx-pref-width: 100px;
+}
+
+.btnGetCusInfo, .btnAddSupplier {
+    -fx-background-color: white;
+    -fx-border-color: #8fb6de;
+    -fx-background-radius:4px;
+    -fx-border-radius: 4px;
+    -fx-pref-width: 25px;
+    -fx-pref-height: 25px;
+}
