@@ -196,6 +196,12 @@ public class CategoryController implements IController {
             return;
         }
 
+        if(selectedCategory.getId() == 1)
+        {
+            NotificationUtils.showErrorAlert("Không thể sửa thể loại gốc!", "Thông báo");
+            return;
+        }
+
         CategoryModalController modalController = UiUtils.gI().openStageWithController(
                 "/GUI/CategoryModal.fxml",
                 controller -> {

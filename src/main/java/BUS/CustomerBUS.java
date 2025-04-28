@@ -39,14 +39,14 @@ public class CustomerBUS extends BaseBUS <CustomerDTO, Integer> {
     public int delete(Integer id, int employee_roleId, int employeeLoginId) {
         // Kiểm tra ID hợp lệ
         if (id == null || id <= 0) return 2; // Khách hàng không tồn tại
-    
+
         // Kiểm tra quyền xóa khách hàng (permission ID = 5)
         if (employee_roleId <= 0 || !AuthorizationService.getInstance().hasPermission(employeeLoginId, employee_roleId, 5)) {
             return 4; // Không có quyền xóa
         }
 
         // Kiểm tra ID khách hàng vãng lai(gốc)
-        if (id == 1) return 7;
+        if (id == 1) return 3;
 
         //Khach hang da bi xoa hoac khong ton tai
         CustomerDTO targetCustomer = getByIdLocal(id);
