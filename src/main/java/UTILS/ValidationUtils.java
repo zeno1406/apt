@@ -61,6 +61,10 @@ public class ValidationUtils {
     public boolean validateVietnameseText255(String value) {
         return validateVietnameseText(value, 255);
     }
+
+    public boolean validateVietnameseText248(String value) {
+        return validateVietnameseText(value, 248);
+    }
     public boolean validateVietnameseText65k4(String value) {
         return validateVietnameseText(value, 65400);
     }
