@@ -193,105 +193,94 @@ public class ExcelService {
     }
 
 //    VALIDATE ON PRODUCT BUS
-    private ArrayList<ProductDTO> returnListProduct(Sheet sheet, ArrayList<ProductDTO> list) {
-        if (list == null) return new ArrayList<>();
-        if (!list.isEmpty()) list.clear();
+private ArrayList<ProductDTO> returnListProduct(Sheet sheet, ArrayList<ProductDTO> list) {
+    if (list == null) return new ArrayList<>();
+    list.clear(); // Clear luôn nếu không null
 
-        ArrayList<ProductDTO> tempList = new ArrayList<>();
-        StringBuilder errorMessages = new StringBuilder();
-        int errorCount = 0; // Đếm số lỗi
+    ArrayList<ProductDTO> tempList = new ArrayList<>();
+    StringBuilder errorMessages = new StringBuilder();
+    int errorCount = 0;
 
-            for (Row row : sheet) {
-                if (row.getRowNum() == 0) continue; // Bỏ qua dòng tiêu đề
-                boolean isEmpty = true;
-                for (Cell cell : row) {
-                    if (cell != null && cell.getCellType() != CellType.BLANK && !cell.toString().trim().isEmpty()) {
-                        isEmpty = false;
-                        break;
-                    }
-                }
-                if (isEmpty) continue;
-                try {
-                    String name = row.getCell(1).getStringCellValue().trim();
-                    String description = row.getCell(2) != null ? row.getCell(2).getStringCellValue().trim() : null;
+    for (Row row : sheet) {
+        if (row.getRowNum() == 0) continue; // Bỏ qua tiêu đề
+        if (isRowEmpty(row)) continue; // Bỏ qua dòng trống
 
-                    Cell categoryCell = row.getCell(3);
-                    Cell statusCell = row.getCell(4);
+        try {
+            Cell nameCell = row.getCell(1);
+            Cell descCell = row.getCell(2);
+            Cell categoryCell = row.getCell(3);
+            Cell statusCell = row.getCell(4);
 
-                    // Kiểm tra và chuyển đổi categoryId
-                    int categoryId;
-                    try {
-                        categoryId = (int) categoryCell.getNumericCellValue();
-                    } catch (Exception e) {
-                        errorMessages.append("Dòng ").append(row.getRowNum() + 1)
-                            .append(": Thể loại không hợp lệ (phải là số).\n");
-                    errorCount++;
-                    if (errorCount >= 20) break; // Dừng lại khi đã đủ 20 lỗi
-                    continue;
-                }
+            String name = (nameCell != null) ? nameCell.getStringCellValue().trim() : "";
+            String description = (descCell != null) ? descCell.getStringCellValue().trim() : "";
 
-                // Kiểm tra và chuyển đổi status
-                int statusInt;
-                try {
-                    statusInt = (int) statusCell.getNumericCellValue();
-                } catch (Exception e) {
-                    errorMessages.append("Dòng ").append(row.getRowNum() + 1)
-                            .append(": Trạng thái không hợp lệ (phải là 0 hoặc 1).\n");
-                    errorCount++;
-                    if (errorCount >= 20) break; // Dừng lại khi đã đủ 20 lỗi
-                    continue;
-                }
+            if (name.isEmpty()) {
+                if (handleError(errorMessages, row.getRowNum(), "Tên sản phẩm không được để trống.", ++errorCount)) break;
+                continue;
+            }
+            if (name.length() > 148) {
+                if (handleError(errorMessages, row.getRowNum(), "Tên sản phẩm không được quá 148 ký tự.", ++errorCount)) break;
+                continue;
+            }
+            if (description.length() > 65400) {
+                if (handleError(errorMessages, row.getRowNum(), "Mô tả không được quá 65k4 ký tự.", ++errorCount)) break;
+                continue;
+            }
 
-                if (name.isEmpty()) {
-                    errorMessages.append("Dòng ").append(row.getRowNum() + 1)
-                            .append(": Tên sản phẩm không được để trống.\n");
-                    errorCount++;
-                    if (errorCount >= 20) break; // Dừng lại khi đã đủ 20 lỗi
-                    continue;
-                }
-
-                if (categoryId < 0 || !AvailableUtils.getInstance().isValidCategory(categoryId)) {
-                    errorMessages.append("Dòng ").append(row.getRowNum() + 1)
-                            .append(": Thể loại không hợp lệ hoặc đã bị xóa.\n");
-                    errorCount++;
-                    if (errorCount >= 20) break; // Dừng lại khi đã đủ 20 lỗi
-                    continue;
-                }
-
-                if (statusInt != 0 && statusInt != 1) {
-                    errorMessages.append("Dòng ").append(row.getRowNum() + 1)
-                            .append(": Trạng thái chỉ được là 0 hoặc 1.\n");
-                    errorCount++;
-                    if (errorCount >= 20) break; // Dừng lại khi đã đủ 20 lỗi
-                    continue;
-                }
-
-                ProductDTO product = new ProductDTO(
-                        null, name, 0, null, statusInt == 1, description, null, categoryId
-                );
-                tempList.add(product);
-
+            int categoryId;
+            try {
+                categoryId = (int) categoryCell.getNumericCellValue();
             } catch (Exception e) {
-                errorMessages.append("Dòng ").append(row.getRowNum() + 1)
-                        .append(": Lỗi không xác định: ").append(e.getMessage()).append("\n");
-                errorCount++;
-                if (errorCount >= 20) break; // Dừng lại khi đã đủ 20 lỗi
+                if (handleError(errorMessages, row.getRowNum(), "Thể loại không hợp lệ (phải là số).", ++errorCount)) break;
+                continue;
             }
-        }
-
-        if (errorMessages.length() > 0) {
-            // Nếu có hơn 20 lỗi, chỉ hiển thị 20 dòng đầu tiên
-            if (errorCount > 20) {
-                errorMessages.append("Và " + (errorCount - 20) + " lỗi khác không thể hiển thị.\n");
+            if (categoryId < 0 || !AvailableUtils.getInstance().isValidCategory(categoryId)) {
+                if (handleError(errorMessages, row.getRowNum(), "Thể loại không hợp lệ hoặc đã bị xóa.", ++errorCount)) break;
+                continue;
             }
-            NotificationUtils.showErrorAlert(errorMessages.toString(), "Thông báo");
-            return new ArrayList<>(); // Trả về rỗng nếu có lỗi
-        }
 
-        list.addAll(tempList);
-        return list;
+            int statusInt;
+            try {
+                statusInt = (int) statusCell.getNumericCellValue();
+            } catch (Exception e) {
+                if (handleError(errorMessages, row.getRowNum(), "Trạng thái không hợp lệ (phải là 0 hoặc 1).", ++errorCount)) break;
+                continue;
+            }
+            if (statusInt != 0 && statusInt != 1) {
+                if (handleError(errorMessages, row.getRowNum(), "Trạng thái chỉ được là 0 hoặc 1.", ++errorCount)) break;
+                continue;
+            }
+
+            tempList.add(new ProductDTO(null, name, 0, null, statusInt == 1, description, null, categoryId));
+
+        } catch (Exception e) {
+            if (handleError(errorMessages, row.getRowNum(), "Lỗi không xác định: " + e.getMessage(), ++errorCount)) break;
+        }
     }
 
+    if (errorMessages.length() > 0) {
+        if (errorCount > 20) {
+            errorMessages.append("Và một số lỗi khác không thể hiển thị.\n");
+        }
+        NotificationUtils.showErrorAlert(errorMessages.toString(), "Thông báo");
+        return new ArrayList<>();
+    }
 
+    list.addAll(tempList);
+    return list;
+}
 
+    private boolean isRowEmpty(Row row) {
+        for (Cell cell : row) {
+            if (cell != null && cell.getCellType() != CellType.BLANK && !cell.toString().trim().isEmpty()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean handleError(StringBuilder errorMessages, int rowNum, String message, int errorCount) {
+        errorMessages.append("Dòng ").append(rowNum + 1).append(": ").append(message).append("\n");
+        return errorCount >= 20;
+    }
 }

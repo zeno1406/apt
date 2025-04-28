@@ -118,7 +118,7 @@ public class ProductBUS  extends BaseBUS <ProductDTO, String>{
 
         // Duyệt qua từng sản phẩm trong danh sách
         for (ProductDTO p : listProducts) {
-            if (!isValidProductInput(p)) return 3; // Kiểm tra tính hợp lệ của sản phẩm
+            if (!isValidProductInputForExcel(p)) return 3; // Kiểm tra tính hợp lệ của sản phẩm
 
             // Kiểm tra tên trùng trong danh sách Excel
             String normalizedName = validate.normalizeWhiteSpace(p.getName());
@@ -167,6 +167,7 @@ public class ProductBUS  extends BaseBUS <ProductDTO, String>{
         }
 
         if (isDuplicateProduct(obj)) return 1;
+        if (isDuplicateImageUrl(obj)) return 1;
         ValidationUtils validate = ValidationUtils.getInstance();
         obj.setName(validate.normalizeWhiteSpace(obj.getName()));
         obj.setDescription(validate.normalizeWhiteSpace(obj.getDescription()));
@@ -269,6 +270,23 @@ public class ProductBUS  extends BaseBUS <ProductDTO, String>{
         return validator.validateVietnameseText255(obj.getName());
     }
 
+    public boolean isValidProductInputForExcel(ProductDTO obj) {
+        if (obj.getName() == null) return false;
+
+        obj.setDescription(obj.getDescription() != null && obj.getDescription().trim().isEmpty() ? null : obj.getDescription());
+        obj.setImageUrl(obj.getImageUrl() != null && obj.getImageUrl().trim().isEmpty() ? null : obj.getImageUrl());
+        ValidationUtils validator = ValidationUtils.getInstance();
+        // Kiểm tra mô tả nếu có
+        if (obj.getDescription() != null && !validator.validateVietnameseText65k4(obj.getDescription())) {
+            return true;
+        }
+        if (obj.getImageUrl() != null && !validator.validateVietnameseText255(obj.getImageUrl())) {
+            return true;
+        }
+
+        return validator.validateVietnameseText248(obj.getName());
+    }
+
     private boolean isValidProductUpdate(ProductDTO obj) {
         if (obj == null || obj.getName() == null || obj.getSellingPrice() == null) {
 //            System.out.println("1");
@@ -283,13 +301,11 @@ public class ProductBUS  extends BaseBUS <ProductDTO, String>{
 
         // Kiểm tra mô tả nếu có
         if (obj.getDescription() != null && !validator.validateVietnameseText65k4(obj.getDescription())) {
-            System.out.println("2");
             return false;  // Nếu mô tả không hợp lệ, trả về false
         }
 
         // Kiểm tra ảnh URL nếu có
         if (obj.getImageUrl() != null && !validator.validateVietnameseText255(obj.getImageUrl())) {
-            System.out.println("3");
             return false;  // Nếu ảnh không hợp lệ, trả về false
         }
 
@@ -311,6 +327,12 @@ public class ProductBUS  extends BaseBUS <ProductDTO, String>{
                 Objects.equals(existingPro.getSellingPrice(), obj.getSellingPrice()) &&
                 Objects.equals(existingPro.isStatus(), obj.isStatus()) &&
                 Objects.equals(existingPro.getDescription(), validate.normalizeWhiteSpace(obj.getDescription())) &&
+                Objects.equals(existingPro.getImageUrl(), obj.getImageUrl());
+    }
+
+    public boolean isDuplicateImageUrl(ProductDTO obj) {
+        ProductDTO existingPro = getByIdLocal(obj.getId());
+        return existingPro != null &&
                 Objects.equals(existingPro.getImageUrl(), obj.getImageUrl());
     }
 
