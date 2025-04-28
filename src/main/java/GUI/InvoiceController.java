@@ -214,7 +214,7 @@ public class InvoiceController implements IController  {
         InvoiceAdvanceSearchModalController modalController = UiUtils.gI().openStageWithController(
                 "/GUI/InvoiceAdvanceSearchModal.fxml",
                 null,
-                "T+�m kiߦ+m n+�ng cao"
+                "Tìm kiếm nâng cao"
         );
         if (modalController != null && modalController.isSaved()) {
             tblInvoice.setItems(FXCollections.observableArrayList(modalController.getFilteredInvoices()));
@@ -225,7 +225,7 @@ public class InvoiceController implements IController  {
 
     private void handleExportPDF() {
         if (!isSelectedInvoice()) {
-            NotificationUtils.showErrorAlert("Vui l+�ng ch�+�n nh+�n vi+�n", "Th+�ng b+�o");
+            NotificationUtils.showErrorAlert("Vui lòng chọn hóa đơn.", "Thông báo");
             return;
         }
         PrintService.getInstance().printInvoiceForm(selectedInvoice.getId());
