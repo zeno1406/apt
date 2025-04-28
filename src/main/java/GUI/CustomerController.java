@@ -180,9 +180,13 @@ public class CustomerController implements IController {
     }
 
     private void handleDeleteBtn() {
-        System.out.println("Dang o handle delete");
         if (isNotSelectedCustomer()) {
             NotificationUtils.showErrorAlert("Vui lòng chọn khách hàng cần xóa", "Lỗi");
+            return;
+        }
+
+        if (selectedCustomer.getId() == 1) {
+            NotificationUtils.showErrorAlert("Bạn không thể xóa khách hàng vãng lai.", "Thông báo");
             return;
         }
 
@@ -198,7 +202,7 @@ public class CustomerController implements IController {
                 resetFilters();
             }
             case 2 -> NotificationUtils.showErrorAlert("Có lỗi khi xóa khách hàng. Vui lòng thử lại.", "Thông báo");
-            case 3 -> NotificationUtils.showErrorAlert("Khách hàng đang có đơn hàng không thể xóa", "Thông báo");
+            case 3 -> NotificationUtils.showErrorAlert("Bạn không thể xóa khách hàng vãng lai.", "Thông báo");
             case 4 -> NotificationUtils.showErrorAlert("Bạn không có quyền xóa khách hàng", "Thông báo");
             case 5 -> NotificationUtils.showErrorAlert("Khách hàng không tồn tại hoặc đã bị xóa", "Thông báo");
             case 6 -> NotificationUtils.showErrorAlert("Xoá khách hàng thất bại. Vui lòng thử lại.", "Thông báo");

@@ -66,6 +66,8 @@ public class CategoryBUS extends BaseBUS<CategoryDTO, Integer> {
 
         //2. Kiểm tra phân quyền
         if (!AuthorizationService.getInstance().hasPermission(employeeLoginId, employee_roleId, 19)) return 4;
+        // 3.Kiểm tra phần tử root
+        if (obj.getId() == 1) return 6;
 
         // 3. Kiểm tra đầu vào hợp lệ ở Modal Controller
         if (!isValidCategoryInput(obj)) return 2;

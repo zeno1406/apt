@@ -136,6 +136,7 @@ public class CategoryModalController {
                 case 3 -> NotificationUtils.showErrorAlert("Thể loại bị trùng lặp. Không thể cập nhật.", "Thông báo");
                 case 4 -> NotificationUtils.showErrorAlert("Không có quyền sửa thể loại.", "Thông báo");
                 case 5 -> NotificationUtils.showErrorAlert("Không thể cập nhật thể loại.", "Thông báo");
+                case 6 -> NotificationUtils.showErrorAlert("Không thể cập nhật thể loại gốc!", "Thông báo");
                 default -> NotificationUtils.showErrorAlert("Lỗi không xác định. Cập nhật thể loại thất bại.", "Thông báo");
             }
         }

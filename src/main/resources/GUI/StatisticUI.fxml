@@ -79,13 +79,13 @@
                                                 </Label>
                                                 <HBox alignment="CENTER" maxHeight="63.2" minHeight="46.0" prefHeight="46.0" prefWidth="290.0">
                                                    <children>
-                                                      <DatePicker fx:id="txtStartCreateDate" prefHeight="31.2" prefWidth="120.0" />
+                                                      <DatePicker fx:id="txtStartCreateDate" prefHeight="29.0" prefWidth="120.0" />
                                                       <Label alignment="CENTER" contentDisplay="TOP" text="-" textFill="#30bac4">
                                                          <font>
                                                             <Font size="40.0" />
                                                          </font>
                                                       </Label>
-                                                      <DatePicker fx:id="txtEndCreateDate" layoutX="13.0" layoutY="28.0" prefHeight="31.2" prefWidth="120.0" />
+                                                      <DatePicker fx:id="txtEndCreateDate" layoutX="13.0" layoutY="28.0" prefHeight="29.0" prefWidth="120.0" />
                                                    </children>
                                                 </HBox>
                                              </children>
