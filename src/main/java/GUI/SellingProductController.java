@@ -403,6 +403,8 @@ public class SellingProductController {
         lbDiscountPrice.setText("");
         txtCustomerId.setText("");
         txtCustomerName.setText("");
+        tbvDetailInvoiceProduct.setMouseTransparent(false);
+        tbvDetailInvoiceProduct.setFocusTraversable(true);
     }
 
     private HBox createInfoRow(Label label, Label value) {
