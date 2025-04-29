@@ -115,7 +115,7 @@ public class StatisticController implements IController {
         tbl_col_quy4.setCellValueFactory(cellData ->
                 formatCell(validationUtils.formatCurrency(cellData.getValue().getQuarter4())));
         tbl_col_total.setCellValueFactory(cellData ->
-                formatCell(validationUtils.formatCurrency(cellData.getValue().getTotalRevenue())));
+                formatCell(validationUtils.formatCurrency(cellData.getValue().getRevenue())));
     }
 
     private SimpleStringProperty formatCell(String value) {
@@ -170,7 +170,7 @@ public class StatisticController implements IController {
             tblEmployeeRevenue.setItems(employeeRevenueList);
             BigDecimal totalYearRevenue = BigDecimal.ZERO;
             for (QuarterlyEmployeeRevenue item : list) {
-                totalYearRevenue = totalYearRevenue.add(item.getTotalRevenue());
+                totalYearRevenue = totalYearRevenue.add(item.getRevenue());
             }
             txtTotalRevenue2.setText(ValidationUtils.getInstance().formatCurrency(totalYearRevenue));
         } catch (NumberFormatException e) {
@@ -216,7 +216,6 @@ public class StatisticController implements IController {
         System.out.println("Đã lưu file Excel tại: " + file.getAbsolutePath());
     }
 
-
     // Phương thức xuất Excel cho tab 1 (Doanh thu sản phẩm)
     private void exportProductRevenueToExcel(File file, LocalDate startDate, LocalDate endDate) {
         try (Workbook workbook = new XSSFWorkbook()) {
@@ -250,6 +249,20 @@ public class StatisticController implements IController {
                 row.createCell(2).setCellValue(item.getCategoryName());
                 row.createCell(3).setCellValue(item.getTotalQuantity());
                 row.createCell(4).setCellValue(item.getRevenue().doubleValue());
+            }
+
+            // Tổng doanh thu
+            Row totalRevenueRow = sheet.createRow(rowNum+1);
+            totalRevenueRow.createCell(3).setCellValue("Tổng: ");
+            BigDecimal totalProductRevenue = BigDecimal.ZERO;
+            for (ProductRevenue item : productRevenuesList) {
+                totalProductRevenue = totalProductRevenue.add(item.getRevenue());
+            }
+            totalRevenueRow.createCell(4).setCellValue(totalProductRevenue.doubleValue());
+
+            //Căn chỉnh cột trước khi lưu(bỏ qua cột đầu tiên)
+            for (int i = 1; i < 5; i++) {
+                sheet.autoSizeColumn(i);
             }
 
             // Lưu file
@@ -294,9 +307,24 @@ public class StatisticController implements IController {
                 row.createCell(2).setCellValue(item.getQuarter2().doubleValue());
                 row.createCell(3).setCellValue(item.getQuarter3().doubleValue());
                 row.createCell(4).setCellValue(item.getQuarter4().doubleValue());
-                row.createCell(5).setCellValue(item.getTotalRevenue().doubleValue());
+                row.createCell(5).setCellValue(item.getRevenue().doubleValue());
             }
 
+            // Tổng doanh thu
+            Row totalRevenueRow = sheet.createRow(rowNum+1);
+            totalRevenueRow.createCell(4).setCellValue("Tổng: ");
+            BigDecimal totalEmployeeRevenue = BigDecimal.ZERO;
+            for (QuarterlyEmployeeRevenue item : employeeRevenueList) {
+                totalEmployeeRevenue = totalEmployeeRevenue.add(item.getRevenue());
+            }
+            totalRevenueRow.createCell(5).setCellValue(totalEmployeeRevenue.doubleValue());
+
+            //Căn chỉnh cột trước khi lưu(bỏ qua cột đầu tiên)
+            for (int i = 1; i < 6; i++) {
+                sheet.autoSizeColumn(i);
+            }
+            
+            //Lưu file
             try (FileOutputStream fileOut = new FileOutputStream(file)) {
                 workbook.write(fileOut);
             }
