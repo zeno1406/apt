@@ -1,39 +1,83 @@
-
 package GUI;
 
-import BUS.EmployeeBUS;
-import BUS.RoleBUS;
-import DAL.StatisticDAL;
-import DTO.StatisticRevenue;
+import BUS.StatisticBUS;
+import DTO.StatisticDTO;
+import DTO.StatisticDTO.ProductRevenue;
+import DTO.StatisticDTO.QuarterlyEmployeeRevenue;
+import INTERFACE.IController;
 import javafx.application.Platform;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
-import javafx.scene.chart.CategoryAxis;
-import javafx.scene.chart.LineChart;
-import javafx.scene.chart.NumberAxis;
-import javafx.scene.chart.XYChart;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import UTILS.NotificationUtils;
+import UTILS.ValidationUtils;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.Month;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Map;
 
-public class StatisticController {
+import static java.time.LocalDate.now;
+
+public class StatisticController implements IController {
     @FXML
-    private LineChart<String, Number> chart1; // S�+�a ki�+�u r+� r+�ng
+    private Tab tab1;
+    @FXML
+    private TableView<ProductRevenue> tblProductRevenue;
+    @FXML
+    private TableColumn<ProductRevenue, Integer> tbl_col_productid;
+    @FXML
+    private TableColumn<ProductRevenue, String> tbl_col_productname;
+    @FXML
+    private TableColumn<ProductRevenue, String> tbl_col_productcate;
+    @FXML
+    public TableColumn<ProductRevenue, Integer> tbl_col_totalquantity;
+    @FXML
+    private TableColumn<ProductRevenue, String> tbl_col_revenue;
+    @FXML
+    private DatePicker txtStartCreateDate;
+    @FXML
+    private DatePicker txtEndCreateDate;
+    @FXML
+    private Button btnExportExcel1;
+    @FXML
+    private Button btnThongKe1;
+    @FXML
+    private Label txtTotalRevenue1;
 
     @FXML
-    private CategoryAxis x1;
-
+    private Tab tab2;
     @FXML
-    private NumberAxis y1;
+    private TableView<DTO.StatisticDTO.QuarterlyEmployeeRevenue> tblEmployeeRevenue;
+    @FXML
+    private TableColumn<DTO.StatisticDTO.QuarterlyEmployeeRevenue, Integer> tbl_col_id;
+    @FXML
+    private TableColumn<DTO.StatisticDTO.QuarterlyEmployeeRevenue, String> tbl_col_quy1;
+    @FXML
+    private TableColumn<DTO.StatisticDTO.QuarterlyEmployeeRevenue, String> tbl_col_quy2;
+    @FXML
+    private TableColumn<DTO.StatisticDTO.QuarterlyEmployeeRevenue, String> tbl_col_quy3;
+    @FXML
+    private TableColumn<DTO.StatisticDTO.QuarterlyEmployeeRevenue, String> tbl_col_quy4;
+    @FXML
+    private TableColumn<DTO.StatisticDTO.QuarterlyEmployeeRevenue, String> tbl_col_total;
+    @FXML
+    private TextField txtInputYear;
+    @FXML
+    private Button btnExportExcel2;
+    @FXML
+    private Button btnThongKe2;
+    @FXML
+    private Label txtTotalRevenue2;
 
-    Map<LocalDate, BigDecimal> doanhThuTheoNgay;
-    Map<Month, BigDecimal> doanhThuTheoThang;
-    Map<Integer, BigDecimal> doanhThuTheoNam;
-
+    private javafx.collections.ObservableList<StatisticDTO.ProductRevenue> productRevenuesList = javafx.collections.FXCollections.observableArrayList();
+    private javafx.collections.ObservableList<DTO.StatisticDTO.QuarterlyEmployeeRevenue> employeeRevenueList = javafx.collections.FXCollections.observableArrayList();
 
     @FXML
     public void initialize() {
@@ -71,7 +115,7 @@ public class StatisticController {
         tbl_col_quy4.setCellValueFactory(cellData ->
                 formatCell(validationUtils.formatCurrency(cellData.getValue().getQuarter4())));
         tbl_col_total.setCellValueFactory(cellData ->
-                formatCell(validationUtils.formatCurrency(cellData.getValue().getRevenue())));
+                formatCell(validationUtils.formatCurrency(cellData.getValue().getTotalRevenue())));
     }
 
     private SimpleStringProperty formatCell(String value) {
@@ -126,7 +170,7 @@ public class StatisticController {
             tblEmployeeRevenue.setItems(employeeRevenueList);
             BigDecimal totalYearRevenue = BigDecimal.ZERO;
             for (QuarterlyEmployeeRevenue item : list) {
-                totalYearRevenue = totalYearRevenue.add(item.getRevenue());
+                totalYearRevenue = totalYearRevenue.add(item.getTotalRevenue());
             }
             txtTotalRevenue2.setText(ValidationUtils.getInstance().formatCurrency(totalYearRevenue));
         } catch (NumberFormatException e) {
@@ -137,6 +181,41 @@ public class StatisticController {
             NotificationUtils.showErrorAlert("Lỗi tải dữ liệu: " + e.getMessage(), "Lỗi");
         }
     }
+
+    private void handleExportExcel() {
+        String projectDir = System.getProperty("user.dir"); // thư mục gốc "apt"
+        String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
+
+        // Kiểm tra dữ liệu
+        if (tab1.isSelected() && productRevenuesList.isEmpty()) {
+            NotificationUtils.showInfoAlert("Không có dữ liệu để xuất cho Doanh thu Sản phẩm", "Thông báo");
+            return;
+        } else if (tab2.isSelected() && employeeRevenueList.isEmpty()) {
+            NotificationUtils.showInfoAlert("Không có dữ liệu để xuất cho Doanh thu Nhân Viên", "Thông báo");
+            return;
+        }
+
+        // Tạo đường dẫn tới thư mục excel_files
+        File exportDir = new File(projectDir + "/src/main/resources/excel_files");
+        exportDir.mkdirs(); // tạo thư mục nếu chưa có
+
+        // Tạo file với tên phù hợp
+        File file = new File(exportDir, "ThongKe_LegoStore_" + timestamp + ".xlsx");
+
+        LocalDate start = txtStartCreateDate.getValue();
+        LocalDate end = txtEndCreateDate.getValue();
+        String year = txtInputYear.getText();
+
+        if (tab1.isSelected()) {
+            exportProductRevenueToExcel(file, start, end);
+        } else if (tab2.isSelected()) {
+            exportEmployeeRevenueToExcel(file,year);
+        }
+
+        // In ra đường dẫn để kiểm tra
+        System.out.println("Đã lưu file Excel tại: " + file.getAbsolutePath());
+    }
+
 
     // Phương thức xuất Excel cho tab 1 (Doanh thu sản phẩm)
     private void exportProductRevenueToExcel(File file, LocalDate startDate, LocalDate endDate) {
@@ -171,20 +250,6 @@ public class StatisticController {
                 row.createCell(2).setCellValue(item.getCategoryName());
                 row.createCell(3).setCellValue(item.getTotalQuantity());
                 row.createCell(4).setCellValue(item.getRevenue().doubleValue());
-            }
-
-            // Tổng doanh thu
-            Row totalRevenueRow = sheet.createRow(rowNum+1);
-            totalRevenueRow.createCell(3).setCellValue("Tổng: ");
-            BigDecimal totalProductRevenue = BigDecimal.ZERO;
-            for (ProductRevenue item : productRevenuesList) {
-                totalProductRevenue = totalProductRevenue.add(item.getRevenue());
-            }
-            totalRevenueRow.createCell(4).setCellValue(totalProductRevenue.doubleValue());
-
-            //Căn chỉnh cột trước khi lưu(bỏ qua cột đầu tiên)
-            for (int i = 1; i < 5; i++) {
-                sheet.autoSizeColumn(i);
             }
 
             // Lưu file
@@ -229,24 +294,9 @@ public class StatisticController {
                 row.createCell(2).setCellValue(item.getQuarter2().doubleValue());
                 row.createCell(3).setCellValue(item.getQuarter3().doubleValue());
                 row.createCell(4).setCellValue(item.getQuarter4().doubleValue());
-                row.createCell(5).setCellValue(item.getRevenue().doubleValue());
+                row.createCell(5).setCellValue(item.getTotalRevenue().doubleValue());
             }
 
-            // Tổng doanh thu
-            Row totalRevenueRow = sheet.createRow(rowNum+1);
-            totalRevenueRow.createCell(4).setCellValue("Tổng: ");
-            BigDecimal totalEmployeeRevenue = BigDecimal.ZERO;
-            for (QuarterlyEmployeeRevenue item : employeeRevenueList) {
-                totalEmployeeRevenue = totalEmployeeRevenue.add(item.getRevenue());
-            }
-            totalRevenueRow.createCell(5).setCellValue(totalEmployeeRevenue.doubleValue());
-
-            //Căn chỉnh cột trước khi lưu(bỏ qua cột đầu tiên)
-            for (int i = 1; i < 6; i++) {
-                sheet.autoSizeColumn(i);
-            }
-            
-            //Lưu file
             try (FileOutputStream fileOut = new FileOutputStream(file)) {
                 workbook.write(fileOut);
             }
