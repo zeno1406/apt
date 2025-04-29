@@ -1,7 +1,7 @@
 package BUS;
 
 import DAL.StatisticDAL;
-import DTO.StatisticQuarterDTO;
+import DTO.StatisticDTO;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -15,37 +15,23 @@ public class StatisticBUS {
         return INSTANCE;
     }
 
-    public ArrayList<StatisticQuarterDTO> getStatisticRevenueByDate(LocalDate fromDate, LocalDate toDate) {
-        if (fromDate == null || toDate == null) {
-            throw new IllegalArgumentException("Ng+�y bߦ�t -�ߦ�u v+� kߦ+t th+�c kh+�ng -榦�+�c -��+� tr�+�ng.");
+    public ArrayList<StatisticDTO.ProductRevenue> getProductRevenue(LocalDate start, LocalDate end) {
+        LocalDate today = java.time.LocalDate.now();
+        if(start.isAfter(today) || end.isAfter(today) || start.isAfter(end) || end.isBefore(start) ) {
+            throw new IllegalArgumentException("Khoảng thời gian không hợp lệ.");
         }
-
-        if (fromDate.isAfter(toDate)) {
-            throw new IllegalArgumentException("Ng+�y bߦ�t -�ߦ�u kh+�ng -榦�+�c l�+�n h��n ng+�y kߦ+t th+�c.");
-        }
-
-        return StatisticDAL.getInstance().getStatisticRevenueByDate(fromDate, toDate);
+        return (ArrayList<StatisticDTO.ProductRevenue>) StatisticDAL.getInstance().getProductRevenue(start,end);
     }
-
-    public ArrayList<StatisticQuarterDTO> getStatisticRevenueByMonth(int year) {
-        if (year < 2000 || year > LocalDate.now().getYear()) {
-            throw new IllegalArgumentException("N-�m th�+�ng k+� kh+�ng h�+�p l�+�.");
+    /**
+     * Get quarterly employee revenue statistics for a specific year
+     * @param year The year to get statistics for
+     * @return List of quarterly employee revenue statistics
+     */
+    public ArrayList<StatisticDTO.QuarterlyEmployeeRevenue> getQuarterlyEmployeeRevenue(int year) {
+        int currentYear = java.time.LocalDate.now().getYear();
+        if (year < 2000 || year > currentYear) {
+            throw new IllegalArgumentException("Năm thống kê không hợp lệ.");
         }
-
-        return StatisticDAL.getInstance().getStatisticRevenueByMonth(year);
-    }
-
-    public ArrayList<StatisticQuarterDTO> getStatisticRevenueByYearRange(int fromYear, int toYear) {
-        int currentYear = LocalDate.now().getYear();
-
-        if (fromYear < 2000 || toYear > currentYear) {
-            throw new IllegalArgumentException("Khoߦ�ng n-�m th�+�ng k+� kh+�ng h�+�p l�+�.");
-        }
-
-        if (fromYear > toYear) {
-            throw new IllegalArgumentException("N-�m bߦ�t -�ߦ�u kh+�ng -榦�+�c l�+�n h��n n-�m kߦ+t th+�c.");
-        }
-
-        return StatisticDAL.getInstance().getStatisticRevenueByYearRange(fromYear, toYear);
+        return (ArrayList<StatisticDTO.QuarterlyEmployeeRevenue>) StatisticDAL.getInstance().getQuarterlyEmployeeRevenue(year);
     }
 }

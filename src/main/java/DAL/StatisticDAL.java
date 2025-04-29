@@ -1,68 +1,112 @@
-
 package DAL;
 
-import DTO.StatisticQuarterDTO;
+import DTO.StatisticDTO;
 import INTERFACE.ConnectionFactory;
 
 import java.math.BigDecimal;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.List;
+import java.time.LocalDate;
 
 public class StatisticDAL {
-    private ConnectionFactory connectionFactory = ConnectApplication.getInstance().getConnectionFactory();
-    private static final StatisticDAL INSTANCE = new StatisticDAL();
-    private StatisticDAL() {
+    public static final StatisticDAL INSTANCE = new StatisticDAL();
 
+    private final ConnectionFactory connectionFactory;
+
+    private StatisticDAL() {
+        this.connectionFactory = ConnectApplication.getInstance().getConnectionFactory();
     }
 
     public static StatisticDAL getInstance() {
         return INSTANCE;
     }
 
-    public ArrayList<StatisticQuarterDTO> getStatisticRevenueByQuarter(int year) {
-        ArrayList<StatisticQuarterDTO> list = new ArrayList<>();
-
+    public List<StatisticDTO.QuarterlyEmployeeRevenue> getQuarterlyEmployeeRevenue(int year) {
         final String query = """
-        SELECT\s
-                    e.id AS employee_id,
-                    COALESCE(SUM(CASE WHEN QUARTER(i.create_date) = 1 THEN i.total_price ELSE 0 END), 0) AS q1,
-                    COALESCE(SUM(CASE WHEN QUARTER(i.create_date) = 2 THEN i.total_price ELSE 0 END), 0) AS q2,
-                    COALESCE(SUM(CASE WHEN QUARTER(i.create_date) = 3 THEN i.total_price ELSE 0 END), 0) AS q3,
-                    COALESCE(SUM(CASE WHEN QUARTER(i.create_date) = 4 THEN i.total_price ELSE 0 END), 0) AS q4,
-                    COALESCE(SUM(i.total_price), 0) AS total
-                FROM\s
-                    employee e
-                LEFT JOIN\s
-                    invoice i ON e.id = i.employee_id AND YEAR(i.create_date) = ?
-                GROUP BY\s
-                    e.id
-                ORDER BY\s
-                    e.id;
-    """;
+            SELECT 
+                i.employee_id,
+                SUM(CASE WHEN QUARTER(i.create_date) = 1 THEN i.total_price ELSE 0 END) AS quarter1,
+                SUM(CASE WHEN QUARTER(i.create_date) = 2 THEN i.total_price ELSE 0 END) AS quarter2,
+                SUM(CASE WHEN QUARTER(i.create_date) = 3 THEN i.total_price ELSE 0 END) AS quarter3,
+                SUM(CASE WHEN QUARTER(i.create_date) = 4 THEN i.total_price ELSE 0 END) AS quarter4
+            FROM 
+                invoice i
+            JOIN 
+                employee e ON i.employee_id = e.id
+            WHERE 
+                YEAR(i.create_date) = ?
+            GROUP BY 
+                e.id
+        """;
+
+        List<StatisticDTO.QuarterlyEmployeeRevenue> list = new ArrayList<>();
 
         try (Connection connection = connectionFactory.newConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
-
+//            System.out.println("Connected to database: " + connection.getCatalog());
             statement.setInt(1, year);
 
-            try (ResultSet rs = statement.executeQuery()) {
-                while (rs.next()) {
-                    int employeeId = rs.getInt("employee_id");
-                    BigDecimal q1 = rs.getBigDecimal("q1");
-                    BigDecimal q2 = rs.getBigDecimal("q2");
-                    BigDecimal q3 = rs.getBigDecimal("q3");
-                    BigDecimal q4 = rs.getBigDecimal("q4");
-                    BigDecimal total = rs.getBigDecimal("total");
-
-                    list.add(new StatisticQuarterDTO(employeeId, q1, q2, q3, q4, total));
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    list.add(new StatisticDTO.QuarterlyEmployeeRevenue(
+                            resultSet.getInt("employee_id"),
+                            resultSet.getBigDecimal("quarter1"),
+                            resultSet.getBigDecimal("quarter2"),
+                            resultSet.getBigDecimal("quarter3"),
+                            resultSet.getBigDecimal("quarter4")
+                    ));
                 }
             }
-
         } catch (SQLException e) {
-            System.err.println("Error getting quarterly statistic revenue: " + e.getMessage());
+            System.err.println("Error retrieving quarterly employee revenue statistics: " + e.getMessage());
         }
-
         return list;
     }
 
+    public List<StatisticDTO.ProductRevenue> getProductRevenue(LocalDate start, LocalDate end) {
+        final String query = """
+                SELECT 
+                    p.id, 
+                    p.name AS product_name, 
+                    c.name AS category_name, 
+                    SUM(di.quantity) AS total_quantity, 
+                    SUM(di.total_price * ((i.total_price - i.discount_amount) / i.total_price)) AS revenue
+                FROM 
+                    detail_invoice di
+                JOIN 
+                        product p ON di.product_id = p.id
+                JOIN 
+                        category c ON p.category_id = c.id
+                JOIN 
+                        invoice i ON di.invoice_id = i.id
+                WHERE 
+                    i.create_date BETWEEN ? AND ?
+                GROUP BY 
+                    p.id, p.name, c.name;
+                """;
+
+        List<StatisticDTO.ProductRevenue> list = new ArrayList<>();
+        try (Connection connection = connectionFactory.newConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setDate(1, java.sql.Date.valueOf(start));
+            statement.setDate(2, java.sql.Date.valueOf(end));
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    list.add(new StatisticDTO.ProductRevenue(
+                            resultSet.getString("id"),
+                            resultSet.getString("product_name"),
+                            resultSet.getString("category_name"),
+                            resultSet.getInt("total_quantity"),
+                            resultSet.getBigDecimal("revenue")
+                    ));
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error retrieving product revenue statistics: " + e.getMessage());
+        }
+        return list;
+    }
 }
