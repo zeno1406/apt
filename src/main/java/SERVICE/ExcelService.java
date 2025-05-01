@@ -7,6 +7,7 @@ import BUS.RoleBUS;
 import DTO.EmployeeDTO;
 import DTO.ProductDTO;
 import DTO.RoleDTO;
+import DTO.StatisticDTO;
 import UTILS.AvailableUtils;
 import UTILS.NotificationUtils;
 import UTILS.UiUtils;
@@ -23,11 +24,14 @@ import java.io.*;
 import java.nio.channels.FileChannel;
 import java.math.BigDecimal;
 import java.time.DateTimeException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static java.time.LocalDate.now;
 
 public class ExcelService {
     private static final ExcelService INSTANCE = new ExcelService();
@@ -192,83 +196,83 @@ public class ExcelService {
 
     }
 
-//    VALIDATE ON PRODUCT BUS
-private ArrayList<ProductDTO> returnListProduct(Sheet sheet, ArrayList<ProductDTO> list) {
-    if (list == null) return new ArrayList<>();
-    list.clear(); // Clear luôn nếu không null
+    //    VALIDATE ON PRODUCT BUS
+    private ArrayList<ProductDTO> returnListProduct(Sheet sheet, ArrayList<ProductDTO> list) {
+        if (list == null) return new ArrayList<>();
+        list.clear(); // Clear luôn nếu không null
 
-    ArrayList<ProductDTO> tempList = new ArrayList<>();
-    StringBuilder errorMessages = new StringBuilder();
-    int errorCount = 0;
+        ArrayList<ProductDTO> tempList = new ArrayList<>();
+        StringBuilder errorMessages = new StringBuilder();
+        int errorCount = 0;
 
-    for (Row row : sheet) {
-        if (row.getRowNum() == 0) continue; // Bỏ qua tiêu đề
-        if (isRowEmpty(row)) continue; // Bỏ qua dòng trống
+        for (Row row : sheet) {
+            if (row.getRowNum() == 0) continue; // Bỏ qua tiêu đề
+            if (isRowEmpty(row)) continue; // Bỏ qua dòng trống
 
-        try {
-            Cell nameCell = row.getCell(1);
-            Cell descCell = row.getCell(2);
-            Cell categoryCell = row.getCell(3);
-            Cell statusCell = row.getCell(4);
-
-            String name = (nameCell != null) ? nameCell.getStringCellValue().trim() : "";
-            String description = (descCell != null) ? descCell.getStringCellValue().trim() : "";
-
-            if (name.isEmpty()) {
-                if (handleError(errorMessages, row.getRowNum(), "Tên sản phẩm không được để trống.", ++errorCount)) break;
-                continue;
-            }
-            if (name.length() > 148) {
-                if (handleError(errorMessages, row.getRowNum(), "Tên sản phẩm không được quá 148 ký tự.", ++errorCount)) break;
-                continue;
-            }
-            if (description.length() > 65400) {
-                if (handleError(errorMessages, row.getRowNum(), "Mô tả không được quá 65k4 ký tự.", ++errorCount)) break;
-                continue;
-            }
-
-            int categoryId;
             try {
-                categoryId = (int) categoryCell.getNumericCellValue();
+                Cell nameCell = row.getCell(1);
+                Cell descCell = row.getCell(2);
+                Cell categoryCell = row.getCell(3);
+                Cell statusCell = row.getCell(4);
+
+                String name = (nameCell != null) ? nameCell.getStringCellValue().trim() : "";
+                String description = (descCell != null) ? descCell.getStringCellValue().trim() : "";
+
+                if (name.isEmpty()) {
+                    if (handleError(errorMessages, row.getRowNum(), "Tên sản phẩm không được để trống.", ++errorCount)) break;
+                    continue;
+                }
+                if (name.length() > 148) {
+                    if (handleError(errorMessages, row.getRowNum(), "Tên sản phẩm không được quá 148 ký tự.", ++errorCount)) break;
+                    continue;
+                }
+                if (description.length() > 65400) {
+                    if (handleError(errorMessages, row.getRowNum(), "Mô tả không được quá 65k4 ký tự.", ++errorCount)) break;
+                    continue;
+                }
+
+                int categoryId;
+                try {
+                    categoryId = (int) categoryCell.getNumericCellValue();
+                } catch (Exception e) {
+                    if (handleError(errorMessages, row.getRowNum(), "Thể loại không hợp lệ (phải là số).", ++errorCount)) break;
+                    continue;
+                }
+                if (categoryId < 0 || !AvailableUtils.getInstance().isValidCategory(categoryId)) {
+                    if (handleError(errorMessages, row.getRowNum(), "Thể loại không hợp lệ hoặc đã bị xóa.", ++errorCount)) break;
+                    continue;
+                }
+
+                int statusInt;
+                try {
+                    statusInt = (int) statusCell.getNumericCellValue();
+                } catch (Exception e) {
+                    if (handleError(errorMessages, row.getRowNum(), "Trạng thái không hợp lệ (phải là 0 hoặc 1).", ++errorCount)) break;
+                    continue;
+                }
+                if (statusInt != 0 && statusInt != 1) {
+                    if (handleError(errorMessages, row.getRowNum(), "Trạng thái chỉ được là 0 hoặc 1.", ++errorCount)) break;
+                    continue;
+                }
+
+                tempList.add(new ProductDTO(null, name, 0, null, statusInt == 1, description, null, categoryId));
+
             } catch (Exception e) {
-                if (handleError(errorMessages, row.getRowNum(), "Thể loại không hợp lệ (phải là số).", ++errorCount)) break;
-                continue;
+                if (handleError(errorMessages, row.getRowNum(), "Lỗi không xác định: " + e.getMessage(), ++errorCount)) break;
             }
-            if (categoryId < 0 || !AvailableUtils.getInstance().isValidCategory(categoryId)) {
-                if (handleError(errorMessages, row.getRowNum(), "Thể loại không hợp lệ hoặc đã bị xóa.", ++errorCount)) break;
-                continue;
-            }
-
-            int statusInt;
-            try {
-                statusInt = (int) statusCell.getNumericCellValue();
-            } catch (Exception e) {
-                if (handleError(errorMessages, row.getRowNum(), "Trạng thái không hợp lệ (phải là 0 hoặc 1).", ++errorCount)) break;
-                continue;
-            }
-            if (statusInt != 0 && statusInt != 1) {
-                if (handleError(errorMessages, row.getRowNum(), "Trạng thái chỉ được là 0 hoặc 1.", ++errorCount)) break;
-                continue;
-            }
-
-            tempList.add(new ProductDTO(null, name, 0, null, statusInt == 1, description, null, categoryId));
-
-        } catch (Exception e) {
-            if (handleError(errorMessages, row.getRowNum(), "Lỗi không xác định: " + e.getMessage(), ++errorCount)) break;
         }
-    }
 
-    if (errorMessages.length() > 0) {
-        if (errorCount > 20) {
-            errorMessages.append("Và một số lỗi khác không thể hiển thị.\n");
+        if (errorMessages.length() > 0) {
+            if (errorCount > 20) {
+                errorMessages.append("Và một số lỗi khác không thể hiển thị.\n");
+            }
+            NotificationUtils.showErrorAlert(errorMessages.toString(), "Thông báo");
+            return new ArrayList<>();
         }
-        NotificationUtils.showErrorAlert(errorMessages.toString(), "Thông báo");
-        return new ArrayList<>();
-    }
 
-    list.addAll(tempList);
-    return list;
-}
+        list.addAll(tempList);
+        return list;
+    }
 
     private boolean isRowEmpty(Row row) {
         for (Cell cell : row) {
@@ -283,4 +287,177 @@ private ArrayList<ProductDTO> returnListProduct(Sheet sheet, ArrayList<ProductDT
         errorMessages.append("Dòng ").append(rowNum + 1).append(": ").append(message).append("\n");
         return errorCount >= 20;
     }
+
+    public void exportToFileExcelProductRevenues(ArrayList<StatisticDTO.ProductRevenue> productRevenuesList, String timestamp, LocalDate start, LocalDate end) throws IOException {
+        Workbook workbook = new XSSFWorkbook();
+        Sheet sheet = workbook.createSheet("TK_Product_"+now());
+
+        Row headerInfoRow = sheet.createRow(0);
+        headerInfoRow.createCell(0).setCellValue("Bảng thống kê doanh thu sản phẩm từ " +
+                start.format(DateTimeFormatter.ofPattern("dd-MM-yyyy")) +
+                " đến " + end.format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
+
+        // Thêm thời gian xuất file vào ô
+        String currentTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        Row timeRow = sheet.createRow(1);
+        timeRow.createCell(0).setCellValue("Thời gian xuất file: " + currentTime);
+
+        // Thêm tiêu đề cho bảng thống kê
+        Row headerRow = sheet.createRow(2);
+        headerRow.createCell(0).setCellValue("Mã sản phẩm");
+        headerRow.createCell(1).setCellValue("Tên sản phẩm");
+        headerRow.createCell(2).setCellValue("Thể loại sản phẩm");
+        headerRow.createCell(3).setCellValue("Số lượng bán ra");
+        headerRow.createCell(4).setCellValue("Tổng doanh thu");
+
+        ValidationUtils validate = ValidationUtils.getInstance();
+
+        // Dữ liệu bảng thống kê
+        int rowNum = 3;
+        for (StatisticDTO.ProductRevenue item : productRevenuesList) {
+            Row row = sheet.createRow(rowNum++);
+            row.createCell(0).setCellValue(item.getProductId());
+            row.createCell(1).setCellValue(item.getProductName());
+            row.createCell(2).setCellValue(item.getCategoryName());
+            row.createCell(3).setCellValue(item.getTotalQuantity());
+            row.createCell(4).setCellValue(validate.formatCurrency(item.getRevenue()));
+        }
+
+        // Tổng doanh thu
+        Row totalRevenueRow = sheet.createRow(rowNum+1);
+        totalRevenueRow.createCell(3).setCellValue("Tổng: ");
+        BigDecimal totalProductRevenue = BigDecimal.ZERO;
+        for (StatisticDTO.ProductRevenue item : productRevenuesList) {
+            totalProductRevenue = totalProductRevenue.add(item.getRevenue());
+        }
+        totalRevenueRow.createCell(4).setCellValue(validate.formatCurrency(totalProductRevenue));
+
+        //Căn chỉnh cột trước khi lưu(bỏ qua cột đầu tiên)
+        for (int i = 1; i < 5; i++) {
+            sheet.autoSizeColumn(i);
+        }
+
+        String fileName = "ThongKe_LegoStore_TK_Product_" + timestamp + ".xlsx";
+        File file = new File(fileName);
+
+        // Kiểm tra nếu file đang mở
+        if (file.exists()) {
+            try (RandomAccessFile raf = new RandomAccessFile(file, "rw");
+                 FileChannel channel = raf.getChannel()) {
+                try {
+                    channel.lock(); // thử lock file
+                } catch (IOException e) {
+                    System.err.println("File đang được mở. Vui lòng đóng file trước khi xuất.");
+                    workbook.close();
+                    return;
+                }
+            } catch (IOException e) {
+                NotificationUtils.showErrorAlert("Không thể truy cập file: " + e.getMessage(), "Thông báo");
+                workbook.close();
+                return;
+            }
+        }
+
+        try (FileOutputStream fos = new FileOutputStream(file)) {
+            workbook.write(fos);
+        } finally {
+            workbook.close();
+        }
+
+        if (file.exists()) {
+            try {
+                NotificationUtils.showInfoAlert("Xuất file Excel thành công!", "Thông báo");
+                Desktop.getDesktop().open(file);
+            } catch (IOException e) {
+                System.err.println("Không thể mở file: " + e.getMessage());
+            }
+        }
+    }
+
+    public void exportToFileExcelEmployeeRevenues(ArrayList<StatisticDTO.QuarterlyEmployeeRevenue> employeeRevenueList, String timestamp, String year) throws IOException {
+        Workbook workbook = new XSSFWorkbook();
+        Sheet sheet = workbook.createSheet("TK_Employee_"+now());
+
+        // Thêm tên bảng thống kê và thời gian từ ngày đến ngày
+        Row headerInfoRow = sheet.createRow(0);
+        headerInfoRow.createCell(0).setCellValue("Bảng thống kê doanh thu sản phẩm theo Quý năm " + year);
+
+        // Thêm thời gian xuất file vào ô
+        String currentTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
+        Row timeRow = sheet.createRow(1);
+        timeRow.createCell(0).setCellValue("Thời gian xuất file: " + currentTime);
+
+        // Thêm tiêu đề cho bảng thống kê
+        Row headerRow = sheet.createRow(2);
+        headerRow.createCell(0).setCellValue("Mã Nhân viên");
+        headerRow.createCell(1).setCellValue("Quý 1");
+        headerRow.createCell(2).setCellValue("Quý 2");
+        headerRow.createCell(3).setCellValue("Quý 3");
+        headerRow.createCell(4).setCellValue("Quý 4");
+        headerRow.createCell(5).setCellValue("Tổng doanh thu");
+        ValidationUtils validate = ValidationUtils.getInstance();
+        int rowNum = 3;
+        for (StatisticDTO.QuarterlyEmployeeRevenue item : employeeRevenueList) {
+            Row row = sheet.createRow(rowNum++);
+            row.createCell(0).setCellValue(item.getEmployeeId());
+            row.createCell(1).setCellValue(validate.formatCurrency(item.getQuarter1()));
+            row.createCell(2).setCellValue(validate.formatCurrency(item.getQuarter2()));
+            row.createCell(3).setCellValue(validate.formatCurrency(item.getQuarter3()));
+            row.createCell(4).setCellValue(validate.formatCurrency(item.getQuarter4()));
+            row.createCell(5).setCellValue(validate.formatCurrency(item.getRevenue()));
+        }
+
+        // Tổng doanh thu
+        Row totalRevenueRow = sheet.createRow(rowNum+1);
+        totalRevenueRow.createCell(4).setCellValue("Tổng: ");
+        BigDecimal totalEmployeeRevenue = BigDecimal.ZERO;
+        for (StatisticDTO.QuarterlyEmployeeRevenue item : employeeRevenueList) {
+            totalEmployeeRevenue = totalEmployeeRevenue.add(item.getRevenue());
+        }
+        totalRevenueRow.createCell(5).setCellValue(validate.formatCurrency(totalEmployeeRevenue));
+
+        //Căn chỉnh cột trước khi lưu(bỏ qua cột đầu tiên)
+        for (int i = 1; i <= 5; i++) {
+            sheet.autoSizeColumn(i);
+        }
+
+        String fileName = "ThongKe_LegoStore_TK_Employee_" + timestamp + ".xlsx";
+        File file = new File(fileName);
+
+        // Kiểm tra nếu file đang mở
+        if (file.exists()) {
+            try (RandomAccessFile raf = new RandomAccessFile(file, "rw");
+                 FileChannel channel = raf.getChannel()) {
+                try {
+                    channel.lock(); // thử lock file
+                } catch (IOException e) {
+                    System.err.println("File đang được mở. Vui lòng đóng file trước khi xuất.");
+                    workbook.close();
+                    return;
+                }
+            } catch (IOException e) {
+                NotificationUtils.showErrorAlert("Không thể truy cập file: " + e.getMessage(), "Thông báo");
+                workbook.close();
+                return;
+            }
+        }
+
+        try (FileOutputStream fos = new FileOutputStream(file)) {
+            workbook.write(fos);
+        } finally {
+            workbook.close();
+        }
+
+        if (file.exists()) {
+            try {
+                NotificationUtils.showInfoAlert("Xuất file Excel thành công!", "Thông báo");
+                Desktop.getDesktop().open(file);
+            } catch (IOException e) {
+                System.err.println("Không thể mở file: " + e.getMessage());
+            }
+        }
+
+    }
+
+
 }

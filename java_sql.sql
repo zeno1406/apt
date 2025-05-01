@@ -1,4 +1,4 @@
-       create schema java_sql;
+create schema java_sql;
 use java_sql;
 drop database java_sql;
 
@@ -12,8 +12,7 @@ CREATE TABLE `role` (
 
 INSERT INTO `role` (`id`, `name`, `description`, `salary_coefficient`) VALUES
 (1, 'Admin', 'Quản trị hệ thống', 3.5),
-(2, 'Nhân viên quản lý kho', null, 2.5),
-(3, 'Nhân viên bán hàng', null, 2.5);
+(2, 'Nhân viên quản lý kho', null, 2.5);
 
 CREATE TABLE `module` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -57,9 +56,9 @@ INSERT INTO `permission` (`id`, `name`, `module_id`) VALUES
 (11, 'Xóa nhà cung cấp', 4),
 (12, 'Sửa nhà cung cấp', 4),
 (13, 'Tạo đơn hàng', 5),
-(14, 'Hủy đơn hàng', 5),
+(14, 'Xem đơn hàng', 5),
 (15, 'Tạo phiếu nhập hàng', 6),
-(16, 'Xóa phiếu nhập hàng', 6),
+(16, 'Xem phiếu nhập hàng', 6),
 (17, 'Thêm thể loại', 7),
 (18, 'Xóa thể loại', 7),
 (19, 'Sửa thể loại', 7),
@@ -106,8 +105,8 @@ CREATE TABLE `employee` (
 INSERT INTO `employee` (`first_name`, `last_name`, `salary`, `date_of_birth`, `role_id`, `status`) 
 VALUES 
     ('Đặng Huy', 'Hoàng', 5000000, '2004-06-11', 1, 1),
-    ('Nguyễn Thành', 'Long', 2000000, '2003-04-11', 2, 1),
-    ('Trần Văn', 'A', 3000000, '1990-01-15', 2, 1),
+    ('Nguyễn Thành', 'Long', 2000000, '2003-04-11', 1, 1),
+    ('Tần Thiên', 'Lang', 3000000, '2000-01-15', 1, 1),
     ('Lê Thị', 'B', 3500000, '1988-02-20', 2, 1),
     ('Phạm Minh', 'C', 4000000, '1985-03-25', 2, 1),
     ('Nguyễn Thị', 'D', 4500000, '1992-04-30', 2, 1),
@@ -127,8 +126,9 @@ CREATE TABLE `account` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 INSERT INTO `account` (`employee_id`, `username`, `password`) VALUES
-(1, 'huyhoang119763', '$2a$12$BltP6IjOrQCIZ7g1ezMsDu9wyVU6tO5150AnbKdkkYHJYL1t3YUV6'),
-(2, 'thanhlong', '$2a$12$BltP6IjOrQCIZ7g1ezMsDu9wyVU6tO5150AnbKdkkYHJYL1t3YUV6');
+(1, 'huyhoang119763', '$2a$12$ipuwsQs46H2VAcT1hwS/kuCpv.MXEvJ2IlcPWTyss6Gsm5hpsHWmy'),
+(2, 'thanhlong123456', '$2a$12$ipuwsQs46H2VAcT1hwS/kuCpv.MXEvJ2IlcPWTyss6Gsm5hpsHWmy'),
+(3, 'tlang01', '$2a$12$ipuwsQs46H2VAcT1hwS/kuCpv.MXEvJ2IlcPWTyss6Gsm5hpsHWmy');
 
 CREATE TABLE `customer` (
   `id` INT NOT NULL AUTO_INCREMENT,
@@ -142,7 +142,7 @@ CREATE TABLE `customer` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 INSERT INTO `customer` (`first_name`, `last_name`, `date_of_birth`, `phone`, `address`, `status`) VALUES
-('Hoàng Huy', 'Đặng', '2004-06-11', '0585822397', '260/7 Tô Ngọc Vân, Linh Đông, Thủ Đức, Hồ Chí Minh', 1),
+('Vãng', 'Lai', null, '0000000000', '', 1),
 ('Nguyễn', 'Thành', '1990-02-15', '0123456789', '123 Đường Lê Lợi, Quận 1, Hồ Chí Minh', 0),
 ('Trần', 'Minh', '1985-04-20', '0987654321', '456 Đường Nguyễn Huệ, Quận 1, Hồ Chí Minh', 1),
 ('Lê', 'Hằng', '1995-08-30', '0912345678', '789 Đường Trần Hưng Đạo, Quận 5, Hồ Chí Minh', 0),
@@ -176,7 +176,7 @@ CREATE TABLE `discount` (
   `name` VARCHAR(100) NOT NULL,
   `type` TINYINT(1) NOT NULL DEFAULT 0,
   `startDate` DATE NOT NULL,
-  `endDate` DATE NULL,
+  `endDate` DATE NOT NULL,
   PRIMARY KEY (`code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
@@ -186,7 +186,7 @@ INSERT INTO `discount` (`code`, `name`, `type`, `startDate`, `endDate`) VALUES
 
 CREATE TABLE `detail_discount` (
   `discount_code` VARCHAR(50) NOT NULL,
-  `total_price_invoice` DECIMAL(10,2) NOT NULL,
+  `total_price_invoice` DECIMAL(12,2) NOT NULL,
   `discount_amount` DECIMAL(10,2) NOT NULL,
   PRIMARY KEY (`discount_code`, `total_price_invoice`),
   FOREIGN KEY (`discount_code`) REFERENCES `discount` (`code`)
@@ -242,8 +242,76 @@ CREATE TABLE `product` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 INSERT INTO `product` (`id`, `name`, `stock_quantity`, `selling_price`, `status`, `description`, `image_url`, `category_id`) VALUES
-('SP00001', 'Naruto - 01', 10, 30800, 1, 'Minifigure nhân vật Naruto.', '/images/product/sp00001.png', 2),
-('SP00002', 'Naruto - 02', 15, 27500, 1, 'Minifigure Naruto trong trạng thái chiến đấu.', '/images/product/sp00002.png', 2);
+('SP00001', 'Naruto - 01', 10, 30800, 1, 'Minifigure nhân vật Naruto.', 'images/product/sp00001.png', 2),
+('SP00002', 'Naruto - 02', 15, 27500, 1, 'Minifigure Naruto trong trạng thái chiến đấu.', 'images/product/sp00002.png', 2),
+('SP00003', 'Sasuke Uchiha', 0, 32500, 1, 'Minifigure nhân vật Sasuke Uchiha từ series Naruto.', NULL, 2),
+('SP00004', 'Kakashi Hatake', 0, 34000, 1, 'Minifigure nhân vật Kakashi với Sharingan.', NULL, 2),
+('SP00005', 'Sakura Haruno', 0, 29900, 1, 'Minifigure nhân vật Sakura từ series Naruto.', NULL, 2),
+('SP00006', 'Luke Skywalker', 0, 42000, 1, 'Minifigure Luke Skywalker với lightsaber xanh.', NULL, 2),
+('SP00007', 'Darth Vader', 0, 45000, 1, 'Minifigure Darth Vader với lightsaber đỏ và mặt nạ.', NULL, 2),
+('SP00008', 'Iron Man Mark 85', 0, 48500, 1, 'Minifigure Iron Man trong bộ giáp Mark 85 từ Avengers: Endgame.', NULL, 2),
+('SP00009', 'Spider-Man', 0, 39900, 1, 'Minifigure Spider-Man với trang phục đỏ và xanh đặc trưng.', NULL, 2),
+('SP00010', 'Harry Potter', 0, 38500, 1, 'Minifigure Harry Potter với đũa phép và kính tròn.', NULL, 2),
+
+-- Technic sets (category_id = 3)
+('SP00011', 'LEGO Technic Bugatti Chiron', 0, 2499000, 1, 'Mô hình kỹ thuật cao của siêu xe Bugatti Chiron, 3599 chi tiết.', NULL, 3),
+('SP00012', 'LEGO Technic Land Rover Defender', 0, 1799000, 1, 'Mô hình chi tiết của Land Rover Defender với hộp số hoạt động, 2573 chi tiết.', NULL, 3),
+('SP00013', 'LEGO Technic Excavator', 0, 899000, 1, 'Máy xúc điều khiển từ xa với chức năng nâng và xoay, 569 chi tiết.', NULL, 3),
+('SP00014', 'LEGO Technic Race Car', 0, 1199000, 1, 'Xe đua công thức 1 với động cơ pistons hoạt động, 1580 chi tiết.', NULL, 3),
+('SP00015', 'LEGO Technic Liebherr Crane', 0, 3799000, 1, 'Cần cẩu Liebherr điều khiển qua Bluetooth, mô hình lớn nhất của LEGO Technic, 4108 chi tiết.', NULL, 3),
+
+-- Architecture (category_id = 4)
+('SP00016', 'LEGO Architecture Statue of Liberty', 0, 999000, 1, 'Mô hình tượng Nữ thần Tự do, 1685 chi tiết.', NULL, 4),
+('SP00017', 'LEGO Architecture Tokyo Skyline', 0, 599000, 1, 'Đường chân trời Tokyo với các công trình nổi tiếng, 547 chi tiết.', NULL, 4),
+('SP00018', 'LEGO Architecture Paris Skyline', 0, 599000, 1, 'Đường chân trời Paris với tháp Eiffel, 649 chi tiết.', NULL, 4),
+('SP00019', 'LEGO Architecture Empire State Building', 0, 1299000, 1, 'Mô hình chi tiết của tòa nhà Empire State, 1767 chi tiết.', NULL, 4),
+('SP00020', 'LEGO Architecture Great Wall of China', 0, 799000, 1, 'Mô hình Vạn Lý Trường Thành, 551 chi tiết.', NULL, 4),
+
+-- Classic (category_id = 5)
+('SP00021', 'LEGO Classic Large Creative Brick Box', 0, 599000, 1, 'Hộp gạch sáng tạo lớn với nhiều màu sắc, 790 chi tiết.', NULL, 5),
+('SP00022', 'LEGO Classic Medium Creative Brick Box', 0, 399000, 1, 'Hộp gạch sáng tạo vừa, 484 chi tiết.', NULL, 5),
+('SP00023', 'LEGO Classic Creative Transparent Bricks', 0, 299000, 1, 'Bộ gạch trong suốt nhiều màu sắc, 500 chi tiết.', NULL, 5),
+('SP00024', 'LEGO Classic Bricks and Wheels', 0, 349000, 1, 'Bộ gạch với bánh xe để xây dựng các phương tiện, 653 chi tiết.', NULL, 5),
+('SP00025', 'LEGO Classic Creative Fun', 0, 249000, 1, 'Bộ gạch sáng tạo cơ bản, 333 chi tiết.', NULL, 5),
+
+-- MOC (My Own Creation) (category_id = 6)
+('SP00026', 'MOC - Nhà Cổ Việt Nam', 0, 1299000, 1, 'Mô hình nhà cổ Việt Nam thiết kế riêng, 2205 chi tiết.', NULL, 6),
+('SP00027', 'MOC - Chợ Bến Thành', 0, 1599000, 1, 'Mô hình chợ Bến Thành tỉ mỉ, 2789 chi tiết.', NULL, 6),
+('SP00028', 'MOC - Cầu Rồng Đà Nẵng', 0, 999000, 1, 'Mô hình Cầu Rồng Đà Nẵng với đèn LED, 1876 chi tiết.', NULL, 6),
+('SP00029', 'MOC - Phố Cổ Hội An', 0, 1499000, 1, 'Mô hình một góc phố cổ Hội An với đèn lồng, 2340 chi tiết.', NULL, 6),
+('SP00030', 'MOC - Tháp Rùa Hồ Gươm', 0, 899000, 1, 'Mô hình Tháp Rùa trên Hồ Gươm, 1250 chi tiết.', NULL, 6),
+
+-- City (category_id = 7)
+('SP00031', 'LEGO City Police Station', 0, 1399000, 1, 'Trụ sở cảnh sát thành phố với xe cảnh sát và nhà tù, 743 chi tiết.', NULL, 6),
+('SP00032', 'LEGO City Fire Station', 0, 1299000, 1, 'Trạm cứu hỏa với xe cứu hỏa và trực thăng, 809 chi tiết.', NULL, 6),
+('SP00033', 'LEGO City Hospital', 0, 1199000, 1, 'Bệnh viện thành phố với xe cứu thương, 861 chi tiết.', NULL, 6),
+('SP00034', 'LEGO City Cargo Train', 0, 1799000, 1, 'Tàu hỏa chở hàng điều khiển từ xa với đường ray, 1226 chi tiết.', NULL, 6),
+('SP00035', 'LEGO City Town Center', 0, 1599000, 1, 'Trung tâm thành phố với nhiều cửa hàng và phương tiện, 790 chi tiết.', NULL, 6),
+
+-- Star Wars (category_id = 8)
+('SP00036', 'LEGO Star Wars Millennium Falcon', 0, 2999000, 1, 'Tàu Millennium Falcon với nhiều nhân vật, 1353 chi tiết.', NULL, 4),
+('SP00037', 'LEGO Star Wars Imperial Star Destroyer', 0, 3499000, 1, 'Tàu chiến Imperial Star Destroyer, 4784 chi tiết.', NULL, 4),
+('SP00038', 'LEGO Star Wars AT-AT', 0, 1899000, 1, 'Walker AT-AT từ phim The Empire Strikes Back, 1267 chi tiết.', NULL, 4),
+('SP00039', 'LEGO Star Wars Death Star', 0, 4999000, 1, 'Ngôi sao tử thần Death Star với nhiều phòng và nhân vật, 4016 chi tiết.', NULL, 4),
+('SP00040', 'LEGO Star Wars X-Wing Starfighter', 0, 999000, 1, 'Tàu chiến X-Wing của Luke Skywalker, 761 chi tiết.', NULL, 4),
+
+-- Marvel Super Heroes (category_id = 14)
+('SP00041', 'LEGO Marvel Avengers Tower', 0, 1799000, 1, 'Tháp Avengers với nhiều nhân vật siêu anh hùng, 685 chi tiết.', NULL, 3),
+('SP00042', 'LEGO Marvel Sanctum Sanctorum', 0, 1999000, 1, 'Sanctum Sanctorum của Doctor Strange, 2708 chi tiết.', NULL, 3),
+('SP00043', 'LEGO Marvel Guardians Ship', 0, 1499000, 1, 'Tàu của đội Guardians of the Galaxy, 1901 chi tiết.', NULL, 3),
+('SP00044', 'LEGO Marvel Spider-Man Daily Bugle', 0, 2999000, 1, 'Tòa nhà Daily Bugle với nhiều nhân vật Spider-Man, 3772 chi tiết.', NULL, 3),
+('SP00045', 'LEGO Marvel Hulkbuster', 0, 1099000, 1, 'Bộ giáp Hulkbuster của Iron Man, 1363 chi tiết.', NULL, 3),
+
+-- Harry Potter (category_id = 17)
+('SP00046', 'LEGO Harry Potter Hogwarts Castle', 0, 3999000, 1, 'Lâu đài Hogwarts chi tiết với nhiều phòng và nhân vật, 6020 chi tiết.', NULL, 1),
+('SP00047', 'LEGO Harry Potter Diagon Alley', 0, 2799000, 1, 'Con phố Diagon Alley với nhiều cửa hàng, 5544 chi tiết.', NULL, 1),
+('SP00048', 'LEGO Harry Potter Hogwarts Express', 0, 899000, 1, 'Tàu Hogwarts Express với sân ga 9¾, 801 chi tiết.', NULL, 1),
+('SP00049', 'LEGO Harry Potter Chamber of Secrets', 0, 1299000, 1, 'Phòng chứa bí mật với rắn Basilisk, 1176 chi tiết.', NULL, 1),
+('SP00050', 'LEGO Harry Potter Quidditch Match', 0, 499000, 1, 'Sân đấu Quidditch với các cầu thủ và khán đài, 500 chi tiết.', NULL, 1),
+
+-- Creator Expert (category_id = 9)
+('SP00051', 'LEGO Creator Expert Bookshop', 0, 1799000, 1, 'Hiệu sách chi tiết với căn hộ ở trên, 2504 chi tiết.', NULL, 2),
+('SP00052', 'LEGO Creator Expert Assembly Square', 0, 2499000, 1, 'Quảng trường trung tâm với nhiều tòa nhà, 4002 chi tiết.', NULL, 4);
 
 CREATE TABLE `invoice` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -252,7 +320,7 @@ CREATE TABLE `invoice` (
   `customer_id` INT(11) NOT NULL,
   `discount_code` VARCHAR(50),
   `discount_amount` DECIMAL(10,2) NOT NULL,
-  `total_price` DECIMAL(10,2) NOT NULL,
+  `total_price` DECIMAL(12,2) NOT NULL,
   PRIMARY KEY (`id`),
   FOREIGN KEY (`employee_id`) REFERENCES `employee` (`id`),
   FOREIGN KEY (`customer_id`) REFERENCES `customer` (`id`),
@@ -260,7 +328,7 @@ CREATE TABLE `invoice` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 INSERT INTO `invoice` (`create_date`, `employee_id`, `customer_id`, `discount_code`, `discount_amount`, `total_price`) VALUES
-('2025-03-17 14:00:00', 1, 1, '30T4', 0, 92400),  -- Hóa đơn có giảm giá
+('2025-03-17 14:00:00', 1, 1, NULL, 0, 92400),  -- Hóa đơn có giảm giá
 ('2025-03-17 15:30:00', 1, 1, NULL, 0, 57500); -- Hóa đơn không có giảm giá
 
 CREATE TABLE `detail_invoice` (
@@ -283,15 +351,15 @@ CREATE TABLE `import` (
   `create_date` DATETIME NOT NULL,
   `employee_id` INT(11) NOT NULL,
   `supplier_id` INT(11) NOT NULL,
-  `total_price` DECIMAL(10,2) NOT NULL,
+  `total_price` DECIMAL(12,2) NOT NULL,
   PRIMARY KEY (`id`),
   FOREIGN KEY (`employee_id`) REFERENCES `employee` (`id`),
   FOREIGN KEY (`supplier_id`) REFERENCES `supplier` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 INSERT INTO `import` (`create_date`, `employee_id`, `supplier_id`, `total_price`) VALUES
-('2025-03-17 14:00:00', 1, 1, 280000), 
-('2025-03-17 15:30:00', 1, 2, 375000);
+('2024-03-17 14:00:00', 1, 1, 280000), 
+('2024-03-17 15:30:00', 1, 2, 375000);
 
 CREATE TABLE `detail_import` (
   `import_id` INT(11) NOT NULL,

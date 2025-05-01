@@ -25,21 +25,19 @@ public class StatisticDAL {
 
     public List<StatisticDTO.QuarterlyEmployeeRevenue> getQuarterlyEmployeeRevenue(int year) {
         final String query = """
-            SELECT 
-                i.employee_id,
-                SUM(CASE WHEN QUARTER(i.create_date) = 1 THEN i.total_price ELSE 0 END) AS quarter1,
-                SUM(CASE WHEN QUARTER(i.create_date) = 2 THEN i.total_price ELSE 0 END) AS quarter2,
-                SUM(CASE WHEN QUARTER(i.create_date) = 3 THEN i.total_price ELSE 0 END) AS quarter3,
-                SUM(CASE WHEN QUARTER(i.create_date) = 4 THEN i.total_price ELSE 0 END) AS quarter4
-            FROM 
-                invoice i
-            JOIN 
-                employee e ON i.employee_id = e.id
-            WHERE 
-                YEAR(i.create_date) = ?
-            GROUP BY 
-                e.id
-        """;
+                    SELECT
+                        e.id AS employee_id,
+                        COALESCE(SUM(CASE WHEN QUARTER(i.create_date) = 1 THEN i.total_price ELSE 0 END), 0) AS quarter1,
+                        COALESCE(SUM(CASE WHEN QUARTER(i.create_date) = 2 THEN i.total_price ELSE 0 END), 0) AS quarter2,
+                        COALESCE(SUM(CASE WHEN QUARTER(i.create_date) = 3 THEN i.total_price ELSE 0 END), 0) AS quarter3,
+                        COALESCE(SUM(CASE WHEN QUARTER(i.create_date) = 4 THEN i.total_price ELSE 0 END), 0) AS quarter4
+                    FROM
+                        employee e
+                    LEFT JOIN
+                        invoice i ON e.id = i.employee_id AND YEAR(i.create_date) = ?
+                    GROUP BY
+                        e.id;     
+                """;
 
         List<StatisticDTO.QuarterlyEmployeeRevenue> list = new ArrayList<>();
 
@@ -67,24 +65,24 @@ public class StatisticDAL {
 
     public List<StatisticDTO.ProductRevenue> getProductRevenue(LocalDate start, LocalDate end) {
         final String query = """
-                SELECT 
-                    p.id, 
-                    p.name AS product_name, 
-                    c.name AS category_name, 
-                    SUM(di.quantity) AS total_quantity, 
-                    SUM(di.total_price * ((i.total_price - i.discount_amount) / i.total_price)) AS revenue
-                FROM 
-                    detail_invoice di
-                JOIN 
-                        product p ON di.product_id = p.id
-                JOIN 
-                        category c ON p.category_id = c.id
-                JOIN 
-                        invoice i ON di.invoice_id = i.id
-                WHERE 
-                    i.create_date BETWEEN ? AND ?
-                GROUP BY 
-                    p.id, p.name, c.name;
+                SELECT
+                       p.id,
+                       p.name AS product_name,
+                       c.name AS category_name,
+                       COALESCE(SUM(CASE WHEN i.id IS NOT NULL THEN di.quantity ELSE 0 END), 0) AS total_quantity,
+                       COALESCE(SUM(di.total_price * ((i.total_price - i.discount_amount) / i.total_price)), 0) AS revenue
+                   FROM
+                       product p
+                   JOIN
+                       category c ON p.category_id = c.id
+                   LEFT JOIN
+                       detail_invoice di ON di.product_id = p.id
+                   LEFT JOIN
+                       invoice i ON di.invoice_id = i.id AND i.create_date >= ? AND i.create_date < DATE_ADD(?, INTERVAL 1 DAY)
+                   GROUP BY
+                       p.id, p.name, c.name
+                   ORDER BY
+                       revenue DESC;
                 """;
 
         List<StatisticDTO.ProductRevenue> list = new ArrayList<>();
