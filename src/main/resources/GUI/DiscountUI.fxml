@@ -130,7 +130,7 @@
                                     <Font name="Arial" size="14.0" />
                                  </font>
                               </Label>
-                              <Label fx:id="name">
+                              <Label fx:id="name" prefWidth="100.0">
                                  <font>
                                     <Font name="Arial" size="14.0" />
                                  </font>
