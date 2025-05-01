@@ -594,7 +594,7 @@ public class SellingProductController {
             totalInvoicePrice = totalInvoicePrice.add(t.getTotalPrice());
         }
 
-        // Kiem tra lai tranh truong hop ap dung giam dung moc thanh cong nhung sau do xao bot khien gia k con du ap dung
+        // Kiem tra lai tranh truong hop ap dung giam dung moc thanh cong nhung sau do xoa bot khien gia k con du ap dung
         if (selectedDiscount != null && (totalInvoicePrice.compareTo(this.totalPriceInvoiceForDiscount) < 0)) {
             NotificationUtils.showErrorAlert("Giá trị đơn hàng của bạn không còn đủ để áp dụng khuyến mãi này.", "Thông báo");
             selectedDiscount = null;
@@ -609,10 +609,15 @@ public class SellingProductController {
         InvoiceDTO temp = new InvoiceDTO(Integer.parseInt(txtInvoiceId.getText().trim()), null, Integer.parseInt(txtEmployeeId.getText().trim()),
                 Integer.parseInt(txtCustomerId.getText().trim()), selectedDiscount == null ? null:txtCodeDiscount.getText().trim(), discountPrice != null ? discountPrice : BigDecimal.ZERO, totalInvoicePrice.subtract(discountPrice));
         ValidationUtils validate = ValidationUtils.getInstance();
-        String extra =  "Thành tiền: " + validate.formatCurrency(totalInvoicePrice) + " Đ" +
-                        "\nMã khuyến mãi: " + (selectedDiscount == null ? "Không có":txtCodeDiscount.getText().trim()) +
-                        "\nGiảm giá: " + (discountPrice != null ? validate.formatCurrency(discountPrice) : BigDecimal.ZERO) + " Đ" + (!discountPercent.isEmpty() ? " - " + discountPercent: "") +
-                        "\nTổng tiền hóa đơn: " + validate.formatCurrency(totalInvoicePrice.subtract(discountPrice)) + " Đ";
+
+        String extra =
+                "Thành tiền: " + validate.formatCurrency(totalInvoicePrice) + " Đ" +
+                        "\nMã khuyến mãi: " + (selectedDiscount == null ? "Không có" : txtCodeDiscount.getText().trim()) +
+                        "\nGiảm giá: " + (discountPrice != null ? validate.formatCurrency(discountPrice) : "0") + " Đ" +
+                        (!discountPercent.isEmpty() && !discountPercent.equalsIgnoreCase("0%")
+                                ? " - " + discountPercent
+                                : "") +
+                        "\nTổng tiền hóa đơn: " + validate.formatCurrency(totalInvoicePrice.subtract(discountPrice != null ? discountPrice : BigDecimal.ZERO)) + " Đ";
         boolean submit =  NotificationUtils.showConfirmAlert("Xác nhận phiếu bán", arrTempDetailInvoice, "Thông Báo", extra);
         // khong xac nhan khong nhap
         if (!submit) return;
