@@ -42,8 +42,6 @@ public class StatisticController implements IController {
     @FXML
     public TableColumn<ProductRevenue, Integer> tbl_col_totalquantity;
     @FXML
-    private TableColumn<ProductRevenue, String> tbl_col_revenue;
-    @FXML
     private DatePicker txtStartCreateDate;
     @FXML
     private DatePicker txtEndCreateDate;
@@ -51,9 +49,6 @@ public class StatisticController implements IController {
     private Button btnExportExcel1;
     @FXML
     private Button btnThongKe1;
-    @FXML
-    private Label txtTotalRevenue1;
-
     @FXML
     private Tab tab2;
     @FXML
@@ -104,9 +99,6 @@ public class StatisticController implements IController {
         tbl_col_productname.setCellValueFactory(new PropertyValueFactory<>("productName"));
         tbl_col_productcate.setCellValueFactory(new PropertyValueFactory<>("categoryName"));
         tbl_col_totalquantity.setCellValueFactory(new PropertyValueFactory<>("totalQuantity"));
-        tbl_col_revenue.setCellValueFactory(cellData ->
-                formatCell(validationUtils.formatCurrency(cellData.getValue().getRevenue())));
-
         // Employee Revenue Table
         tbl_col_id.setCellValueFactory(new PropertyValueFactory<>("employeeId"));
         tbl_col_quy1.setCellValueFactory(cellData ->
@@ -169,12 +161,6 @@ public class StatisticController implements IController {
             productRevenuesList.addAll(list);
             tblProductRevenue.setItems((FXCollections.observableArrayList(productRevenuesList)));
 
-            BigDecimal totalProductRevenue = BigDecimal.ZERO;
-            for (ProductRevenue item : list) {
-                totalProductRevenue = totalProductRevenue.add(item.getRevenue());
-            }
-
-            txtTotalRevenue1.setText(ValidationUtils.getInstance().formatCurrency(totalProductRevenue));
             if (productRevenuesList.isEmpty()) {
                 NotificationUtils.showInfoAlert("Không có dữ liệu tương ứng.", "Thông báo");
             } else {

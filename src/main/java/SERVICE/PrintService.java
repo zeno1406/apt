@@ -113,7 +113,6 @@ public class PrintService {
 
             // Bảng sản phẩm
             int index = 1;
-            BigDecimal totalPrice = new BigDecimal(0);
             PdfPTable table = new PdfPTable(5);
             table.setWidthPercentage(100);
             String[] headers = {"STT", "TÊN SẢN PHẨM", "SỐ LƯỢNG", "ĐƠN GIÁ", "THÀNH TIỀN"};
@@ -128,7 +127,7 @@ public class PrintService {
             for (DetailInvoiceDTO detail : arrDetailInvoice) {
                 int quantity = detail.getQuantity(); // Số lượng sản phẩm
                 BigDecimal price = detail.getPrice(); // Giá của một sản phẩm
-                totalPrice = price.multiply(BigDecimal.valueOf(quantity)); // Tổng tiền của sản phẩm này
+                BigDecimal totalPrice = price.multiply(BigDecimal.valueOf(quantity)); // Tổng tiền của sản phẩm này
                 String productName = proBus.getByIdLocal(detail.getProductId()).getName();
 
                 // Tạo các ô của bảng
@@ -168,11 +167,11 @@ public class PrintService {
             summaryTable.setWidthPercentage(100);
             summaryTable.setWidths(new float[]{2f, 1f, 1f});
             String[][] summaryData = {
-                    {"Tổng tiền:", ValidationUtils.getInstance().formatCurrency(totalPrice), "đ"},
+                    {"Tổng tiền:", ValidationUtils.getInstance().formatCurrency(invoice.getTotalPrice()), "đ"},
                     {"Số tiền giảm:", ValidationUtils.getInstance().formatCurrency(invoice.getDiscountAmount()), "đ"},
-                    {"Thành tiền:", ValidationUtils.getInstance().formatCurrency(invoice.getTotalPrice()), "đ"}
+                    {"Thành tiền:", ValidationUtils.getInstance().formatCurrency(
+                            invoice.getTotalPrice().subtract(invoice.getDiscountAmount()).max(BigDecimal.ZERO)), "đ"}
             };
-
             for (String[] row : summaryData) {
                 PdfPCell labelCell = new PdfPCell(new Phrase(row[0], boldFont));
                 labelCell.setBorder(Rectangle.NO_BORDER);

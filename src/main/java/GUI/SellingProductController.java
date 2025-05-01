@@ -99,10 +99,11 @@ public class SellingProductController {
     private TempDetailInvoiceDTO selectedTempDetailInvoice;
     private CustomerDTO selectedCustomer = null;
     private DiscountDTO selectedDiscount = null;
-    private BigDecimal discountPrice = BigDecimal.ZERO;
+    private ArrayList<DetailDiscountDTO> selectedDetailDiscountList = new ArrayList<>();
+    private DetailDiscountDTO selectedDetailDiscount = null;
     private BigDecimal totalPriceInvoice = BigDecimal.ZERO;
-    private BigDecimal totalPriceInvoiceForDiscount = BigDecimal.ZERO;
-    private String discountPercent = "";
+    private BigDecimal discountPrice = BigDecimal.ZERO;
+    private BigDecimal finalTotalPriceInvoice = BigDecimal.ZERO;
 
     @FXML
     public void initialize()
@@ -367,7 +368,7 @@ public class SellingProductController {
         );
         if (modalController != null && modalController.isSaved()) {
             this.arrTempDetailInvoice.set(selectedTempDetailInvoice.getInvoiceId(), modalController.getTempDetailInvoice());
-            loadCaculatedTotalImportPrice();
+            loadCaculatedTotalInvoicePrice();
             loadTable();
 
             NotificationUtils.showInfoAlert("Sửa thành công.", "Thông báo");
@@ -386,7 +387,7 @@ public class SellingProductController {
         }
         arrTempDetailInvoice.remove(selectedTempDetailInvoice);
         addEventClickForProduct(tbvDetailInvoiceProduct, gpShowProductWrapper);
-        loadCaculatedTotalImportPrice();
+        loadCaculatedTotalInvoicePrice();
         loadTable();
 
         NotificationUtils.showInfoAlert("Xóa sản phẩm khỏi đơn hàng thành công.", "Thông báo");
@@ -401,14 +402,13 @@ public class SellingProductController {
         NotificationUtils.showInfoAlert("Xóa toàn bộ thành công.", "Thông báo");
         selectedDiscount = null;
         selectedCustomer = null;
+        selectedDetailDiscount = null;
+        selectedDetailDiscountList.clear();
+        discountPrice = BigDecimal.ZERO;
         txtCodeDiscount.setText("");
         txtCustomerId.setText("");
         txtCustomerName.setText("");
-        discountPercent = "";
-        discountPrice = BigDecimal.ZERO;
-        totalPriceInvoice = BigDecimal.ZERO;
-        totalPriceInvoiceForDiscount = BigDecimal.ZERO;
-        loadCaculatedTotalImportPrice();
+        loadCaculatedTotalInvoicePrice();
         makeEditable(btnSubmitInvoice);
         makeEditable(btnGetCusInfo);
         makeEditable(btnGetDiscount);
@@ -470,45 +470,62 @@ public class SellingProductController {
         );
         if (modalController != null && modalController.isSaved()) {
             arrTempDetailInvoice.add(modalController.getTempDetailInvoice());
-            loadCaculatedTotalImportPrice();
+            loadCaculatedTotalInvoicePrice();
             loadTable();
             NotificationUtils.showInfoAlert("Thêm sản phẩm thành công.", "Thông báo");
         }
     }
 
     private void onMouseClickedShowDiscountContainer() {
-        BigDecimal temp = BigDecimal.ZERO;
-        for(TempDetailInvoiceDTO invoice : arrTempDetailInvoice)
-            temp = temp.add(invoice.getTotalPrice());
-        BigDecimal finalTemp = temp;
         DiscountForSellingModalController modalController = UiUtils.gI().openStageWithController(
                 "/GUI/DiscountForSellingModal.fxml",
-                discountForSellingModalController -> discountForSellingModalController.setPrice(finalTemp),
+                discountForSellingModalController -> discountForSellingModalController.setPrice(totalPriceInvoice),
                 "Danh sách khuyến mãi"
         );
 
         if (modalController != null && modalController.isSaved()) {
             selectedDiscount = new DiscountDTO(modalController.getSelectedDiscount());
             txtCodeDiscount.setText(String.valueOf(selectedDiscount.getCode()));
-            this.discountPrice = modalController.getPrice().subtract(modalController.getDiscountPrice());
-            this.totalPriceInvoiceForDiscount = modalController.getTotalPriceInvoice();
-            this.discountPercent = ValidationUtils.getInstance().formatCurrency(modalController.getDiscountPercent()) + "%";
-            lbDiscountPrice.setText(ValidationUtils.getInstance().formatCurrency(discountPrice) + " Đ");
-            loadCaculatedTotalImportPrice();
+            selectedDetailDiscountList = modalController.getDetailDiscountList();
+            setDiscountPrice();
+            loadCaculatedTotalInvoicePrice();
             NotificationUtils.showInfoAlert("Chọn  khuyến mãi thành công.", "Thông báo");
         }
     }
 
-    private void loadCaculatedTotalImportPrice() {
+    private void setDiscountPrice() {
+        int length = selectedDetailDiscountList.size();
+        for (int i = length - 1; i >= 0; i--) {
+            // Kiểm tra xem totalPriceInvoice có lớn hơn hoặc bằng mốc giảm giá hiện tại không
+            if (totalPriceInvoice.compareTo(selectedDetailDiscountList.get(i).getTotalPriceInvoice()) >= 0) {
+                if (selectedDiscount.getType() == 0) {  // Giảm theo tỷ lệ phần trăm
+                    // Tính toán giá sau khi giảm theo tỷ lệ phần trăm
+                    discountPrice = totalPriceInvoice.multiply(
+                            (selectedDetailDiscountList.get(i).getDiscountAmount())
+                                    .divide(BigDecimal.valueOf(100), 2, BigDecimal.ROUND_HALF_UP) // Sử dụng setScale và ROUND_HALF_UP thay cho ROUND_CEILING
+                    );
+                } else {  // Giảm theo giá trị cố định
+                    // Tính toán giá sau khi giảm theo giá trị cố định
+                    discountPrice = selectedDetailDiscountList.get(i).getDiscountAmount();
+                }
+                // Lưu thông tin chi tiết giảm giá đã chọn
+                selectedDetailDiscount = new DetailDiscountDTO(selectedDetailDiscountList.get(i));
+                return;  // Nếu chỉ muốn trả về sau khi tìm thấy một mốc phù hợp, thì vẫn giữ return
+            }
+        }
+    }
+
+    private void loadCaculatedTotalInvoicePrice() {
         BigDecimal totalImportPrice = BigDecimal.ZERO;
         ValidationUtils validate = ValidationUtils.getInstance();
         for (TempDetailInvoiceDTO detail : arrTempDetailInvoice) {
             totalImportPrice = totalImportPrice.add(detail.getTotalPrice());
         }
         totalPriceInvoice = totalImportPrice;
-        lbFinalTotalInvoicePrice.setText(validate.formatCurrency(totalPriceInvoice.subtract(discountPrice)) + " Đ");
-        lbDiscountPrice.setText(validate.formatCurrency(discountPrice) + " Đ");
+        finalTotalPriceInvoice = totalPriceInvoice.subtract(discountPrice);
         lbTotalInvoicePrice.setText(ValidationUtils.getInstance().formatCurrency(totalPriceInvoice) + " Đ");
+        lbDiscountPrice.setText(validate.formatCurrency(discountPrice) + " Đ");
+        lbFinalTotalInvoicePrice.setText(validate.formatCurrency(finalTotalPriceInvoice) + " Đ");
     }
 
     private void addProductToTable(String productId) {
@@ -527,7 +544,7 @@ public class SellingProductController {
                 temp.setQuantity(quantity);
                 BigDecimal total = temp.getPrice().multiply(BigDecimal.valueOf(temp.getQuantity()));
                 temp.setTotalPrice(total);
-                loadCaculatedTotalImportPrice();
+                loadCaculatedTotalInvoicePrice();
                 loadTable();
                 return;
             }
@@ -584,40 +601,47 @@ public class SellingProductController {
         SessionManagerService ses = SessionManagerService.getInstance();
         ArrayList<DetailInvoiceDTO> list = new ArrayList<>();
         ArrayList<ProductDTO> listProduct = new ArrayList<>();
-        BigDecimal totalInvoicePrice = BigDecimal.ZERO;
 
         for (TempDetailInvoiceDTO t : arrTempDetailInvoice) {
             DetailInvoiceDTO di = new DetailInvoiceDTO(t.getInvoiceId(), t.getProductId(), t.getQuantity(), t.getPrice(), t.getTotalPrice());
             ProductDTO p = new ProductDTO(t.getProductId(), t.getName(), t.getQuantity() , t.getPrice(), true, null, null, 0);
             list.add(di);
             listProduct.add(p);
-            totalInvoicePrice = totalInvoicePrice.add(t.getTotalPrice());
         }
-
         // Kiem tra lai tranh truong hop ap dung giam dung moc thanh cong nhung sau do xoa bot khien gia k con du ap dung
-        if (selectedDiscount != null && (totalInvoicePrice.compareTo(this.totalPriceInvoiceForDiscount) < 0)) {
-            NotificationUtils.showErrorAlert("Giá trị đơn hàng của bạn không còn đủ để áp dụng khuyến mãi này.", "Thông báo");
-            selectedDiscount = null;
-            txtCodeDiscount.setText("");
-            discountPrice = BigDecimal.ZERO;
-            totalPriceInvoiceForDiscount= BigDecimal.ZERO;
-            discountPercent = "";
-            loadCaculatedTotalImportPrice();
-            return;
+        if (selectedDiscount != null && selectedDetailDiscount != null) {
+            if (totalPriceInvoice.compareTo(selectedDetailDiscount.getTotalPriceInvoice()) < 0) {
+                NotificationUtils.showErrorAlert("Giá trị đơn hàng của bạn không còn đủ để áp dụng khuyến mãi này.", "Thông báo");
+                selectedDiscount = null;
+                selectedDetailDiscount = null;
+                txtCodeDiscount.setText("");
+                discountPrice = BigDecimal.ZERO;
+                loadCaculatedTotalInvoicePrice();
+                return;
+            }
+            // trường hợp hóa đơn tăng lên sau khi áp khuyến mãi trước đó. phải hỏi để chọn lại km để áp mốc cao hơn
+            checkDiscount();
         }
 
         InvoiceDTO temp = new InvoiceDTO(Integer.parseInt(txtInvoiceId.getText().trim()), null, Integer.parseInt(txtEmployeeId.getText().trim()),
-                Integer.parseInt(txtCustomerId.getText().trim()), selectedDiscount == null ? null:txtCodeDiscount.getText().trim(), discountPrice != null ? discountPrice : BigDecimal.ZERO, totalInvoicePrice.subtract(discountPrice));
+                Integer.parseInt(txtCustomerId.getText().trim()), selectedDiscount == null ? null:txtCodeDiscount.getText().trim(), discountPrice != null ? discountPrice : BigDecimal.ZERO, totalPriceInvoice);
         ValidationUtils validate = ValidationUtils.getInstance();
-
+        String discount = "\nGiảm giá: ";
+        if (selectedDiscount != null && selectedDetailDiscount != null) {
+            if (discountPrice != null && discountPrice.compareTo(BigDecimal.ZERO) != 0 ) {
+                discount += validate.formatCurrency(discountPrice);
+            } else discount += "0";
+            discount += " Đ";
+            if (selectedDiscount.getType() == 0) {
+                discount += " - " + validate.formatCurrency(selectedDetailDiscount.getDiscountAmount()) + "%";
+            }
+        }
         String extra =
-                "Thành tiền: " + validate.formatCurrency(totalInvoicePrice) + " Đ" +
+                "Tổng tiền hóa đơn: " + validate.formatCurrency(totalPriceInvoice) + " Đ" +
                         "\nMã khuyến mãi: " + (selectedDiscount == null ? "Không có" : txtCodeDiscount.getText().trim()) +
-                        "\nGiảm giá: " + (discountPrice != null ? validate.formatCurrency(discountPrice) : "0") + " Đ" +
-                        (!discountPercent.isEmpty() && !discountPercent.equalsIgnoreCase("0%")
-                                ? " - " + discountPercent
-                                : "") +
-                        "\nTổng tiền hóa đơn: " + validate.formatCurrency(totalInvoicePrice.subtract(discountPrice != null ? discountPrice : BigDecimal.ZERO)) + " Đ";
+                        discount +
+                        "\nThành tiền: " + validate.formatCurrency(finalTotalPriceInvoice) + " Đ";
+
         boolean submit =  NotificationUtils.showConfirmAlert("Xác nhận phiếu bán", arrTempDetailInvoice, "Thông Báo", extra);
         // khong xac nhan khong nhap
         if (!submit) return;
@@ -634,6 +658,38 @@ public class SellingProductController {
             ObservableList<Node> listNode = gpShowProductWrapper.getChildren();
             for (Node node : listNode) {
                 makeReadOnly(node);
+            }
+        }
+    }
+
+    private void checkDiscount() {
+        int length = selectedDetailDiscountList.size();
+        for (int i = length - 1; i >= 0; i--) {
+            // Kiểm tra xem totalPriceInvoice có lớn hơn hoặc bằng mốc giảm giá cao nhat không
+            if (totalPriceInvoice.compareTo(selectedDetailDiscountList.get(i).getTotalPriceInvoice()) >= 0
+                    && selectedDetailDiscountList.get(i).getTotalPriceInvoice().compareTo(selectedDetailDiscount.getTotalPriceInvoice()) > 0) {
+//                    if (selectedDetailDiscountList.get(i).getTotalPriceInvoice().compareTo(selectedDetailDiscount.getTotalPriceInvoice()) < 0) return;
+                // Nếu totalPriceInvoice mới cao hơn một trong những mộc cuối và k phải mốc đang áp dụng tức là đã đạt đủ điều kiện lên mốc cao hơn
+                System.out.println(selectedDetailDiscountList.get(i).getTotalPriceInvoice());
+                System.out.println(selectedDetailDiscount.getTotalPriceInvoice());
+
+                if (UiUtils.gI().showConfirmAlert("Hóa đơn của bạn đã đạt đủ điều kiện cho mốc giảm giá tiếp theo. Bạn có muốn áp dụng? ", "Thông báo xác nhận")) {
+                    if (selectedDiscount.getType() == 0) {  // Giảm theo tỷ lệ phần trăm
+                        // Tính toán giá sau khi giảm theo tỷ lệ phần trăm
+                        discountPrice = totalPriceInvoice.multiply(
+                                (selectedDetailDiscountList.get(i).getDiscountAmount())
+                                        .divide(BigDecimal.valueOf(100), 2, BigDecimal.ROUND_HALF_UP) // Sử dụng setScale và ROUND_HALF_UP thay cho ROUND_CEILING
+                        );
+                    } else {  // Giảm theo giá trị cố định
+                        // Tính toán giá sau khi giảm theo giá trị cố định
+                        discountPrice = selectedDetailDiscountList.get(i).getDiscountAmount();
+                    }
+                    // Lưu thông tin chi tiết giảm giá đã chọn
+                    selectedDetailDiscount = new DetailDiscountDTO(selectedDetailDiscountList.get(i));
+                    loadCaculatedTotalInvoicePrice();
+                    NotificationUtils.showInfoAlert("Cập nhật khuyến mãi thành công.", "Thông báo");
+                    return;
+                }
             }
         }
     }

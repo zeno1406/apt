@@ -26,17 +26,17 @@ public class StatisticDAL {
     public List<StatisticDTO.QuarterlyEmployeeRevenue> getQuarterlyEmployeeRevenue(int year) {
         final String query = """
                     SELECT
-                        e.id AS employee_id,
-                        COALESCE(SUM(CASE WHEN QUARTER(i.create_date) = 1 THEN i.total_price ELSE 0 END), 0) AS quarter1,
-                        COALESCE(SUM(CASE WHEN QUARTER(i.create_date) = 2 THEN i.total_price ELSE 0 END), 0) AS quarter2,
-                        COALESCE(SUM(CASE WHEN QUARTER(i.create_date) = 3 THEN i.total_price ELSE 0 END), 0) AS quarter3,
-                        COALESCE(SUM(CASE WHEN QUARTER(i.create_date) = 4 THEN i.total_price ELSE 0 END), 0) AS quarter4
-                    FROM
-                        employee e
-                    LEFT JOIN
-                        invoice i ON e.id = i.employee_id AND YEAR(i.create_date) = ?
-                    GROUP BY
-                        e.id;     
+                         e.id AS employee_id,
+                         COALESCE(SUM(CASE WHEN QUARTER(i.create_date) = 1 THEN i.total_price - i.discount_amount ELSE 0 END), 0) AS quarter1,
+                         COALESCE(SUM(CASE WHEN QUARTER(i.create_date) = 2 THEN i.total_price - i.discount_amount ELSE 0 END), 0) AS quarter2,
+                         COALESCE(SUM(CASE WHEN QUARTER(i.create_date) = 3 THEN i.total_price - i.discount_amount ELSE 0 END), 0) AS quarter3,
+                         COALESCE(SUM(CASE WHEN QUARTER(i.create_date) = 4 THEN i.total_price - i.discount_amount ELSE 0 END), 0) AS quarter4
+                     FROM
+                         employee e
+                     LEFT JOIN
+                         invoice i ON e.id = i.employee_id AND YEAR(i.create_date) = ?
+                     GROUP BY
+                         e.id;     
                 """;
 
         List<StatisticDTO.QuarterlyEmployeeRevenue> list = new ArrayList<>();
@@ -69,8 +69,7 @@ public class StatisticDAL {
                        p.id,
                        p.name AS product_name,
                        c.name AS category_name,
-                       COALESCE(SUM(CASE WHEN i.id IS NOT NULL THEN di.quantity ELSE 0 END), 0) AS total_quantity,
-                       COALESCE(SUM(di.total_price * ((i.total_price - i.discount_amount) / i.total_price)), 0) AS revenue
+                       COALESCE(SUM(CASE WHEN i.id IS NOT NULL THEN di.quantity ELSE 0 END), 0) AS total_quantity
                    FROM
                        product p
                    JOIN
@@ -82,7 +81,7 @@ public class StatisticDAL {
                    GROUP BY
                        p.id, p.name, c.name
                    ORDER BY
-                       revenue DESC;
+                       total_quantity DESC;
                 """;
 
         List<StatisticDTO.ProductRevenue> list = new ArrayList<>();
@@ -98,8 +97,7 @@ public class StatisticDAL {
                             resultSet.getString("id"),
                             resultSet.getString("product_name"),
                             resultSet.getString("category_name"),
-                            resultSet.getInt("total_quantity"),
-                            resultSet.getBigDecimal("revenue")
+                            resultSet.getInt("total_quantity")
                     ));
                 }
             }

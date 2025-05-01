@@ -308,7 +308,6 @@ public class ExcelService {
         headerRow.createCell(1).setCellValue("Tên sản phẩm");
         headerRow.createCell(2).setCellValue("Thể loại sản phẩm");
         headerRow.createCell(3).setCellValue("Số lượng bán ra");
-        headerRow.createCell(4).setCellValue("Tổng doanh thu");
 
         ValidationUtils validate = ValidationUtils.getInstance();
 
@@ -320,17 +319,16 @@ public class ExcelService {
             row.createCell(1).setCellValue(item.getProductName());
             row.createCell(2).setCellValue(item.getCategoryName());
             row.createCell(3).setCellValue(item.getTotalQuantity());
-            row.createCell(4).setCellValue(validate.formatCurrency(item.getRevenue()));
         }
 
         // Tổng doanh thu
         Row totalRevenueRow = sheet.createRow(rowNum+1);
         totalRevenueRow.createCell(3).setCellValue("Tổng: ");
-        BigDecimal totalProductRevenue = BigDecimal.ZERO;
+        int totalProductQuantity = 0;
         for (StatisticDTO.ProductRevenue item : productRevenuesList) {
-            totalProductRevenue = totalProductRevenue.add(item.getRevenue());
+            totalProductQuantity = totalProductQuantity + (item.getTotalQuantity());
         }
-        totalRevenueRow.createCell(4).setCellValue(validate.formatCurrency(totalProductRevenue));
+        totalRevenueRow.createCell(4).setCellValue(totalProductQuantity);
 
         //Căn chỉnh cột trước khi lưu(bỏ qua cột đầu tiên)
         for (int i = 1; i < 5; i++) {
