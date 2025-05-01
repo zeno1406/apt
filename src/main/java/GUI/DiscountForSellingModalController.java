@@ -49,11 +49,7 @@ public class DiscountForSellingModalController {
     @Getter
     private DiscountDTO selectedDiscount;
     @Getter
-    private  BigDecimal discountPrice = BigDecimal.ZERO;
-    @Getter
-    private BigDecimal totalPriceInvoice = BigDecimal.ZERO;
-    @Getter
-    private BigDecimal discountPercent = BigDecimal.ZERO;
+    private ArrayList<DetailDiscountDTO> detailDiscountList = new ArrayList<>();
 
     @FXML
     public void initialize() {
@@ -103,14 +99,12 @@ public class DiscountForSellingModalController {
     // handle select customer
     private void handleGetDiscount() {
         selectedDiscount = tbvDiscount.getSelectionModel().getSelectedItem();
-        ArrayList<DetailDiscountDTO> listDetails = getDetails(selectedDiscount.getCode());
-//        this.discountPrice = this.price.subtract(listDetails.getFirst().getTotalPriceInvoice());
-        this.discountPrice = listDetails.getFirst().getTotalPriceInvoice().subtract(this.price);
-        if (!isValid(listDetails)) {
-            NotificationUtils.showErrorAlert("Vui lòng mua thêm tối thiểu " + ValidationUtils.getInstance().formatCurrency(discountPrice) + " Đ để dùng voucher này!", "Thông báo");
+        detailDiscountList.clear();
+        detailDiscountList = getDetails(selectedDiscount.getCode());
+        if (!isValid(detailDiscountList)) {
+            NotificationUtils.showErrorAlert("Vui lòng mua thêm tối thiểu " + ValidationUtils.getInstance().formatCurrency(detailDiscountList.getFirst().getTotalPriceInvoice().subtract(price)) + " Đ để dùng voucher này!", "Thông báo");
             return;
         }
-        setDiscountPrice(listDetails);
         isSaved = true;
         handleClose();
     }
@@ -120,33 +114,12 @@ public class DiscountForSellingModalController {
     }
 
     private boolean isValid(ArrayList<DetailDiscountDTO> details) {
-        boolean temp = false;
-        for(DetailDiscountDTO detail : details) {
-            temp = detail.getTotalPriceInvoice().compareTo(this.price) <= 0;
-            if(temp) return temp;
+        for (DetailDiscountDTO detail : details) {
+            // Kiểm tra nếu price >= mốc giá trị của detail
+            if (detail.getTotalPriceInvoice().compareTo(price) <= 0) {
+                return true;  // Nếu có ít nhất một mốc thỏa mãn thì trả về true
+            }
         }
-        return false;
-    }
-
-    private void setDiscountPrice(ArrayList<DetailDiscountDTO> details) {
-        int length = details.size();
-        for(int i = length - 1; i >= 0; i--) {
-            if (this.price.compareTo(details.get(i).getTotalPriceInvoice()) >= 0)
-                if(selectedDiscount.getType() == 0) {
-                    this.discountPrice = this.price.multiply(
-                            (BigDecimal.valueOf(100).subtract(details.get(i).getDiscountAmount()))
-                                    .divide(BigDecimal.valueOf(100), BigDecimal.ROUND_CEILING)
-                    );
-                    this.discountPercent = details.get(i).getDiscountAmount();
-                    this.totalPriceInvoice = details.get(i).getTotalPriceInvoice();
-                    return;
-                }
-                else
-                {
-                    this.discountPrice = this.price.subtract(details.get(i).getDiscountAmount());
-                    this.totalPriceInvoice = details.get(i).getDiscountAmount();
-                    return;
-                }
-        }
+        return false;  // Nếu không có mốc nào thỏa mãn thì trả về false
     }
 }

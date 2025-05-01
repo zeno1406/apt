@@ -8,14 +8,12 @@ public class StatisticDTO {
         private String productName;
         private String categoryName;
         private int totalQuantity;
-        private BigDecimal revenue;
 
-        public ProductRevenue(String productId, String productName, String categoryName, int totalQuantity, BigDecimal revenue) {
+        public ProductRevenue(String productId, String productName, String categoryName, int totalQuantity) {
             this.productId = productId;
             this.productName = productName;
             this.categoryName = categoryName;
             this.totalQuantity = totalQuantity;
-            this.revenue = revenue != null ? revenue : BigDecimal.ZERO;
         }
 
         public String getProductId() {
@@ -47,14 +45,6 @@ public class StatisticDTO {
         }
         public void setTotalQuantity(int totalQuantity) {
             this.totalQuantity = totalQuantity;
-        }
-
-        public BigDecimal getRevenue() {
-            return revenue;
-        }
-
-        public void setRevenue(BigDecimal revenue) {
-            this.revenue = revenue;
         }
     }
 
