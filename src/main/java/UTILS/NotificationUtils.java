@@ -5,6 +5,7 @@ import DTO.TempDetailInvoiceDTO;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.TextArea;
 import org.apache.poi.ss.formula.functions.T;
 
 import java.util.ArrayList;
@@ -40,27 +41,30 @@ public class NotificationUtils {
                 content.append("- ")
                         .append(item.getName())
                         .append(" | SL: ").append(item.getQuantity())
-                        .append(" | Đơn giá: ").append(validate.formatCurrency(item.getPrice()) + " Đ")
+                        .append(" | Đơn giá: ").append(validate.formatCurrency(item.getPrice())).append(" Đ")
                         .append("\n");
-            }
-            else if (obj instanceof TempDetailInvoiceDTO item) {
+            } else if (obj instanceof TempDetailInvoiceDTO item) {
                 content.append("- ")
                         .append(item.getName())
                         .append(" | SL: ").append(item.getQuantity())
-                        .append(" | Đơn giá: ").append(validate.formatCurrency(item.getPrice()) + " Đ")
+                        .append(" | Đơn giá: ").append(validate.formatCurrency(item.getPrice())).append(" Đ")
                         .append("\n");
-            }
-            else {
+            } else {
                 content.append("- Không xác định: ").append(obj.toString()).append("\n");
             }
         }
 
-        // Thêm phần extraFooter (nếu có)
         if (extraFooter != null && !extraFooter.isEmpty()) {
             content.append("\n").append(extraFooter);
         }
 
-        alert.setContentText(content.toString());
+        TextArea textArea = new TextArea(content.toString());
+        textArea.setEditable(false);
+        textArea.setWrapText(true);
+        textArea.setPrefWidth(600);
+        textArea.setPrefHeight(400);
+
+        alert.getDialogPane().setContent(textArea);
 
         ButtonType okButton = new ButtonType("Đồng ý", ButtonBar.ButtonData.OK_DONE);
         ButtonType cancelButton = new ButtonType("Huỷ", ButtonBar.ButtonData.CANCEL_CLOSE);
@@ -69,5 +73,4 @@ public class NotificationUtils {
         Optional<ButtonType> result = alert.showAndWait();
         return result.isPresent() && result.get() == okButton;
     }
-
 }
