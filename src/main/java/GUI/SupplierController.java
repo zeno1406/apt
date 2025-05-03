@@ -85,7 +85,10 @@ public class SupplierController implements IController {
         cbSearchBy.setOnAction(event -> handleSearchByChange());
         ckbStatusFilter.setOnAction(event -> handleStatusFilterChange());
         txtSearch.textProperty().addListener((observable, oldValue, newValue) -> handleKeywordChange());
-        refreshBtn.setOnAction(event -> resetFilters());
+        refreshBtn.setOnAction(event -> {
+            resetFilters();
+            NotificationUtils.showInfoAlert("Làm mới thành công", "Thông báo");
+        });
 
         addBtn.setOnAction(event -> handleAddBtn());
         editBtn.setOnAction(event -> handleEditBtn());
@@ -126,8 +129,6 @@ public class SupplierController implements IController {
         keyword = "";
         statusFilter = 1;
         applyFilters();
-
-        NotificationUtils.showInfoAlert("Làm mới thành công", "Thông báo");
     }
 
     @Override
@@ -135,15 +136,6 @@ public class SupplierController implements IController {
         boolean canAdd = SessionManagerService.getInstance().hasPermission(10);
         boolean canEdit = SessionManagerService.getInstance().hasPermission(12);
         boolean canDelete = SessionManagerService.getInstance().hasPermission(11);
-
-//        addBtn.setVisible(canAdd);
-//        addBtn.setManaged(canAdd);
-//
-//        editBtn.setVisible(canEdit);
-//        editBtn.setManaged(canEdit);
-//
-//        deleteBtn.setVisible(canDelete);
-//        deleteBtn.setManaged(canDelete);
 
         if (!canAdd) functionBtns.getChildren().remove(addBtn);
         if (!canEdit) functionBtns.getChildren().remove(editBtn);

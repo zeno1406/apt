@@ -7,6 +7,7 @@ import DTO.ProductDTO;
 import SERVICE.ImageService;
 import SERVICE.SessionManagerService;
 import UTILS.NotificationUtils;
+import UTILS.UiUtils;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -66,7 +67,7 @@ public class ProductModalController {
             }
         });
         closeBtn.setOnAction(e -> handleClose());
-
+        addCategorySubBtn.setOnAction(e -> handleAddCategorySub());
         choseImg.setOnAction(e -> handleChoseImg());
     }
 
@@ -75,14 +76,17 @@ public class ProductModalController {
 
         CategoryBUS cateBUS = CategoryBUS.getInstance();
         categoryMap.clear();
-
-
+        String selectedCategory = cbSelectCategory.getSelectionModel().getSelectedItem();
+        cbSelectCategory.getItems().clear();
         for (CategoryDTO cate : cateBUS.getAllLocal()) {
             cbSelectCategory.getItems().add(cate.getName());
             categoryMap.put(cate.getName(), cate.getId());
         }
-
-        cbSelectCategory.getSelectionModel().selectFirst();
+        if (selectedCategory != null && categoryMap.containsKey(selectedCategory)) {
+            cbSelectCategory.getSelectionModel().select(selectedCategory);
+        } else {
+            cbSelectCategory.getSelectionModel().selectFirst();
+        }
         cbSelectStatus.getSelectionModel().selectFirst();
     }
 
@@ -288,6 +292,18 @@ public class ProductModalController {
                 case 6 -> NotificationUtils.showErrorAlert("Cập nhật sản phẩm thất bại. Vui lòng thử lại sau.", "Thông báo");
                 default -> NotificationUtils.showErrorAlert("Lỗi không xác định, vui lòng thử lại sau.", "Thông báo");
             }
+        }
+    }
+
+    private void handleAddCategorySub() {
+        CategoryModalController modalController = UiUtils.gI().openStageWithController(
+                "/GUI/CategoryModal.fxml",
+                controller -> controller.setTypeModal(0),
+                "Thêm thể loại"
+        );
+        if (modalController != null && modalController.isSaved()) {
+            NotificationUtils.showInfoAlert("Thêm thể loại thành công", "Thông báo");
+            loadComboBox();
         }
     }
 

@@ -42,7 +42,6 @@ public class RoleDAL extends BaseDAL<RoleDTO, Integer> {
         return "(name, description, salary_coefficient) VALUES (?, ?, ?)";
     }
 
-
     @Override
     protected void setInsertParameters(PreparedStatement statement, RoleDTO obj) throws SQLException {
         statement.setString(1, obj.getName());

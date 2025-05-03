@@ -6,6 +6,7 @@ import BUS.ProductBUS;
 import BUS.SupplierBUS;
 import DTO.CustomerDTO;
 import DTO.SupplierDTO;
+import SERVICE.SessionManagerService;
 import UTILS.NotificationUtils;
 import UTILS.UiUtils;
 import UTILS.ValidationUtils;
@@ -16,6 +17,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import lombok.Getter;
 import org.w3c.dom.Text;
@@ -25,6 +27,10 @@ import java.awt.*;
 public class CusForSellingModalController {
     @FXML
     private Button btnExitGetCustomer, btnSearchCustomer, btnSubmitCustomer;
+    @FXML
+    private Button addBtn;
+    @FXML
+    private AnchorPane functionBtns;
     @FXML
     private TextField txtSearchCustomer;
     @FXML private TableView<CustomerDTO> tblCustomer;
@@ -44,6 +50,7 @@ public class CusForSellingModalController {
     {
         if  (CustomerBUS.getInstance().isLocalEmpty()) CustomerBUS.getInstance().loadLocal();
         setOnMouseClicked();
+        hideButtonWithoutPermission();
         loadTable();
     }
 
@@ -71,8 +78,8 @@ public class CusForSellingModalController {
     public void setOnMouseClicked() {
         btnExitGetCustomer.setOnAction(e -> handleClose());
         btnSubmitCustomer.setOnAction(e -> handleGetCustomer());
-//        btnSearchCustomer.setOnMouseClicked(e -> handleSearch());
         txtSearchCustomer.textProperty().addListener((observable, oldValue, newValue) -> handleSearch());
+        addBtn.setOnAction(e -> handleAddCus());
     }
 
     // handle search
@@ -97,6 +104,24 @@ public class CusForSellingModalController {
         }
         isSaved = true;
         handleClose();
+    }
+
+    private void handleAddCus() {
+        CustomerModalController modalController = UiUtils.gI().openStageWithController(
+                "/GUI/CustomerModal.fxml",
+                controller -> controller.setTypeModal(0),
+                "Thêm khách hàng"
+        );
+        if (modalController != null && modalController.isSaved()) {
+            NotificationUtils.showInfoAlert("Thêm khách hàng thành công", "Thông báo");
+            loadTable();
+        }
+    }
+
+    public void hideButtonWithoutPermission() {
+        boolean canAdd = SessionManagerService.getInstance().hasPermission(1);
+
+        if (!canAdd) functionBtns.getChildren().remove(addBtn);
     }
 
     // check select customer
