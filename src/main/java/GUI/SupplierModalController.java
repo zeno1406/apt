@@ -1,5 +1,6 @@
 package GUI;
 
+import BUS.CategoryBUS;
 import BUS.SupplierBUS;
 import DTO.SupplierDTO;
 import SERVICE.SessionManagerService;
@@ -51,6 +52,7 @@ public class SupplierModalController {
         typeModal = type;
         if (typeModal == 0) {
             modalName.setText("Thêm nhà cung cấp");
+            txtSupplierId.setText(String.valueOf(SupplierBUS.getInstance().getAllLocal().size() + 1));
         } else {
             if (supplier == null) handleClose();
             modalName.setText("Sửa nhà cung cấp");

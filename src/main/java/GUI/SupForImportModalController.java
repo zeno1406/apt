@@ -2,6 +2,7 @@ package GUI;
 
 import BUS.SupplierBUS;
 import DTO.SupplierDTO;
+import SERVICE.SessionManagerService;
 import UTILS.NotificationUtils;
 import UTILS.UiUtils;
 import javafx.collections.FXCollections;
@@ -11,6 +12,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import lombok.Getter;
 
@@ -21,6 +23,10 @@ public class SupForImportModalController {
     private Button btnSubmitSupplier;
     @FXML
     private Button btnSearchSupplier;
+    @FXML
+    private Button addBtn;
+    @FXML
+    private AnchorPane functionBtns;
     @FXML
     private TextField txtSearchSupplier;
     @FXML
@@ -42,6 +48,7 @@ public class SupForImportModalController {
     {
         if  (SupplierBUS.getInstance().isLocalEmpty()) SupplierBUS.getInstance().loadLocal();
         setupListeners();
+        hideButtonWithoutPermission();
         loadTable();
     }
 
@@ -61,7 +68,7 @@ public class SupForImportModalController {
     public void setupListeners() {
         btnExitGetSupplier.setOnAction(e -> handleClose());
         btnSubmitSupplier.setOnAction(e -> handleGetSupplier());
-//        btnSearchSupplier.setOnMouseClicked(e -> handleSearch());
+        addBtn.setOnAction(e -> handleAddSup());
         txtSearchSupplier.textProperty().addListener((observable, oldValue, newValue) -> handleSearch());
     }
 
@@ -84,6 +91,24 @@ public class SupForImportModalController {
             Stage stage = (Stage) btnExitGetSupplier.getScene().getWindow();
             stage.close();
         }
+    }
+
+    private void handleAddSup() {
+        SupplierModalController modalController = UiUtils.gI().openStageWithController(
+                "/GUI/SupplierModal.fxml",
+                controller -> controller.setTypeModal(0),
+                "Thêm nhà cung cấp "
+        );
+        if (modalController != null && modalController.isSaved()) {
+            NotificationUtils.showInfoAlert("Thêm nhà cung cấp thành công", "Thông báo");
+            loadTable();
+        }
+    }
+
+    public void hideButtonWithoutPermission() {
+        boolean canAdd = SessionManagerService.getInstance().hasPermission(10);
+
+        if (!canAdd) functionBtns.getChildren().remove(addBtn);
     }
 
     private boolean isNotSelectedSupplier() {

@@ -668,28 +668,22 @@ public class SellingProductController {
             // Kiểm tra xem totalPriceInvoice có lớn hơn hoặc bằng mốc giảm giá cao nhat không
             if (totalPriceInvoice.compareTo(selectedDetailDiscountList.get(i).getTotalPriceInvoice()) >= 0
                     && selectedDetailDiscountList.get(i).getTotalPriceInvoice().compareTo(selectedDetailDiscount.getTotalPriceInvoice()) > 0) {
-//                    if (selectedDetailDiscountList.get(i).getTotalPriceInvoice().compareTo(selectedDetailDiscount.getTotalPriceInvoice()) < 0) return;
-                // Nếu totalPriceInvoice mới cao hơn một trong những mộc cuối và k phải mốc đang áp dụng tức là đã đạt đủ điều kiện lên mốc cao hơn
-                System.out.println(selectedDetailDiscountList.get(i).getTotalPriceInvoice());
-                System.out.println(selectedDetailDiscount.getTotalPriceInvoice());
-
-                if (UiUtils.gI().showConfirmAlert("Hóa đơn của bạn đã đạt đủ điều kiện cho mốc giảm giá tiếp theo. Bạn có muốn áp dụng? ", "Thông báo xác nhận")) {
-                    if (selectedDiscount.getType() == 0) {  // Giảm theo tỷ lệ phần trăm
-                        // Tính toán giá sau khi giảm theo tỷ lệ phần trăm
-                        discountPrice = totalPriceInvoice.multiply(
-                                (selectedDetailDiscountList.get(i).getDiscountAmount())
-                                        .divide(BigDecimal.valueOf(100), 2, BigDecimal.ROUND_HALF_UP) // Sử dụng setScale và ROUND_HALF_UP thay cho ROUND_CEILING
-                        );
-                    } else {  // Giảm theo giá trị cố định
-                        // Tính toán giá sau khi giảm theo giá trị cố định
-                        discountPrice = selectedDetailDiscountList.get(i).getDiscountAmount();
-                    }
-                    // Lưu thông tin chi tiết giảm giá đã chọn
-                    selectedDetailDiscount = new DetailDiscountDTO(selectedDetailDiscountList.get(i));
-                    loadCaculatedTotalInvoicePrice();
-                    NotificationUtils.showInfoAlert("Cập nhật khuyến mãi thành công.", "Thông báo");
-                    return;
+                NotificationUtils.showInfoAlert("Hóa đơn của bạn đã đạt đủ điều kiện cho mốc giảm giá tiếp theo.", "Thông báo");
+                if (selectedDiscount.getType() == 0) {  // Giảm theo tỷ lệ phần trăm
+                    // Tính toán giá sau khi giảm theo tỷ lệ phần trăm
+                    discountPrice = totalPriceInvoice.multiply(
+                            (selectedDetailDiscountList.get(i).getDiscountAmount())
+                                    .divide(BigDecimal.valueOf(100), 2, BigDecimal.ROUND_HALF_UP) // Sử dụng setScale và ROUND_HALF_UP thay cho ROUND_CEILING
+                    );
+                } else {  // Giảm theo giá trị cố định
+                    // Tính toán giá sau khi giảm theo giá trị cố định
+                    discountPrice = selectedDetailDiscountList.get(i).getDiscountAmount();
                 }
+                // Lưu thông tin chi tiết giảm giá đã chọn
+                selectedDetailDiscount = new DetailDiscountDTO(selectedDetailDiscountList.get(i));
+                loadCaculatedTotalInvoicePrice();
+                NotificationUtils.showInfoAlert("Áp dụng mốc khuyến mãi mới thành công.", "Thông báo");
+                return;
             }
         }
     }

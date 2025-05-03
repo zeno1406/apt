@@ -79,10 +79,6 @@ public class CustomerController implements IController {
         tblCustomer.setItems(FXCollections.observableArrayList(customerBus.getAllLocal()));
     }
 
-//    private SimpleStringProperty formatCell(String value) {
-//        return new SimpleStringProperty(value);
-//    }
-
     private void loadComboBox() {
         cbSearchBy.getItems().addAll(
                 "Mã khách hàng",
@@ -167,7 +163,6 @@ public class CustomerController implements IController {
     }
 
     private void handleAddBtn() {
-//        System.out.println("Dang o handle add");
         CustomerModalController modalController = UiUtils.gI().openStageWithController(
                 "/GUI/CustomerModal.fxml",
                 controller -> controller.setTypeModal(0),
@@ -229,16 +224,6 @@ public class CustomerController implements IController {
             NotificationUtils.showInfoAlert("Sửa khách hàng thành công", "Thông báo");
             applyFilters();
         }
-    }
-
-    //done
-    private void handleExportExcel() throws IOException {
-//        System.out.println("Dang o handle export excel");
-//        try {
-//            ExcelService.getInstance().exportToFileExcel("customer");
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
     }
 
     //done

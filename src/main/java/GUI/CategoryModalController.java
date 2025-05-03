@@ -2,6 +2,7 @@ package GUI;
 
 import BUS.CategoryBUS;
 import BUS.CustomerBUS;
+import BUS.EmployeeBUS;
 import DTO.CategoryDTO;
 import DTO.CustomerDTO;
 import SERVICE.SessionManagerService;
@@ -55,6 +56,7 @@ public class CategoryModalController {
         typeModal = type;
         if (typeModal == 0) {
             modalName.setText("Thêm thể loại");
+            txtCategoryId.setText(String.valueOf(CategoryBUS.getInstance().getAllLocal().size() + 1));
         } else {
             if (category == null) handleClose();
             modalName.setText("Sửa thể loại");

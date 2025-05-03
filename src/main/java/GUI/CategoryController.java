@@ -126,7 +126,6 @@ public class CategoryController implements IController {
         statusFilter = 1;
         applyFilters();
 
-        NotificationUtils.showInfoAlert("Làm mới thành công", "Thông báo");
 
     }
 

@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import BUS.CustomerBUS;
+import BUS.SupplierBUS;
 import DTO.CustomerDTO;
 import SERVICE.SessionManagerService;
 import UTILS.NotificationUtils;
@@ -57,6 +58,7 @@ public class CustomerModalController {
         typeModal = type;
         if (typeModal == 0) {
             modalName.setText("Thêm khách hàng");
+            txtCustomerId.setText(String.valueOf(CustomerBUS.getInstance().getAllLocal().size() + 1));
         } else {
             if (customer == null) handleClose();
             modalName.setText("Sửa khách hàng");
