@@ -57,7 +57,7 @@ public class DiscountBUS extends BaseBUS<DiscountDTO, String> {
             LocalDate discountStartDate = dis.getStartDate().toLocalDate();
             LocalDate discountEndDate = dis.getEndDate().toLocalDate();
 
-            // Logic l�+�c ng+�y m�+�i
+            // Xử lý logic ngày
             if (startDate != null && endDate != null) {
                 matchesDate = !discountEndDate.isAfter(endDate);
             } else if (startDate != null) {
@@ -66,16 +66,19 @@ public class DiscountBUS extends BaseBUS<DiscountDTO, String> {
                 matchesDate = !discountEndDate.isAfter(endDate);
             }
 
-            // L�+�c t+�n hoߦ+c type
             if (discountName != null && !discountName.isBlank()) {
-                matchesOther |= dis.getName().toLowerCase().contains(discountName.toLowerCase());
+                if (dis.getName().toLowerCase().contains(discountName.toLowerCase())) {
+                    matchesOther = true;
+                }
             }
 
             if (type != -1) {
-                matchesOther |= dis.getType() == type;
+                if (dis.getType() == type) {
+                    matchesOther = true;
+                }
             }
 
-            // Nߦ+u kh+�ng nhߦ�p g+� cߦ� => mߦ+c -��+�nh true
+            // Nếu không nhập gì => mặc định true
             if ((discountName == null || discountName.isBlank()) && type == -1) {
                 matchesOther = true;
             }
@@ -191,6 +194,19 @@ public class DiscountBUS extends BaseBUS<DiscountDTO, String> {
                 !endDate.isBefore(today);
 
         return isValidCode && isValidName && isValidDate;
+    }
+
+    public ArrayList<DiscountDTO> filterDiscountsActive() {
+        ArrayList<DiscountDTO> filteredList = new ArrayList<>();
+
+        for (DiscountDTO dis : arrLocal) {
+            LocalDate discountEndDate = dis.getEndDate().toLocalDate();
+            LocalDate now = LocalDate.now();
+            if (!discountEndDate.isBefore(now)) {
+                filteredList.add(new DiscountDTO(dis));
+            }
+        }
+        return filteredList;
     }
 
 }
