@@ -69,9 +69,9 @@
                     <children>
                         <AnchorPane prefHeight="50.0" prefWidth="880.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                             <children>
-                                <HBox alignment="CENTER" layoutX="680.0" layoutY="2.0" prefHeight="46.0" prefWidth="315.0" spacing="10.0" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                <HBox fx:id="functionBtns" alignment="CENTER_RIGHT" layoutX="680.0" layoutY="2.0" prefHeight="46.0" prefWidth="315.0" spacing="10.0" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="9.5" AnchorPane.topAnchor="0.0">
                                     <children>
-                                        <Button fx:id="addBtn" mnemonicParsing="false" prefHeight="34.0" prefWidth="92.0" styleClass="action-btn" stylesheets="@../css/base.css" text="Thêm">
+                                        <Button fx:id="addBtn" maxHeight="31.2" minHeight="31.2" mnemonicParsing="false" prefHeight="31.2" prefWidth="92.0" styleClass="action-btn" stylesheets="@../css/base.css" text="Thêm">
                                             <graphic>
                                                 <FontAwesomeIcon glyphName="PLUS_SQUARE" size="1.2em" styleClass="action-icon" />
                                             </graphic>

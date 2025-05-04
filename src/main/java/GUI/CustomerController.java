@@ -52,10 +52,10 @@ public class CustomerController implements IController {
         tblCustomer.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
         Platform.runLater(() -> tblCustomer.getSelectionModel().clearSelection());
 
-        hideButtonWithoutPermission();
         loadComboBox();
         setupListeners();
 
+        hideButtonWithoutPermission();
         loadTable();
         applyFilters();
     }

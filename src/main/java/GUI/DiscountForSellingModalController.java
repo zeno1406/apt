@@ -70,7 +70,7 @@ public class DiscountForSellingModalController {
         tbcEndDate.setCellValueFactory(cellData ->
                 new SimpleStringProperty(ValidationUtils.getInstance().formatDateTime(cellData.getValue().getEndDate())));
 
-        tbvDiscount.setItems(FXCollections.observableArrayList(DiscountBUS.getInstance().filterDiscountsAdvance("", -1, null, null)));
+        tbvDiscount.setItems(FXCollections.observableArrayList(DiscountBUS.getInstance().filterDiscountsActive()));
         tbvDiscount.getSelectionModel().clearSelection();
     }
 

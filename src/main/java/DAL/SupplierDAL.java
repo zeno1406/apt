@@ -36,13 +36,10 @@ public class SupplierDAL extends BaseDAL<SupplierDTO, Integer> {
             obj.setId(generatedKeys.getInt(1));
         }
     }
-
     @Override
     protected String getInsertQuery() {
         return "(name, phone, address, status) VALUES (?, ?, ?, ?)";
     }
-
-
     @Override
     protected void setInsertParameters(PreparedStatement statement, SupplierDTO obj) throws SQLException {
         statement.setString(1, obj.getName());
